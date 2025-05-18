@@ -1,4 +1,5 @@
 import { Badge,Container,Navbar,Nav,NavDropdown,Form,Button } from "react-bootstrap";
+import {NavLink} from "react-router-dom";
 import styles from "./styles.module.css";
 
 const Header = () => {
@@ -18,8 +19,8 @@ const Header = () => {
                         style={{ maxHeight: '100px' }}
                         navbarScroll
                     >
-                        <Nav.Link href="#action1">Home</Nav.Link>
-                        <Nav.Link href="#action2">Link</Nav.Link>
+                        <Nav.Link as={NavLink} to="/">Home</Nav.Link>
+                        <Nav.Link as={NavLink} to="userpage">Link</Nav.Link>
                         <NavDropdown title="Link" id="navbarScrollingDropdown">
                         <NavDropdown.Item href="#action3">Action</NavDropdown.Item>
                         <NavDropdown.Item href="#action4">
