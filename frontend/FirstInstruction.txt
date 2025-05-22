@@ -1,0 +1,44 @@
+To-Do List: File Structure
+//////////////////////////////////////////////////////////
+Footer.tsx → ./src/components/layout/
+Navbar.tsx → ./src/components/layout/
+HomePage.tsx → ./src/pages/Home/
+KalendarzPage.tsx → ./src/pages/Kalendarz/
+ProfilePage.tsx → ./src/pages/Profile/
+ZgloszeniaAdmin.tsx → ./src/pages/Zgloszenia/
+HistoriaPage.tsx → ./src/pages/Historia/
+LoginPage.tsx → ./src/pages/auth/
+Error.tsx → ./src/pages/
+/////////////////////////////////////////////////////////
+Auth Slice Configuration
+Location: ./src/store/slices/authSlice.ts
+
+This file manages user roles and authentication state. To control UI visibility based on user roles, modify the initialState:
+
+const initialState: AuthState = {
+  isAuthenticated: true,  // Set to `false` if logged out
+  userRole: 'admin',      // Options: 'admin', 'user', or `null` (if logged out)
+  isLoading: false,
+  error: null,
+};
+/////
+Notes:
+
+On logout: Set userRole: null and isAuthenticated: false.
+Avoid modifying services for now.
+///////////////////////////////
+
+Adding New Pages
+To add a new route:
+
+1)Import the page component in routesConfig.tsx (example):
+
+const HomePage = lazy(() => import('../pages/Home/HomePage'));
+2)Add a route configuration:
+{
+  path: '/',
+  element: <HomePage />,
+},
+//////////////////////////////////////////////////////////////////
+Styling
+Styles are located in: ./src/styles/pages/

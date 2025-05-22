@@ -1,26 +1,24 @@
-import { createBrowserRouter,RouterProvider } from 'react-router-dom';
-//layouts
-import {MainLayout} from '@layouts/index'
-//pages
-import Home from '@pages/Home';
-import UserPage from '@pages/UserPage';
-const router=createBrowserRouter([{
-  path:"/",
-  element:<MainLayout />,
-  children:[
-    {
-      index:true,
-      element:<Home/>,
-    },
-    {
-      path:"userpage",
-      element:<UserPage></UserPage>
-    },
-  ],
-}])
-const AppRouter =()=>{
-    return (
-        <RouterProvider router={router}></RouterProvider>
-    );
-}
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { routes } from './routesConfig';
+import MainLayout from "../components/layout/MainLayout";
+import Error from '../pages/Error';
+import { Suspense } from 'react';
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <MainLayout />,
+    errorElement: <Error />,
+    children: routes
+  }
+]);
+
+const AppRouter = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <RouterProvider router={router} />
+    </Suspense>
+  );
+};
+
 export default AppRouter;
