@@ -56,7 +56,7 @@ Add an entry to the routes array:
 - `userRole`: `null`
 - `isAuthenticated`: `false`
 
-> **⚠️ Note:** Do **not** modify services for logout logic.
+> **⚠️ Note:** Do **not** modify services for now.
 
 ---
 
