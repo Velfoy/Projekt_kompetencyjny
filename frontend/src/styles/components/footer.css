@@ -1,34 +1,52 @@
 .custom-footer {
-  background-color: #f2f4f3;
-  padding: 2rem 1rem;
+  background-color: #F4F4F4;
+  padding: 1rem;
   font-family: 'Outfit';
   color: #2e2e2e;
   box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.1);
   width: 95%;
   border-radius: 18px;
+  border: 1px solid #9F9191;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  margin-bottom: 20px;
 }
 
 .footer-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
   gap: 2rem;
   margin: 0 auto;
 }
 
 .footer-card {
-  background-color: #e3edea;
-  padding: 1.5rem;
+  border: 1px solid #9F9191;
+  background-color: #D8E2DB;
   border-radius: 1rem;
-  flex: 1 1 280px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+}
+.footer-info{
+    width: 25%;
+    padding: 20px 35px;
+}
+.footer-center{
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    margin-top: 10px;
+}
+.footer-info ul i{
+    margin-right: 10px;
 }
 
-.footer-card h3,
-.footer-card h5 {
-  margin-top: 0;
-  font-weight: 600;
-  color: #1e4036;
+.footer-card h3{
+    color: #5A5454;
+    font-size: 38px;
+    font-weight: 600;
 }
 
 .footer-card ul {
@@ -39,28 +57,30 @@
 }
 
 .footer-card li {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.7rem;
 }
 
-.footer-center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex: 1 1 280px;
+.footer-info ul span{
+    font-weight: 600;
+    color: #253D4E;
 }
 
-.footer-links h5 {
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  color: #1e4036;
+.footer-links h5{
+    color: #253D4E;
+    font-weight: 600;
+    font-size: 21px;
 }
 
 .footer-links ul {
   list-style: none;
   padding: 0;
-  text-align: center;
+  text-align: start;
 }
 
+.footer-links ul i{
+    margin-right: 10px;
+    color: #00830b;
+}
 .footer-links a {
   text-decoration: none;
   color: #165e4a;
@@ -70,19 +90,152 @@
   text-decoration: underline;
 }
 
-.footer-logo {
-  margin-top: 1rem;
-  text-align: center;
+.footer-logo{
+    margin-top: 20px;
+}
+.footer-logo p{
+    color: #253D4E;
+    font-weight: 600;
+    font-size: 16px;
+}
+.image_logo{
+    width: 250px;
+}
+.image_logo img{
+    width: 100%;
+    height: 100%;
 }
 
-.footer-logo img {
-  height: 50px;
-  margin-top: 0.5rem;
+.hours_all{
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: start;
+    border: 1px solid #9F9191;
+    background-color: #D8E2DB;
+    border-radius: 1rem;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+    padding: 20px 25px;
+}
+.hours_all p{
+    margin:0px;
+    margin-bottom: 2px;
+}
+.hours_all i{
+    margin-right: 10px;
+}
+.hours_left{
+    margin-right: 20%;
+}
+.footer_hours{
+    width: 45%;
+}
+.footer_hours h5{
+    color: #253D4E;
+    font-weight: 600;
+    font-size: 21px;
+    margin: 0px;
+    margin-top: -2px;
+    margin-bottom: 4px;
+}
+.footer_hours{
+    height: min-content;
 }
 
 .footer-bottom {
-  text-align: center;
-  margin-top: 2rem;
+  text-align: start;
+  margin-top: 1rem;
+  margin-left: 25px;
   font-size: 0.85rem;
   color: #666;
+}
+@media (max-width: 1382px) {
+   .footer-info,.footer-center{
+    width: 45%;
+   }
+    .footer_hours{
+      width: 100%;
+    }
+    .footer-logo{
+      margin-top: 0px;
+    }
+}
+@media (max-width: 770px) {
+  .footer-info,
+  .footer-center,
+  .footer_hours {
+    width: 100%;
+    padding: 20px;
+  }
+  .footer_hours{
+    padding: 20px 0px;
+  }
+  .footer-info p{
+    margin-bottom: 0px;
+  }
+  .footer-info ul{
+    margin-bottom: 0px;
+  }
+  .hours_all {
+    flex-direction: column;
+  }
+  
+  .hours_left {
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
+  
+  .footer-bottom {
+    margin-left: 0;
+    padding: 0 10px;
+  }
+   .footer-card h3 {
+    font-size: 32px;
+  }
+  
+  .footer-links h5,
+  .footer_hours h5 {
+    font-size: 18px;
+  }
+  
+  .image_logo {
+    width: 200px;
+  }
+  
+  .footer-info ul span {
+    margin-top: 5px;
+  }
+  .footer-container{
+    gap: 0px;
+  }
+  .footer-center{
+    flex-direction: row;
+  }
+  .footer-logo{
+    margin-top: 0px;
+    margin-left: 20%;
+  }
+}
+
+
+@media (max-width: 567px) {
+  .footer-center{
+    flex-direction: column;
+  }
+  .footer-logo{
+    margin-top: 20px;
+    margin-left: 0px;
+  }
+  .footer-card h3 {
+    font-size: 28px;
+  }
+  
+  .footer-info,
+  .footer-center {
+    padding: 15px;
+  }
+  
+  .hours_all {
+    padding: 15px;
+  }
 }
