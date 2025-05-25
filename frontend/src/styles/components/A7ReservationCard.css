@@ -1,0 +1,58 @@
+.a7-card-wrapper {
+  margin-top: 15px;
+  border-radius: 20px;
+  display: flex;
+  justify-content: start;
+  align-items: start;
+  width: 100.5%;
+  position: relative;
+  overflow: hidden;
+}
+
+.a7-background-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.a7-button-wrapper {
+  position: absolute;
+  bottom: 20px; /* Adjust this value for spacing from bottom */
+  right: 20px;  /* Adjust this value for spacing from right */
+}
+
+.a7-button {
+  width: 240px; /* Reduced from 700px to more reasonable button size */
+  height: 80px; /* Reduced from 100px */
+  border: none;
+  cursor: pointer;
+  position: relative;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+  background: transparent;
+}
+
+.a7-button:hover {
+  transform: scale(1.05);
+}
+
+.a7-button-text {
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+  position: relative;
+  z-index: 2;
+}
+
+.a7-button-image {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}

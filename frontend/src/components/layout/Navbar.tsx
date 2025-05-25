@@ -44,7 +44,7 @@ const Navbar = () => {
       <div className="center">
         <Link 
           to="/" 
-          className={`brand ${isActive('/') ? 'active_navbar_link' : ''}`}
+          className="brand"
         >
           {'Rezerwacja'.split('').map((char, index) => (
             <span key={index}>{char}</span>
@@ -71,14 +71,14 @@ const Navbar = () => {
                 <i className="fa-solid fa-user-pen"></i>
               </Link>
             </div>
-            <button onClick={logout}>Wyloguj się</button>
+            <button className="zalog_button" onClick={logout}>Wyloguj się</button>
           </>
         ) : (
           <Link 
             to="/login" 
-            className={isActive('/login') ? 'active_navbar_link' : ''}
+            className={`zalog_button ${isActive('/login') ? 'active_navbar_link' : ''}`}
           >
-            Zaloguj
+            Zaloguj się
           </Link>
         )}
       </div>

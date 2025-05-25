@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import styles from '@styles/pages/home.module.css';
 import { useAuth } from '@hooks/useAuth';
+import A7ReservationCard from '@/src/components/ui/A7ReservationCard';
 
 const HomePage = () => {
   const { role } = useAuth();
@@ -23,6 +24,7 @@ const HomePage = () => {
 
   return (
     <div className={styles.container}>
+      <A7ReservationCard></A7ReservationCard>
       <h1>Witaj w naszej aplikacji</h1>
       <p>Zaloguj się, aby uzyskać dostęp do pełnej funkcjonalności</p>
       <div className={styles.buttons}>

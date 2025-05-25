@@ -3,6 +3,11 @@
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
+  background-color: #FFFFFF;
+    -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .navbar {
@@ -37,7 +42,7 @@
 
 .mainContent {
   flex: 1;
-  padding: 2rem;
+  width: 95%;
 }
 
 .footer {
