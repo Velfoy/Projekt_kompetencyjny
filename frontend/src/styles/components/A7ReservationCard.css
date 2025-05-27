@@ -4,7 +4,7 @@
   display: flex;
   justify-content: start;
   align-items: start;
-  width: 100.5%;
+  width: 100.6%;
   position: relative;
   overflow: hidden;
 }
@@ -15,12 +15,58 @@
   display: block;
 }
 
+.text_a7_wrapper {
+  position: absolute;
+  top: 90px;
+  right: 50px;
+  width: 28.5%;
+  z-index: 2;
+}
+
+.a7_header {
+  color: #FFFFFF;
+  text-shadow: 0px 2px 2px rgba(0,0,0,0.3);
+  font-size: 3.4rem;
+}
+
+.description_a7 {
+  margin-top: 20px;
+  margin-left: 3px;
+  color: #FFFFFF;
+  font-weight: 200;
+  width: 90%;
+  text-shadow: 0px 2px 2px rgba(0,0,0,0.2);
+}
+
+.image_a7_wrapper {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  width: 63%;
+  aspect-ratio: 100/53;
+  z-index: 2;
+  border-radius: 20px;
+  box-shadow: 0px 4px 4px rgba(255,255,255,0.3);
+  border: 1px solid #3D513D;
+}
+
+.image_a7_wrapper img {
+  width: 100%;
+  height: 100%;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  padding: 0;
+  border-radius: 20px;
+  object-fit: cover;
+}
+
 .a7-button-wrapper {
   position: absolute;
   bottom: 3px;
   right: 0.5%;
-  width: 30%; 
-  aspect-ratio: 4 / 1; 
+  width: 30%;
+  aspect-ratio: 4 / 1;
 }
 
 .a7-button {
@@ -36,13 +82,14 @@
   transition: transform 0.3s ease;
   background: transparent;
 }
-.a7-button:hover{
-    transform: translateY(-4px) ;
-} 
+
+.a7-button:hover {
+  transform: translateY(-4px);
+}
 
 .a7-button-text {
   color: white;
-  font-size: 2vw; 
+  font-size: 2vw;
   font-weight: 500;
   font-family: 'Outfit', sans-serif;
   z-index: 2;
@@ -60,4 +107,99 @@
   left: 0;
   z-index: 1;
   object-fit: cover;
+}
+@media (max-width: 1540px) {
+   .a7_header {
+    font-size: 3rem;
+  }
+
+  .description_a7 {
+    font-size: 1rem;
+  }
+}
+@media (max-width: 1340px) {
+   .a7_header {
+    font-size: 2rem;
+  }
+
+  .description_a7 {
+    font-size: 0.7rem;
+  }
+  .text_a7_wrapper{
+    right: 10px;
+  }
+}
+@media (max-width: 1024px) {
+  .a7-card-wrapper {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+    border: 1px solid #3D513D;
+    text-align: center;
+    position: relative;
+  }
+
+  .a7-background-image {
+    display: none;
+  }
+
+  .text_a7_wrapper {
+    position: relative;
+    width: 100%;
+    top: 0px;
+    left: 0px;
+    text-align: center;
+    order: 3;
+  }
+
+  .a7_header {
+    font-size: 2.5rem;
+    text-align: center;
+  }
+
+  .description_a7 {
+    font-size: 1rem;
+    text-align: center;
+    margin: 20px auto;
+    width: 100%;
+  }
+
+  .image_a7_wrapper {
+    position: static;
+    width: 100%;
+   
+    aspect-ratio: 16/2;
+    margin: 0 auto;
+    order: 1;
+    box-shadow: none;
+    border: none;
+  }
+
+  .a7-button-wrapper {
+    position: static;
+    width: 100%;
+    max-width: 300px;
+    height: 60px;
+    margin: 20px auto;
+    aspect-ratio: auto;
+    order: 4;
+    background-color: #5a7d5a;
+    border-radius: 10px;
+  }
+
+  .a7-button {
+    background-color: transparent;
+  }
+
+  .a7-button-image {
+    display: none;
+  }
+
+  .a7-button-text {
+    font-size: 1.2rem;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
 }
