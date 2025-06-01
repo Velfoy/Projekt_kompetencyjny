@@ -1,0 +1,137 @@
+.all_news{
+    padding: 10px 20px;
+    background-color: #F4F4F4;
+    border: 1px solid #9F9191;
+    box-shadow: 0px 2px 2px rgba(0,0,0,0.3);
+    border-radius: 20px;
+    font-family: 'Outfit';
+
+}
+.news_header{
+    color: #5A5454;
+    border-bottom: 1px solid #000;
+    padding: 10px;
+    padding-top: 15px;
+}
+.card_divv{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    padding: 15px 20px;
+    background-color: #D8E2DB;
+    border-radius: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+    border: 1px solid #9F9191;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: -5px;
+  gap: 1rem;
+  width: 100%;
+}
+
+.text-content {
+  flex: 3;
+  margin-top: 10px;
+  margin-left: 5px;
+  color: #4E504E;
+}
+
+.image-content {
+  flex: 1;
+  display: flex;
+  justify-content: end;
+}
+
+.title_news {
+  font-weight: bold;
+  font-size: 1.4rem;
+}
+
+.text_news {
+  margin-top: 0.5rem;
+  font-size: 1rem;
+}
+
+.button_card_news {
+ width: 100%;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #3D513D;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.button_card_news:hover {
+    transform: translateY(-4px);
+  background-color: #133b13;
+  box-shadow: 0 2px 2px rgba(0,0,0,0.3);
+}
+
+.image_news {
+  max-height: 120px;
+  width: auto;
+  object-fit: cover;
+   border: 1px solid #3D513D;
+  box-shadow: 0 2px 2px rgba(0,0,0,0.3);
+  border-radius: 0.5rem;
+}
+
+@media screen and (max-width: 768px) {
+  .card-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0px;
+  }
+  .text-content{
+    margin-bottom: 0px;
+  }
+
+  .image-content {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .image_news {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: 200px;
+  }
+
+  .text-content {
+    margin-left: 0;
+    margin-top: 15px;
+  }
+
+  .button_card_news {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .title_news {
+    font-size: 1.2rem;
+  }
+
+  .text_news {
+    font-size: 0.95rem;
+  }
+
+  .all_news {
+    padding: 10px;
+  }
+  .text-content{
+    margin-top: 10px;
+  }
+  .card_divv {
+    padding: 20px;
+  }
+}

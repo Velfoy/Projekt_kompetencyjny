@@ -1,54 +1,71 @@
-# React + TypeScript + Vite
+# Project Structure and Configuration Guide
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## File Structure
+The following components and pages should be placed in their respective directories:
 
-Currently, two official plugins are available:
+| Component/Page          | Location                          |
+|-------------------------|-----------------------------------|
+| `Footer.tsx`            | `./src/components/layout/`        |
+| `Navbar.tsx`            | `./src/components/layout/`        |
+| `HomePage.tsx`          | `./src/pages/Home/`               |
+| `KalendarzPage.tsx`     | `./src/pages/Kalendarz/`          |
+| `ProfilePage.tsx`       | `./src/pages/Profile/`            |
+| `ZgloszeniaAdmin.tsx`   | `./src/pages/Zgloszenia/`         |
+| `HistoriaPage.tsx`      | `./src/pages/Historia/`           |
+| `LoginPage.tsx`         | `./src/pages/auth/`               |
+| `Error.tsx`             | `./src/pages/`                    |
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Authentication Configuration
+Location: `./src/store/slices/authSlice.ts`
 
-## Expanding the ESLint configuration
+This file manages user roles and authentication state. To control UI visibility based on user roles, modify the `initialState`:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+```typescript
+const initialState: AuthState = {
+  isAuthenticated: true,  // Set to `false` when logged out
+  userRole: 'admin',      // Options: 'admin', 'user', or `null` (logged out)
+  isLoading: false,
+  error: null,
+};
+## 🧭 Routing & Pages
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### ➕ Adding a New Page
+
+#### 1. Import the Component
+In `routesConfig.tsx`, import the page component using `lazy`:
+```tsx
+const HomePage = lazy(() => import('../pages/Home/HomePage'));
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+#### 2. Add the Route Configuration
+Add an entry to the routes array:
+```tsx
+{
+  path: '/',
+  element: <HomePage />,
+}
 ```
+
+---
+
+## 🚪 Logout Behavior
+
+### 🔐 On Logout
+
+#### Set the Following:
+- `userRole`: `null`
+- `isAuthenticated`: `false`
+
+> **⚠️ Note:** Do **not** modify services for now.
+
+---
+
+## 🎨 Styling
+
+### 📁 Style Location
+Styles for pages are located in:
+```
+./src/styles/pages/
+```
+
+Use this directory for page-specific styles to maintain modularity and consistency.

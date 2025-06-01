@@ -4,7 +4,8 @@
     "target": "ES2020",
     "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
+    "module": "esnext",
+    "esModuleInterop": true,
     "skipLibCheck": true,
 
     /* Bundler mode */
@@ -18,6 +19,7 @@
     /* Absolute path imports */
     "baseUrl":".",
     "paths":{
+      "@/*": ["./*"],
       "@assets/*":["src/assets/*"],
       "@components/*":["src/components/*"],
       "@hooks/*":["src/hooks/*"],
@@ -25,9 +27,10 @@
       "@routes/*":["src/routes/*"],
       "@store/*":["src/store/*"],
       "@styles/*":["src/styles/*"],
-      "@layouts/*":["src/layouts/*"],
+      "@types/*":["src/types/*"],
       "@utils/*":["src/utils/*"],
       "@services/*":["src/services/*"],
+      "@features/*":["src/features/*"],
 
     },
     "strict": true,
