@@ -13,6 +13,7 @@
 		public List<string> AttachedDocuments { get; set; } = new();
 		public string? Specs { get; set; }
 		public List<Comment> Comments { get; set; } = new();
+		public DateTime DateAdded { get; set; }
 
 	}
 }
