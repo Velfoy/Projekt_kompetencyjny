@@ -1,0 +1,87 @@
+.container_zgloszenia {
+  max-width: 800px;
+  margin: 40px auto;
+}
+
+.item_zgloszenia {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s;
+}
+
+.item_zgloszenia:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.details_zgloszenia {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.block_zgloszenia {
+  margin: 8px 0;
+  min-width: 200px;
+}
+
+.block_zgloszenia p {
+  margin: 0;
+}
+
+.label_zgloszenia {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.value_zgloszenia {
+  font-weight: 500;
+}
+
+.buttons_zgloszenia {
+  display: flex;
+  gap: 10px;
+}
+
+.buttonYes_zgloszenia {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  background-color: #4caf50;
+  color: white;
+}
+
+.buttonNo_zgloszenia {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  background-color: #ccc;
+  color: black;
+}
+
+.pagination_zgloszenia {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 20px;
+}
+
+.pageButton_zgloszenia {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.active_zgloszenia {
+  background-color: #eee;
+}
