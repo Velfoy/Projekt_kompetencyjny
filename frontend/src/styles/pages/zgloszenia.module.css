@@ -1,87 +1,157 @@
 .container_zgloszenia {
-  max-width: 800px;
-  margin: 40px auto;
+  background-color: #F4F4F4;
+  border: 1px solid #9F9191;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  font-family: 'Outfit';
+  border-radius: 15px;
+  font-size: 14px;
+  padding: 20px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
 }
-
+.column_zgloszenia p{
+    margin-bottom: 0px;
+}
+.column_zgloszenia i{
+    margin-left: 25%;
+    color: #3d513d;
+    transition: all 0.3s ease-in-out
+}
+.column_zgloszenia i:hover{
+    transform: scale(1.2);
+    color: #4e684e;
+}
 .item_zgloszenia {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 16px;
   display: flex;
-  flex-direction: column;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: box-shadow 0.3s;
-}
-
-.item_zgloszenia:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.details_zgloszenia {
-  display: flex;
-  flex-wrap: wrap;
+  align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
+  padding: 8px 0px;
+  padding-right: 30px;
+  padding-left: 20px;
+  margin: 7px 0;
+  background-color: #FFFFFF;
+  border-radius: 12px;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+  border: 1px solid #9F9191;
+  transition: all 0.3s ease-in-out;
+}
+.item_zgloszenia:hover{
+    transform: translateY(-2px);
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
+}
+.header_zgloszenia {
+  background-color: #D8E2DB;
+  font-weight: bold;
+  font-size: 18px;
+  box-shadow: 0px 2px 2px rgba(0,0,0,0.3);
+  border: 1px solid #9F9191;
+  padding: 14px 20px;
 }
 
-.block_zgloszenia {
-  margin: 8px 0;
-  min-width: 200px;
-}
-
-.block_zgloszenia p {
-  margin: 0;
-}
-
-.label_zgloszenia {
-  font-size: 0.85rem;
-  color: #666;
-}
-
-.value_zgloszenia {
-  font-weight: 500;
-}
-
-.buttons_zgloszenia {
+.column_zgloszenia {
+  flex: 1;
   display: flex;
-  gap: 10px;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+.accept_column{
+    transform: translateX(-20px);
+    margin-right: 10px;
+}
+.column_zgloszenia:nth-child(3){
+     justify-content: flex-end;
+}
+.column_zgloszenia:nth-child(4) {
+  justify-content: flex-end;
 }
 
-.buttonYes_zgloszenia {
-  padding: 6px 14px;
-  border: none;
-  border-radius: 6px;
+.detailButton_zgloszenia {
+  background-color: #E8E8E8;
+  border: 1px solid #99C49A;
+  border-radius: 10px;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  padding: 4px 20px;
   cursor: pointer;
-  font-weight: 500;
-  background-color: #4caf50;
-  color: white;
+  color: #000000;
+  font-size: 13px;
+  transition: all 0.3s ease-in-out;
+}
+
+.detailButton_zgloszenia:hover {
+  background-color: #e0e0e0;
+  transform: translateY(-4px);
+  color: #353535;
+}
+
+.toggleButtons {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.buttonYes_zgloszenia,
+.buttonNo_zgloszenia {
+  padding:  4px 20px;
+  border-radius: 10px;
+  font-weight:500;
+  cursor: pointer;
+  font-size: 14px;
+  border: none;
+  transition: all 0.3s ease;
+}
+.buttonYes_zgloszenia {
+  background-color: #e6f2e6;
+  color: #2f5d2f;
+  border:1px solid #b8e0b8;
+}
+
+.buttonYes_zgloszenia:hover {
+  background-color: #b8e0b8;
+  color: #ffffff;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .buttonNo_zgloszenia {
-  padding: 6px 14px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  background-color: #ccc;
-  color: black;
+  background-color: #3d513d;
+  color: #ffffff;
+  border-color: #3d513d;
 }
 
+.buttonNo_zgloszenia:hover {
+  background-color: #e0eae2;
+  color: #3d513d;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
 .pagination_zgloszenia {
   display: flex;
   justify-content: center;
-  gap: 6px;
-  margin-top: 20px;
+  align-items: flex-end;
+  gap: 4px;
+  margin-top: 15px;
+  font-weight: 200;
+  flex-wrap: wrap;
 }
 
 .pageButton_zgloszenia {
-  padding: 6px 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 1px 8px;
+  margin: 0px;
+  border-radius: 5px;
+  background-color: #F4F4F4;
+  border: none;
   cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.pageButton_zgloszenia:hover {
+  background-color: #e0dfdf;
 }
 
 .active_zgloszenia {
-  background-color: #eee;
+  background-color: #d4e5d2;
+  font-weight: 500;
 }
