@@ -1,13 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from '../../styles/pages/zgloszenia.module.css';
+import ReservationAcceptation from '@/src/components/ui/zgloszenia/ReservationAcceptation';
 
-const mockReservations = [
-  { id: 1, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
+interface Reservation {
+  id: number;
+  unit: string;
+  submittedBy: string;
+}
+
+const mockReservations: Reservation[] = [
+  { id: 1, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
+  { id: 2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
   { id: 3, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
   { id: 4, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
   { id: 5, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 6, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
+  { id: 6, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
   { id: 7, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
   { id: 8, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
   { id: 9, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
@@ -21,13 +28,13 @@ const mockReservations = [
   { id: 17, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
   { id: 18, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
   { id: 19, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
-  { id: 20, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 21, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 22, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
+  { id: 20, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
+   { id: 21, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
+  { id: 22, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
   { id: 23, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
   { id: 24, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
   { id: 25, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 26, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
+  { id: 26, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
   { id: 27, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
   { id: 28, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
   { id: 29, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
@@ -41,48 +48,150 @@ const mockReservations = [
   { id: 37, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
   { id: 38, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
   { id: 39, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
-  { id: 40, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
+  { id: 40, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
 ];
 
 const ZgloszeniaPage = () => {
+  const [reservations, setReservations] = useState<Reservation[]>(mockReservations);
   const [currentPage, setCurrentPage] = useState(1);
+  const [windowWidth, setWindowWidth] = useState(
+    typeof window !== 'undefined' ? window.innerWidth : 1200
+  );
+  const [expandedRow, setExpandedRow] = useState<number | null>(null);
+  const [selectedReservationId, setSelectedReservationId] = useState<number | null>(null);
+  const [actionType, setActionType] = useState<'accept' | 'reject' | null>(null);
   const itemsPerPage = 5;
 
-  const pageCount = Math.ceil(mockReservations.length / itemsPerPage);
-  const currentItems = mockReservations.slice(
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const pageCount = Math.ceil(reservations.length / itemsPerPage);
+  const currentItems = reservations.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+
+  const toggleRowExpand = (id: number) => {
+    setExpandedRow(expandedRow === id ? null : id);
+  };
+
+  const handleReservationAction = (id: number, action: 'accept' | 'reject') => {
+    setSelectedReservationId(id);
+    setActionType(action);
+  };
+
+  const handleConfirmAction = (accepted: boolean) => {
+    if (!selectedReservationId) return;
+    
+    // Here you would typically make an API call
+    console.log(`Reservation ${selectedReservationId} ${accepted ? 'accepted' : 'rejected'}`);
+    
+    // Remove the reservation from the list
+    setReservations(prev => prev.filter(r => r.id !== selectedReservationId));
+    
+    // Reset selection
+    setSelectedReservationId(null);
+    setActionType(null);
+    
+    // Adjust current page if we're on an empty page
+    if (currentItems.length === 1 && currentPage > 1) {
+      setCurrentPage(prev => Math.min(prev, pageCount - 1));
+    }
+  };
 
   return (
     <div className={styles.container_zgloszenia}>
       {/* Header Row */}
       <div className={`${styles.item_zgloszenia} ${styles.header_zgloszenia}`}>
-        <div className={styles.column_zgloszenia}>Rezerwowana jednostka:</div>
-        <div className={styles.column_zgloszenia}>Zgłoszone przez:</div>
-        <div className={styles.column_zgloszenia}>Termin rezerwacji:</div>
-        <div className={`${styles.column_zgloszenia} ${ styles.accept_column}`}>Zaakceptuj:</div>
+        <div className={styles.column_zgloszenia}>
+          {windowWidth > 400 ? 'Rezerwowana jednostka:' : 'Info'}
+        </div>
+        {windowWidth > 650 && (
+          <div className={styles.column_zgloszenia}>Zgłoszone przez:</div>
+        )}
+        {windowWidth > 850 && (
+          <div className={styles.column_zgloszenia}>Termin rezerwacji:</div>
+        )}
+        <div className={`${styles.column_zgloszenia} ${styles.accept_column}`}>
+          Zaakceptuj:
+        </div>
       </div>
 
       {/* Data Rows */}
       {currentItems.map((res) => (
-        <div key={res.id} className={styles.item_zgloszenia}>
-          <div className={styles.column_zgloszenia}>
-            <p>{res.unit}</p>
-            <i className="fa-solid fa-circle-info"></i>
-          </div>
-          <div className={styles.column_zgloszenia}>
-            <p>{res.submittedBy}</p>
-          </div>
-          <div className={styles.column_zgloszenia}>
-            <button className={styles.detailButton_zgloszenia}>Zobacz szczegóły</button>
-          </div>
-          <div className={styles.column_zgloszenia}>
-            <div className={styles.toggleButtons}>
-              <button className={styles.buttonYes_zgloszenia}>Tak</button>
-              <button className={styles.buttonNo_zgloszenia}>Nie</button>
+        <div key={res.id}>
+          <div className={styles.item_zgloszenia}>
+            <div className={styles.column_zgloszenia}>
+              <>
+                <p>{res.unit}</p>
+                <i className="fa-solid fa-circle-info"></i>
+              </>
+              <i 
+                className={`fa-solid fa-chevron-${expandedRow === res.id ? 'down' : 'right'}`}
+                onClick={() => toggleRowExpand(res.id)}
+                style={{ cursor: 'pointer' }}
+              ></i>
+            </div>
+            {windowWidth > 650 && (
+              <div className={styles.column_zgloszenia}>
+                <p>{res.submittedBy}</p>
+              </div>
+            )}
+            {windowWidth > 850 && (
+              <div className={styles.column_zgloszenia}>
+                <button className={styles.detailButton_zgloszenia}>Zobacz szczegóły</button>
+              </div>
+            )}
+            <div className={styles.column_zgloszenia}>
+              <div className={styles.toggleButtons}>
+                <button 
+                  className={styles.buttonYes_zgloszenia}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleReservationAction(res.id, 'accept');
+                  }}
+                >
+                  Tak
+                </button>
+                <button 
+                  className={styles.buttonNo_zgloszenia}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleReservationAction(res.id, 'reject');
+                  }}
+                >
+                  Nie
+                </button>
+              </div>
             </div>
           </div>
+
+          {/* Expanded row details for mobile */}
+          {expandedRow === res.id && (
+            <div className={styles.expanded_details}>
+              {(windowWidth <= 400)&&(
+                <div className={styles.detail_row}>
+                  <span className={styles.detail_label}>Rezerwowana jednostka:</span>
+                  <span>{res.unit}</span>
+                </div>
+              )}
+              {(windowWidth <= 650)&&(
+                <div className={styles.detail_row}>
+                  <span className={styles.detail_label}>Zgłoszone przez:</span>
+                  <span>{res.submittedBy}</span>
+                </div>
+              )}
+              {(windowWidth <= 850)&&(
+                <div className={styles.detail_row}>
+                  <span className={styles.detail_label}>Termin rezerwacji:</span>
+                  <button className={styles.detailButton_zgloszenia}>Zobacz szczegóły</button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       ))}
 
@@ -100,7 +209,7 @@ const ZgloszeniaPage = () => {
           disabled={currentPage === 1}
           onClick={() => setCurrentPage((prev) => prev - 1)}
         >
-          Poprzedni
+          {windowWidth > 470 ? 'Poprzedni' : <i className="fa-solid fa-chevron-left"></i>}
         </button>
 
         {(() => {
@@ -110,7 +219,9 @@ const ZgloszeniaPage = () => {
               pages.push(
                 <button
                   key={i}
-                  className={`${styles.pageButton_zgloszenia} ${currentPage === i ? styles.active_zgloszenia : ''}`}
+                  className={`${styles.pageButton_zgloszenia} ${
+                    currentPage === i ? styles.active_zgloszenia : ''
+                  }`}
                   onClick={() => setCurrentPage(i)}
                 >
                   {i}
@@ -121,7 +232,9 @@ const ZgloszeniaPage = () => {
             pages.push(
               <button
                 key={1}
-                className={`${styles.pageButton_zgloszenia} ${currentPage === 1 ? styles.active_zgloszenia : ''}`}
+                className={`${styles.pageButton_zgloszenia} ${
+                  currentPage === 1 ? styles.active_zgloszenia : ''
+                }`}
                 onClick={() => setCurrentPage(1)}
               >
                 1
@@ -139,7 +252,9 @@ const ZgloszeniaPage = () => {
               pages.push(
                 <button
                   key={i}
-                  className={`${styles.pageButton_zgloszenia} ${currentPage === i ? styles.active_zgloszenia : ''}`}
+                  className={`${styles.pageButton_zgloszenia} ${
+                    currentPage === i ? styles.active_zgloszenia : ''
+                  }`}
                   onClick={() => setCurrentPage(i)}
                 >
                   {i}
@@ -154,7 +269,9 @@ const ZgloszeniaPage = () => {
             pages.push(
               <button
                 key={pageCount}
-                className={`${styles.pageButton_zgloszenia} ${currentPage === pageCount ? styles.active_zgloszenia : ''}`}
+                className={`${styles.pageButton_zgloszenia} ${
+                  currentPage === pageCount ? styles.active_zgloszenia : ''
+                }`}
                 onClick={() => setCurrentPage(pageCount)}
               >
                 {pageCount}
@@ -170,7 +287,7 @@ const ZgloszeniaPage = () => {
           disabled={currentPage === pageCount}
           onClick={() => setCurrentPage((prev) => prev + 1)}
         >
-          Następny
+          {windowWidth > 470 ? 'Następny' : <i className="fa-solid fa-chevron-right"></i>}
         </button>
         <button
           className={styles.pageButton_zgloszenia}
@@ -180,6 +297,19 @@ const ZgloszeniaPage = () => {
           <i className="fa-solid fa-angles-right"></i>
         </button>
       </div>
+
+      {/* Acceptation Modal */}
+      {selectedReservationId && (
+        <ReservationAcceptation
+          reservation_id={selectedReservationId}
+          onClose={() => {
+            setSelectedReservationId(null);
+            setActionType(null);
+          }}
+          onConfirm={handleConfirmAction}
+          initialAction={actionType}
+        />
+      )}
     </div>
   );
 };
