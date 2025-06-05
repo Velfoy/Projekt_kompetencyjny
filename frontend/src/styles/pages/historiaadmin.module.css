@@ -1,0 +1,95 @@
+.container {
+  padding: 20px;
+}
+
+/* Pagination styles */
+.pagination_zgloszenia {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 4px;
+  margin-top: 15px;
+  font-weight: 200;
+  flex-wrap: wrap;
+}
+
+.pageButton_zgloszenia {
+  padding: 1px 8px;
+  margin: 0px;
+  border-radius: 5px;
+  background-color: #f4f4f4;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.pageButton_zgloszenia:hover {
+  background-color: #e0dfdf;
+}
+
+.active_zgloszenia {
+  background-color: #d4e5d2;
+  font-weight: 500;
+}
+
+/* Responsive details (optional for mobile view) */
+.expanded_details {
+  background-color: #f8f8f8;
+  padding: 10px 20px;
+  margin-top: -5px;
+  margin-bottom: 5px;
+  border-radius: 0 0 12px 12px;
+  border: 1px solid #ddd;
+  border-top: none;
+}
+
+.detail_row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.detail_label {
+  font-weight: bold;
+  color: #3d513d;
+}
+
+/* Column style override */
+.column_zgloszenia i:last-child {
+  display: none;
+}
+
+.massActionContainer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.massActionSelect {
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+  min-width: 180px;
+}
+
+.zastosujButton {
+  background-color: #3b5f3b;
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.zastosujButton:hover {
+  background-color: #2d4a2d;
+}
