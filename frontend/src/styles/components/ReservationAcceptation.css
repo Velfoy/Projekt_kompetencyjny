@@ -1,0 +1,162 @@
+.reservation-acceptation-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    font-family: 'Outfit';
+}
+
+.reservation-acceptation-modal .modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+.reservation-acceptation-modal .modal-content {
+    position: relative;
+    background-color: #F4F4F4;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #9F9191;
+    width: 90%;
+    max-width: 400px;
+    margin: 0 auto;
+    z-index: 1001;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.reservation-acceptation-modal .modal-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.reservation-acceptation-modal .modal-message {
+    margin-bottom: 1.5rem;
+    color: #555;
+    line-height: 1.5;
+}
+
+.reservation-acceptation-modal .button-group {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+}
+
+.reservation-acceptation-modal .modal-button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.reservation-acceptation-modal .modal-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.reservation-acceptation-modal .accept-button {
+    background-color: #f4f4f4;
+    color: #005703;
+  
+     padding: 4px 20px;
+    border-radius: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 14px;
+    border: none;
+    transition: all 0.3s ease;
+     border: 1px solid #005703;
+}
+
+.reservation-acceptation-modal .accept-button:hover {
+      background-color: #005703;
+    color: #f4f4f4;
+}
+
+.reservation-acceptation-modal .reject-button {
+         padding: 4px 20px;
+    border-radius: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 14px;
+    border: none;
+    transition: all 0.3s ease;
+    background-color: #F4F4F4;
+    color: #f44336;
+     border: 1px solid #f44336;
+}
+
+.reservation-acceptation-modal .reject-button:hover {
+    background-color: #d32f2f;
+    color: #f4f4f4;
+}
+
+.reservation-acceptation-modal .confirm-button {
+    background-color: #e6f2e6;
+    color: #2f5d2f;
+    border: 1px solid #b8e0b8;
+         padding: 4px 20px;
+    border-radius: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 14px;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.reservation-acceptation-modal .confirm-button:hover {
+     background-color: #b8e0b8;
+  color: #ffffff;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.reservation-acceptation-modal .cancel-button {
+        background-color: #3d513d;
+    color: #ffffff;
+    border-color: #3d513d;
+        padding: 4px 20px;
+    border-radius: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 14px;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.reservation-acceptation-modal .cancel-button:hover {
+      background-color: #e0eae2;
+  color: #3d513d;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+@media (max-width:420px){
+   .reservation-acceptation-modal .button-group{
+    flex-direction: column;
+   }
+}
