@@ -7,7 +7,6 @@ const KalendarzPage = () => {
 
   return (
     <div className={styles.container}>
-      <h1>Kalendarz</h1>
       
       {role === 'admin' ? (
           <KalendarzAdmin></KalendarzAdmin>

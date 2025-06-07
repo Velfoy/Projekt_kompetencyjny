@@ -63,7 +63,7 @@
 .massActionContainer {
    position: absolute;
   right: 10px; 
-  bottom: 8px; 
+  bottom: 10px; 
   display: flex;
   align-items: center;
   gap: 10px;
@@ -114,4 +114,38 @@
 
 .zastosujButton:hover {
   background-color: #2d4a2d;
+}
+@media(max-width:950px){
+  .massActionContainer{
+       position: relative;
+    bottom: 5px;
+    left: 33%;
+  }
+}
+@media(max-width:680px){
+  .massActionContainer{
+    left: 30%;
+  }
+}
+@media(max-width:680px){
+  .massActionContainer{
+    left: 25%;
+  }
+}
+@media(max-width:420px){
+  .massActionContainer{
+    left: 16%;
+  }
+}
+@media(max-width:370px){
+  .massActionContainer{
+    flex-direction: column;
+    left: 0px;
+  }
+  .massActionSelect{
+    width: 80%;
+  }
+  .zastosujButton{
+    width: 80%;
+  }
 }

@@ -50,6 +50,7 @@ const DataTable: React.FC<DataTableProps> = ({
   const [tableData, setTableData] = useState<RowData[]>(data);
   const [editingRowId, setEditingRowId] = useState<number | null>(null);
   const [editedStatus, setEditedStatus] = useState<Record<number, string>>({});
+  const [expandedRow, setExpandedRow] = useState<number | null>(null);
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -130,6 +131,19 @@ const DataTable: React.FC<DataTableProps> = ({
         return undefined;
     }
   };
+  const toggleRowExpand = (id: number) => {
+    setExpandedRow(expandedRow === id ? null : id);
+  };
+const columnKeys = columns.map(col => col.key);
+const visibleColumns = columns.filter(col => {
+  if (col.key === "id" || col.key === "name" || col.key === "actions") return true;
+  if (col.key === "type" && columnKeys.includes("type")) return windowWidth > 450;
+  if (col.key === "item" && columnKeys.includes("item")) return windowWidth > 650;
+  if (col.key === "unit" && columnKeys.includes("unit")) return windowWidth > 750;
+  if (col.key === "status" && columnKeys.includes("status")) return windowWidth > 850;
+  if (col.key === "termin_id" && columnKeys.includes("termin_id")) return windowWidth > 1050;
+  return false;
+});
 
   const resolvedActions: DropdownAction[] = dropdownActions
     .map(action => ({
@@ -151,62 +165,163 @@ const DataTable: React.FC<DataTableProps> = ({
                 onChange={toggleAllVisible}
               />
             </th>
-            {columns.map(col => (
+            {visibleColumns.map(col => (
               <th key={col.key}>{col.label}</th>
             ))}
           </tr>
         </thead>
-        <tbody>
-          {paginatedData.map((row) => (
-            <tr key={row.id}>
-              <td>
+       <tbody>
+  {paginatedData.map((row) => (
+    <React.Fragment key={row.id}>
+      <tr>
+        <td >
+            <div className="dataTable_chevron">
                 <input
-                  type="checkbox"
-                  className="checkbox"
-                  checked={selectedRows.includes(row.id)}
-                  onChange={() => handleSelectRow(row.id)}
-                />
-              </td>
-              {columns
-                .filter(col => col.key !== "actions")
-                .map(col => (
-                  <td key={col.key}>
-                    {col.key === "status" && editingRowId === row.id ? (
-                      <select
+            type="checkbox"
+            className="checkbox"
+            checked={selectedRows.includes(row.id)}
+            onChange={() => handleSelectRow(row.id)}
+          />
+           <i 
+                className={`fa-solid fa-chevron-${expandedRow === row.id ? 'down' : 'right'}`}
+                onClick={() => toggleRowExpand(row.id)}
+                style={{ cursor: 'pointer' }}
+              ></i>
+            </div>
+        </td>
+        {visibleColumns
+          .filter(col => col.key !== "actions")
+          .map(col => (
+            <td key={col.key}>
+              {col.key === "status" && editingRowId === row.id ? (
+                <select
+                  value={editedStatus[row.id]}
+                  onChange={(e) =>
+                    setEditedStatus(prev => ({
+                      ...prev,
+                      [row.id]: e.target.value,
+                    }))
+                  }
+                  className="select_editRow"
+                >
+                  <option value="Brak akceptacji">Brak akceptacji</option>
+                  <option value="W trakcie">W trakcie</option>
+                  <option value="Zakończona">Zakończona</option>
+                  <option value="Odrzucona">Odrzucona</option>
+                </select>
+                
+                
+              ) : col.key === "status" ? (
+                <div>
+                    <StatusBadge status={row[col.key]} />
+                </div>
+                
+              ) : col.key==="termin_id"?(
+                <button className="detailButton_historia">Zobacz szczegóły</button>
+              ): col.render ? col.render(row) : row[col.key]}
+            </td>
+          ))}
+        {columns.some(col => col.key === "actions") && (
+          <td>
+            <div className="actions_row">
+              {editingRowId === row.id ? (
+                <button className="buttonRow_submit" onClick={() => handleSubmitRow(row.id)}>
+                  <i className="fa-solid fa-check-to-slot"></i>
+                </button>
+              ) : (
+                <button className="buttonRow_edit" onClick={() => handleEditRow(row.id)}>
+                  <i className="fa-solid fa-pen-to-square"></i>
+                </button>
+              )}
+              <button className="buttonRow_delete" onClick={() => handleDeleteRow(row.id)}>
+                <i className="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          </td>
+        )}
+      </tr>
+
+      {expandedRow === row.id && (
+        <tr>
+          <td colSpan={columns.length + 1}>
+            <div className="expanded_details">
+                 {windowWidth <= 450 && (
+                <div className="detail_row">
+                  <span className="detail_label">Typ:</span>
+                  <span>{row["type"]}</span>
+                </div>
+              )}
+              {windowWidth <= 650 && (
+                <div className="detail_row">
+                  <span className="detail_label">Do rezerwacji:</span>
+                  <p className="link_for_reservation_all"   style={{ width: "150px" }}>
+                    <a
+                        href="https://www.miejski.pl/slowo-FFF"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="link_for_reservation"
+                    >
+                        <span>{row.item}{" "}</span>
+                    </a>
+                    <a
+                        href="https://www.miejski.pl/slowo-FFF"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="link_for_reservation2"
+                     
+                    >
+                        <i className="fa-solid fa-circle-info infoItemIcon" style={{ marginLeft: "6px" }}></i>
+                    </a>
+                    </p>
+                </div>
+              )}
+              {windowWidth <= 750 && (
+                <div className="detail_row">
+                  <span className="detail_label">Jednostka:</span>
+                  <span>{row["unit"]}</span>
+                </div>
+              )}
+              {windowWidth <= 850 && (
+                <div className="detail_row">
+                  <span className="detail_label">Status rezerwacji:</span>
+                  {editingRowId === row.id ? (
+                        <select
                         value={editedStatus[row.id]}
                         onChange={(e) =>
-                          setEditedStatus(prev => ({
+                            setEditedStatus(prev => ({
                             ...prev,
                             [row.id]: e.target.value,
-                          }))
+                            }))
                         }
                         className="select_editRow"
-                      >
+                        >
                         <option value="Brak akceptacji">Brak akceptacji</option>
                         <option value="W trakcie">W trakcie</option>
                         <option value="Zakończona">Zakończona</option>
                         <option value="Odrzucona">Odrzucona</option>
-                      </select>
-                    ) : col.key === "status" ? (
-                      <StatusBadge status={row[col.key]} />
-                    ) : col.render ? col.render(row) : row[col.key]}
-                  </td>
-                ))}
-              {columns.some(col => col.key === "actions") && (
-                <td>
-                  <div className="actions_row">
-                    {editingRowId === row.id ? (
-                      <button className="buttonRow_submit" onClick={() => handleSubmitRow(row.id)}><i className="fa-solid fa-check-to-slot"></i></button>
+                        </select>
+                        
+                        
                     ) : (
-                      <button className="buttonRow_edit" onClick={() => handleEditRow(row.id)}><i className="fa-solid fa-pen-to-square"></i></button>
-                    )}
-                    <button className="buttonRow_delete" onClick={() => handleDeleteRow(row.id)}><i className="fa-solid fa-trash-can"></i></button>
-                  </div>
-                </td>
+                        <StatusBadge status={row["status"]} />
+                    )
+                }
+                </div>
               )}
-            </tr>
-          ))}
-        </tbody>
+               {windowWidth <= 1050 && (
+                <div className="detail_row">
+                  <span className="detail_label">Termin rezerwacji:</span>
+                   <button className="detailButton_historia">Zobacz szczegóły</button>
+                </div>
+              )}
+            </div>
+          </td>
+        </tr>
+      )}
+    </React.Fragment>
+  ))}
+</tbody>
+
       </table>
 
       {/* Pagination */}
