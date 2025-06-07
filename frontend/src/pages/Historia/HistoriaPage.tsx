@@ -8,7 +8,6 @@ const HistoriaPage = () => {
 
   return (
     <div className={styles.container}>
-      <h1>Historia</h1>
       
       <div className={styles.historyContent}>
         {role === 'admin' ? (
