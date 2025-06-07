@@ -2,4 +2,8 @@ backend/obj/
 backend/bin/
 backend/appsettings.json
 backend/appsettings.Development.json
+CAS/obj/
+CAS/bin/
+CAS/appsettings.json
+CAS/appsettings.Development.json
 .vs/

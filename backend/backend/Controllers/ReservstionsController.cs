@@ -10,11 +10,15 @@ namespace backend.Controllers
     public class ReservstionsController : ControllerBase
     {
         private readonly Context _context;
-        public ReservstionsController(Context _context)
-        {
-            this._context = _context;
-        }
-        [HttpGet("get_reservations")]
+		private readonly ILogger _logger;
+		private readonly IConfiguration configuration;
+		public ReservstionsController(Context _context, ILogger<ReservstionsController> logger, IConfiguration configuration)
+		{
+			this._context = _context;
+			_logger = logger;
+			this.configuration = configuration;
+		}
+		[HttpGet("get_reservations")]
         public async Task<ActionResult<IEnumerable<Request>>> GetReservations(int page = 1, int pageSize = 0,
             bool? completed = null, bool? approved = null,
             string userId = "", int itemId = 0) {

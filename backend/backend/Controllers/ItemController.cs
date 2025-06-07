@@ -10,9 +10,13 @@ namespace backend.Controllers
     public class ItemController : ControllerBase
     {
 		private readonly Context _context;
-		public ItemController(Context _context)
+		private readonly ILogger _logger;
+		private readonly IConfiguration configuration;
+		public ItemController(Context _context, ILogger<ItemController> logger, IConfiguration configuration)
 		{
 			this._context = _context;
+			_logger = logger;
+			this.configuration = configuration;
 		}
 		[HttpGet("get_items")]
 		public async Task<ActionResult<IEnumerable<Item>>> GetItems(int page = 1, int pageSize = 0)
