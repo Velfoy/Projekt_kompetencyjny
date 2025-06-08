@@ -41,20 +41,20 @@ namespace backend.Auth
 			{
 				result = handler.ValidateToken(auth_token, validation_parameters, out validation_result);//What the hell is principal???
 			}
-			catch (SecurityException e)//No need to be smart here, if there's an exception, the token is invalid and that's all the user needs to know.
+			catch (Exception e)//No need to be smart here, if there's an exception, the token is invalid and that's all the user needs to know.
 			{
 				logger.Log(LogLevel.Error, "User token was invalid. Reason: {Message}", e.Message);//Shoutout to SCR
 				throw;
 			}
 			var claims = new[]
 		   {
-				new Claim(JwtRegisteredClaimNames.Email, result.Claims.First(key => key.Value == "user").Value)
+				new Claim(JwtRegisteredClaimNames.Email, result.Claims.First(key => key.Type == "user").Value)
 			};
-			var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetValue<string>("Authenthication__Key") ?? ""));
+			var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetSection("Authenthication").GetValue<string>("Key") ?? ""));
 			var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 			var token = new JwtSecurityToken(
-				issuer: configuration.GetValue<string>("Authenthication__Issuer"),
-				audience: configuration.GetValue<string>("Authenthication__Audience"),
+				issuer: configuration.GetSection("Authenthication").GetValue<string>("Issuer"),
+				audience: configuration.GetSection("Authenthication").GetValue<string>("Audience"),
 				claims: claims,
 				expires: DateTime.Now.AddMonths(1),
 				signingCredentials: creds);

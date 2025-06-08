@@ -1,8 +1,11 @@
-﻿using backend.Models;
+﻿using backend.Auth;
+using backend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Security;
 
 namespace backend.Controllers
 {
@@ -34,9 +37,17 @@ namespace backend.Controllers
 			return await (from r in _context.Comments where r.Author == email select r).ToListAsync();
 		}
 		[HttpGet("/login")]
-		public async Task<ContentResult> Login(string token)
+		public async Task<IActionResult> Login(string token)
 		{
-			return Content($"Successfully authenthicated with token {token}");
+			string internal_token;
+			try
+			{
+				internal_token = JWTIssuer.IssueToken(token, _validation_parameters, _logger, _configuration);
+			} catch (Exception)//There is no universal exception for JWT-related issues Microsoft what the hell???
+			{
+				return Unauthorized();
+			}
+			return Content($"{internal_token}");
 		}
 	}
 }
