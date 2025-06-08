@@ -273,6 +273,7 @@
   
   .mobile-menu.open {
     transform: translateY(0);
+    z-index: 1000;
   }
   .mobile-menu a {
     padding: 10px 15px;

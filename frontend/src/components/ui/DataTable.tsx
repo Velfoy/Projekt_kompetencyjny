@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import "@styles/components/DataTable.css";
 import styles from "../../styles/pages/historiaadmin.module.css";
 
@@ -254,25 +255,19 @@ const visibleColumns = columns.filter(col => {
               {windowWidth <= 650 && (
                 <div className="detail_row">
                   <span className="detail_label">Do rezerwacji:</span>
-                  <p className="link_for_reservation_all"   style={{ width: "150px" }}>
-                    <a
-                        href="https://www.miejski.pl/slowo-FFF"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                  <p className="link_for_reservation_all" style={{ width: "150px" }}>
+                    <Link  to={`/itemReservation/${row.item_id}`}
                         className="link_for_reservation"
                     >
                         <span>{row.item}{" "}</span>
-                    </a>
-                    <a
-                        href="https://www.miejski.pl/slowo-FFF"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                    </Link>
+                    <Link  to={`/itemReservation/${row.item_id}`}
                         className="link_for_reservation2"
-                     
                     >
                         <i className="fa-solid fa-circle-info infoItemIcon" style={{ marginLeft: "6px" }}></i>
-                    </a>
+                    </ Link>
                     </p>
+                  
                 </div>
               )}
               {windowWidth <= 750 && (

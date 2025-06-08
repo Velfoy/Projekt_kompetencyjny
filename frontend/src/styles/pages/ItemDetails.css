@@ -1,0 +1,74 @@
+.container {
+  font-family: Arial, sans-serif;
+  max-width: 1000px;
+  margin: auto;
+  padding: 20px;
+  background: #f7f7f7;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+.top-section {
+  display: flex;
+  gap: 20px;
+}
+
+.image-container img {
+  width: 280px;
+  height: auto;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.description {
+  flex: 1;
+}
+
+.description ul {
+  padding-left: 20px;
+}
+
+.tabs {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.tabs button {
+  padding: 10px 20px;
+  border: 1px solid #aaa;
+  background: #eee;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.tabs .active {
+  background: white;
+  border-bottom: none;
+  font-weight: bold;
+}
+
+.tab-content {
+  background: white;
+  border: 1px solid #aaa;
+  border-top: none;
+  padding: 15px;
+  border-radius: 0 0 6px 6px;
+  margin-bottom: 20px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+  border: 1px solid #bbb;
+  padding: 10px;
+  text-align: left;
+}
+
+.data-table th {
+  background: #eaeaea;
+}
