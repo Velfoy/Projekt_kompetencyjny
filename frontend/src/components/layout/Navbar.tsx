@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom'; 
 import { useAuth } from '@hooks/useAuth';
 import '@styles/components/navbar.css';
@@ -7,13 +7,26 @@ const Navbar = () => {
   const { isAuth, role, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();  
+  const navRef = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (navRef.current && !navRef.current.contains(event.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const isActive = (path:string) => {
     return location.pathname === path;
   };
 
   return (
-    <nav className="custom-navbar">
+    <nav className="custom-navbar" ref={navRef}>
       <div className="left">
         {isAuth && role === 'admin' && (
           <Link 

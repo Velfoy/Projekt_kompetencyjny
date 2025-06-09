@@ -1,54 +1,56 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import styles from '../../styles/pages/zgloszenia.module.css';
 import ReservationAcceptation from '@/src/components/ui/zgloszenia/ReservationAcceptation';
 
 interface Reservation {
   id: number;
   unit: string;
+  unit_id:number,
   submittedBy: string;
 }
 
 const mockReservations: Reservation[] = [
-  { id: 1, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
-  { id: 2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
-  { id: 3, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
-  { id: 4, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 5, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 6, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
-  { id: 7, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 8, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 9, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
-  { id: 10, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 11, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 12, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 13, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 14, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 15, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
-  { id: 16, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 17, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 18, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 19, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
-  { id: 20, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
-   { id: 21, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
-  { id: 22, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
-  { id: 23, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
-  { id: 24, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 25, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 26, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
-  { id: 27, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 28, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 29, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
-  { id: 30, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 31, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 32, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 33, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 34, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 35, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
-  { id: 36, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 37, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 38, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 39, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
-  { id: 40, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
+  { id: 1,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
+  { id: 2,unit_id:3, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
+  { id: 3, unit_id:4,unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
+  { id: 4,unit_id:5, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
+  { id: 5,unit_id:6, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
+  { id: 6,unit_id:6, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
+  { id: 7, unit_id:7,unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
+  { id: 8, unit_id:1,unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
+  { id: 9,unit_id:54, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
+  { id: 10,unit_id:6, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
+  { id: 11,unit_id:7, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
+  { id: 12,unit_id:79, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
+  { id: 13,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
+  { id: 14,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
+  { id: 15,unit_id:2, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
+  { id: 16,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
+  { id: 17,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
+  { id: 18,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
+  { id: 19,unit_id:2, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
+  { id: 20,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
+   { id: 21,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
+  { id: 22,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
+  { id: 23,unit_id:2, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
+  { id: 24,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
+  { id: 25,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
+  { id: 26,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
+  { id: 27,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
+  { id: 28,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
+  { id: 29,unit_id:2, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
+  { id: 30,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
+  { id: 31,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
+  { id: 32,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
+  { id: 33,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
+  { id: 34,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
+  { id: 35,unit_id:2, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
+  { id: 36, unit_id:2,unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
+  { id: 37,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
+  { id: 38,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
+  { id: 39,unit_id:2, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
+  { id: 40,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
 ];
 
 const ZgloszeniaPage = () => {
@@ -125,10 +127,10 @@ const ZgloszeniaPage = () => {
         <div key={res.id}>
           <div className={styles.item_zgloszenia}>
             <div className={styles.column_zgloszenia}>
-              <>
+              <Link className={styles.Link} to={`/itemReservation/${res.unit_id}`}>
                 <p>{res.unit}</p>
                 <i className="fa-solid fa-circle-info"></i>
-              </>
+              </Link>
               <i 
                 className={`fa-solid fa-chevron-${expandedRow === res.id ? 'down' : 'right'}`}
                 onClick={() => toggleRowExpand(res.id)}
