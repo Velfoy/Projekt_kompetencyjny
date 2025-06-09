@@ -1,14 +1,22 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import "@styles/pages/ItemDetails.css";
+import productImage from "/img/default-image.png";
+
+
 const mockData = [
   {
     id: "1",
-    name: "Rezerwacja 1",
-    date: "2025-06-10",
+    name: "STM32",
     description:
-      "STM32 – rodzina 32-bitowych mikrokontrolerów w układach scalonych produkowanych przez STMicroelectronics. Chipy STM32 są oparte na 32-bitowych procesorach ARM.",
+      "STM32 – rodzina 32–bitowych mikrokontrolerów w układach scalonych produkowanych przez francusko-włoską firmę STMicroelectronics.",
     unit: "Voxel",
+    category: "Urządzenia",
+    type: "Mikrokontrolery",
+    address: "Raptors, pokój nr. 3, szafa po lewej stronie, piąta półka od dołu.",
+    guardian_email: "g.zwolinski@edu.p.lodz.pl",
+    exploration_rules:
+      "Nie wolno rzucać płytki, jeść z płytki, maczać płytkę w musztardzie, dotykać brudnymi palcami.",
     specs: [
       "Arm 32-bit Cortex-M3 CPU Core, 72 MHz maximum frequency",
       "1.25 DMIPS/MHz performance",
@@ -22,14 +30,19 @@ const mockData = [
       { name: "STM_ELEVATOR_RUN.pdf", url: "#" },
       { name: "STM_DOCUMENTATION.docx", url: "#" },
     ],
-    image: "/stm32.png",
+    image: "/img/stm.jpg",
   },
   {
     id: "2",
     name: "Rezerwacja 2",
-    date: "2025-06-12",
     description: "Opis produktu rezerwacji 2.",
-    unit: "Delta",
+    unit: "Voxel",
+    category: "Urządzenia",
+    type: "Mikrokontrolery",
+    address: "Raptors, pokój nr. 3, szafa po lewej stronie, piąta półka od dołu.",
+    guardian_email: "g.zwolinski@edu.p.lodz.pl",
+    exploration_rules:
+      "Nie wolno rzucać płytki, jeść z płytki, maczać płytkę w musztardzie, dotykać brudnymi palcami.",
     specs: ["Specyfikacja 2A", "Specyfikacja 2B"],
     notes: "Uwagi do rezerwacji 2.",
     documentation: [],
@@ -38,9 +51,14 @@ const mockData = [
   {
     id: "3",
     name: "Rezerwacja 3",
-    date: "2025-06-15",
     description: "Opis produktu rezerwacji 3.",
-    unit: "Omega",
+    unit: "Voxel",
+    category: "Urządzenia",
+    type: "Mikrokontrolery",
+    address: "Raptors, pokój nr. 3, szafa po lewej stronie, piąta półka od dołu.",
+    guardian_email: "g.zwolinski@edu.p.lodz.pl",
+    exploration_rules:
+      "Nie wolno rzucać płytki, jeść z płytki, maczać płytkę w musztardzie, dotykać brudnymi palcami.",
     specs: [],
     notes: "Brak uwag.",
     documentation: [],
@@ -48,52 +66,130 @@ const mockData = [
   },
 ];
 
+const mockComments = [
+  {
+    id: 1,
+    author: "Ewa Korzyniewska",
+    text: "Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum...",
+    date: "24 marca 2025",
+  },
+  {
+    id: 2,
+    author: "Ewa Korzyniewska",
+    text: "Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum...",
+    date: "24 marca 2025",
+  },
+  {
+    id: 3,
+    author: "Ewa Korzyniewska",
+    text: "Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum...",
+    date: "24 marca 2025",
+  },
+];
+
+const userName = "Valeriia Zlydar";
 
 const ItemDetails = () => {
   const { id } = useParams<{ id: string }>();
   const [activeTab, setActiveTab] = useState("specs");
+  const [comments, setComments] = useState(mockComments);
+  const [newComment, setNewComment] = useState("");
 
   const booking = mockData.find((item) => item.id === id);
+  
 
-  if (!booking) {
-    return <div>Nie znaleziono rezerwacji o ID: {id}</div>;
-  }
+  if (!booking)
+  return (
+    <div className="not-found-container">
+      <div className="not-found-card">
+        <h2>Nie znaleziono rezerwacji</h2>
+        <p>
+          Rezerwacja o ID: <strong>{id}</strong> nie istnieje lub została
+          usunięta.
+        </p>
+        <p>Sprawdź poprawność adresu URL lub wybierz inną pozycję z listy.</p>
+      </div>
+    </div>
+  );
+
+
+  const handleAddComment = () => {
+    if (!newComment.trim()) return;
+
+    const comment = {
+      id: Date.now(),
+      author: userName,
+      text: newComment,
+      date: new Date().toLocaleDateString("pl-PL", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      }),
+    };
+
+    setComments([comment, ...comments]);
+    setNewComment("");
+  };
+
+  const handleDeleteComment = (id: number) => {
+    setComments((prev) => prev.filter((comment) => comment.id !== id));
+  };
+  const [imgSrc, setImgSrc] = useState(booking.image || productImage);
+
 
   return (
-    <div className="container">
+    <div className="itemDetails_container">
       <div className="top-section">
         <div className="image-container">
-          <img src={booking.image} alt={booking.name} />
+          <img src={imgSrc} alt={booking.name} onError={() => setImgSrc(productImage)}/>
         </div>
         <div className="description">
-          <h2>{booking.name}</h2>
-          <p><strong>Data:</strong> {booking.date}</p>
-          <p><strong>Jednostka:</strong> {booking.unit}</p>
-          <p>{booking.description}</p>
-          <ul>
-            <li><strong>Dokumentacja techniczna:</strong></li>
-            {booking.documentation.length > 0 ? (
-              booking.documentation.map((doc, i) => (
-                <li key={i}>
-                  <a href={doc.url}>{doc.name}</a>
-                </li>
-              ))
-            ) : (
-              <li>Brak dokumentacji</li>
-            )}
-          </ul>
+          <div className="header_description">
+            <h2>{booking.name}</h2>
+            <p className="breadcrumbs">
+              {booking.unit} - {booking.category} - {booking.type}
+            </p>
+          </div>
+          <p className="text_desc">{booking.description}</p>
+          <p className="address_text">
+            <strong>
+              <i className="fa-solid fa-map-location"></i>
+            </strong>{" "}
+            {booking.address}
+          </p>
+          <p className="opiekun_text">
+            <strong>Opiekun:</strong> {booking.guardian_email}
+          </p>
+          <p className="exploration_rules">
+            <strong>Zasady eksploracji:</strong>
+            <p>{booking.exploration_rules}</p>
+          </p>
+          <p className="dokumentacja_text">
+            <strong>Dokumentacja techniczna:</strong>
+            <ul>
+              {booking.documentation.length > 0 ? (
+                booking.documentation.map((doc, i) => (
+                  <li key={i}>
+                    <a href={doc.url}>{doc.name}</a>
+                  </li>
+                ))
+              ) : (
+                <li>Brak dokumentacji</li>
+              )}
+            </ul>
+          </p>
         </div>
       </div>
 
       <div className="tabs">
         <button
-          className={activeTab === "specs" ? "active" : ""}
+          className={activeTab === "specs" ? "active_specs" : "non_specs"}
           onClick={() => setActiveTab("specs")}
         >
           Specyfikacja techniczna
         </button>
         <button
-          className={activeTab === "notes" ? "active" : ""}
+          className={activeTab === "notes" ? "active_notes" : "non_notes"}
           onClick={() => setActiveTab("notes")}
         >
           Uwagi
@@ -102,7 +198,7 @@ const ItemDetails = () => {
 
       <div className="tab-content">
         {activeTab === "specs" ? (
-          booking.specs && booking.specs.length > 0 ? (
+          booking.specs?.length > 0 ? (
             <ul>
               {booking.specs.map((spec, index) => (
                 <li key={index}>{spec}</li>
@@ -112,7 +208,33 @@ const ItemDetails = () => {
             <p>Brak danych technicznych.</p>
           )
         ) : (
-          <p>{booking.notes || "Brak dodatkowych uwag."}</p>
+          <div className="notes-section">
+            <textarea
+              placeholder="Zostaw komentarz"
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+            />
+            <button onClick={handleAddComment}>Dodaj</button>
+            <p>{comments.length} uwag (notatki odnośnie stanu przedmiotu)</p>
+            <ul className="comments-list">
+              {comments.map((note) => (
+                <li key={note.id} className="comment">
+                  <div className="comment-header">
+                    <strong>{note.author}</strong>
+                    <button
+                      className="delete-button"
+                      onClick={() => handleDeleteComment(note.id)}
+                      title="Usuń komentarz"
+                    >
+                      <i className="fa-solid fa-trash"></i>
+                    </button>
+                  </div>
+                  <p>{note.text}</p>
+                  <span className="comment-date">{note.date}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
       </div>
     </div>
