@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security;
+using System.Security.Claims;
 
 namespace backend.Controllers
 {
@@ -25,16 +27,22 @@ namespace backend.Controllers
 			this._configuration = configuration;
 			this._validation_parameters = validation_parameters;
 		}
-		[HttpGet("/get_history/{*email}")]
+		[HttpGet("get_history/{*email}")]
         public async Task<IEnumerable<Request>>GetHistory(string email)
         {
             return await (from r in _context.Requests where r.Renter == email select r).ToListAsync();
         }
 
-		[HttpGet("/get_comments/{*email}")]
+		[HttpGet("get_comments/{*email}")]
 		public async Task<IEnumerable<Comment>> GetComments(string email)
 		{
 			return await (from r in _context.Comments where r.Author == email select r).ToListAsync();
+		}
+		[HttpGet("/whoami")]
+		[Authorize]
+		public async Task<string> GetUsername()
+		{
+			return User.Claims.First(claim => claim.Type == ClaimTypes.Email).Value;
 		}
 		[HttpGet("/login")]
 		public async Task<IActionResult> Login(string token)
@@ -47,7 +55,15 @@ namespace backend.Controllers
 			{
 				return Unauthorized();
 			}
-			return Content($"{internal_token}");
+			CookieOptions options = new CookieOptions
+			{
+				Expires = DateTime.Now.AddMonths(1),
+				HttpOnly = true,
+				IsEssential = true,
+				Secure = true
+			};
+			Response.Cookies.Append("auth_token", internal_token);
+			return Content($"Authorized as {JWTIssuer.ReadToken(token, _validation_parameters, _logger).Claims.FirstOrDefault(claim => claim.Type == "user")}");
 		}
 	}
 }
