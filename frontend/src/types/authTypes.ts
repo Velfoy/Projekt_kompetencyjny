@@ -3,6 +3,7 @@ export type UserRole = 'admin' | 'user' | null;
 export interface AuthState {
   isAuthenticated: boolean;
   userRole: UserRole;
+  username: string | null;
   isLoading: boolean;
   error: string | null;
 }

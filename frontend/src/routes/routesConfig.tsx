@@ -11,6 +11,7 @@ const KalendarzPage = lazy(() => import('../pages/Kalendarz/KalendarzPage'));
 const HistoriaPage = lazy(() => import('../pages/Historia/HistoriaPage'));
 const ProfilePage = lazy(() => import('../pages/Profile/ProfilePage'));
 const ItemDetails = lazy(() => import('../pages/ItemDetails'));
+const StorageToken = lazy(() => import('../components/auth/StorageToken'));
 
 const withProtected = (Component: ReactElement, roles: string[]) => (
   <ProtectedRoute allowedRoles={roles}>
@@ -54,5 +55,10 @@ export const routes: RouteObject[] = [
   {
     path: '/profile',
     element: withProtected(<ProfilePage />, ['user', 'admin']),
+  },
+  {
+    path:'/storagetoken',
+    element:<StorageToken></StorageToken>
+ 
   },
 ];

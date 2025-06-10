@@ -37,16 +37,18 @@ namespace backend
 					ValidAudience = builder.Configuration.GetSection("Authenthication").GetValue<string>("Audience"),
 					IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Authenthication").GetValue<string>("Key")))
 				};
-				options.Events = new JwtBearerEvents
-				{
-					OnMessageReceived = context =>
-					{
-						context.Token = context.Request.Cookies["auth_token"];
-						return Task.CompletedTask;
-					}
-				};//This is sketchy as all hell but I've already implemented the bearer authenthication and I don't want to do cookie one 
 			});
-			if (debug) {
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: "_allowReactJS",
+                                  policy =>
+                                  {
+                                      policy.AllowAnyHeader();
+                                      policy.AllowAnyMethod();
+                                      policy.AllowAnyOrigin();
+                                  });
+            });
+            if (debug) {
                 builder.Services.AddSingleton<TokenValidationParameters>(new TokenValidationParameters
 			    {
 				    ValidateIssuer = false,
@@ -79,7 +81,7 @@ namespace backend
             }
 
             app.UseHttpsRedirection();
-
+            app.UseCors("_allowReactJS");
             app.UseAuthorization();
 
 

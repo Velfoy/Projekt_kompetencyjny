@@ -3,12 +3,12 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import type { AuthState, UserRole } from '../../types/authTypes';
 
 const initialState: AuthState = {
-  isAuthenticated: true,
-  userRole: 'admin',
+  isAuthenticated: false, 
+  userRole: null,
+  username: null,
   isLoading: false,
   error: null,
 };
-
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -17,12 +17,13 @@ const authSlice = createSlice({
       state.isLoading = true;
       state.error = null;
     },
-    loginSuccess(state, action: PayloadAction<UserRole>) {
-      state.isAuthenticated = true;
-      state.userRole = action.payload;
-      state.isLoading = false;
-      state.error = null;
-    },
+    loginSuccess(state, action: PayloadAction<{ role: UserRole; username: string }>) {
+        state.isAuthenticated = true;
+        state.userRole = action.payload.role;
+        state.username = action.payload.username;
+        state.isLoading = false;
+        state.error = null;
+      },
     loginFailure(state, action: PayloadAction<string>) {
       state.isLoading = false;
       state.error = action.payload;
@@ -30,6 +31,9 @@ const authSlice = createSlice({
     logout(state) {
       state.isAuthenticated = false;
       state.userRole = null;
+      state.username = null;
+      state.isLoading = false;
+      state.error = null;
     },
   },
 });

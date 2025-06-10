@@ -38,11 +38,18 @@ namespace backend.Controllers
 		{
 			return await (from r in _context.Comments where r.Author == email select r).ToListAsync();
 		}
-		[HttpGet("/whoami")]
+		[HttpGet("whoami")]
 		[Authorize]
-		public async Task<string> GetUsername()
+		public async Task<Object> GetUsername()
 		{
-			return User.Claims.First(claim => claim.Type == ClaimTypes.Email).Value;
+			string name = User.Claims.First(claim => claim.Type == ClaimTypes.Email).Value;
+			if (name == "admin")
+			{
+				_context.Managers.Add(new Manager { Username = "admin" });
+				_context.SaveChanges();
+            }
+            string r = (_context.Managers.Where(u => u.Username == name).Any()) ? "admin" : "user";
+            return new { username = name, role= r};
 		}
 		[HttpGet("/login")]
 		public async Task<IActionResult> Login(string token)
@@ -58,12 +65,12 @@ namespace backend.Controllers
 			CookieOptions options = new CookieOptions
 			{
 				Expires = DateTime.Now.AddMonths(1),
-				HttpOnly = true,
 				IsEssential = true,
 				Secure = true
 			};
 			Response.Cookies.Append("auth_token", internal_token);
-			return Content($"Authorized as {JWTIssuer.ReadToken(token, _validation_parameters, _logger).Claims.FirstOrDefault(claim => claim.Type == "user")}");
+			//return Content($"Authorized as {JWTIssuer.ReadToken(token, _validation_parameters, _logger).Claims.FirstOrDefault(claim => claim.Type == "user")}");
+			return Redirect($"{_configuration.GetSection("SiteAddresses").GetValue<string>("frontend") ?? ""}/storagetoken?token={internal_token}");
 		}
-	}
+    }
 }

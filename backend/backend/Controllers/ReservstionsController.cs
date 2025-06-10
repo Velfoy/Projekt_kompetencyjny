@@ -62,8 +62,10 @@ namespace backend.Controllers
         public async Task<ActionResult<string>> MakeReservation(Request r)
         {
             //Placeholder for now, will be changed on demand of frontend team
+            //{}
             await _context.AddAsync(r);
             return "Made";
         }
+        //get_timespans_for_item
 	}
 }

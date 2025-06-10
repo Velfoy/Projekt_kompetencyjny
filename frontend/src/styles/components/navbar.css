@@ -45,7 +45,9 @@
   z-index: 1;
   margin-top: 0px;
 }
-
+.username_header{
+  margin-top: 3px;
+}
 .brand {
   color: #5A5454;
   text-decoration: none;

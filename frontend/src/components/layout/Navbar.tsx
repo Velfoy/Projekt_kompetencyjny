@@ -4,7 +4,7 @@ import { useAuth } from '@hooks/useAuth';
 import '@styles/components/navbar.css';
 
 const Navbar = () => {
-  const { isAuth, role, logout } = useAuth();
+  const { isAuth, role, login,logout,username } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();  
   const navRef = useRef<HTMLDivElement>(null);
@@ -24,7 +24,6 @@ const Navbar = () => {
   const isActive = (path:string) => {
     return location.pathname === path;
   };
-
   return (
     <nav className="custom-navbar" ref={navRef}>
       <div className="left">
@@ -75,6 +74,7 @@ const Navbar = () => {
       <div className="right">
         {isAuth ? (
           <>
+          <div className='username_header'>{username}</div>
             <div className='profile_div'>
               <Link 
                 to="/profile" 
@@ -90,6 +90,7 @@ const Navbar = () => {
           <Link 
             to="/login" 
             className={`zalog_button ${isActive('/login') ? 'active_navbar_link' : ''}`}
+            onClick={login}
           >
             Zaloguj się
           </Link>
@@ -141,6 +142,7 @@ const Navbar = () => {
             <Link 
               to="/login" 
               className={isActive('/login') ? 'active_navbar_link' : ''}
+               onClick={login}
             >
               Zaloguj
             </Link>

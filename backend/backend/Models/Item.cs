@@ -2,6 +2,7 @@
 {
 	public class Item
 	{
+		//TODO: Добавить систему чтоб следила за тем занята ли резервация
 		public int Id { get; set; }
 		public Organization Organivzation { get; set; }
 		public string Type { get; set; }//Room or thing
