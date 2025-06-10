@@ -1,4 +1,5 @@
 import styles from '../../styles/pages/historiauser.module.css';
+import { Link } from 'react-router-dom';
 import DataTable from "@components/ui/DataTable";
 import type {Column, RowData, DropdownAction} from "@components/ui/DataTable";
 const HistoriaUser = () => {
@@ -98,22 +99,16 @@ const HistoriaUser = () => {
       label: "Do rezerwacji",
       render: (row) => (
         <p className="link_for_reservation_all">
-           <a
-            href="https://www.miejski.pl/slowo-FFF"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link  to={`/itemReservation/${row.item_id}`}
             className="link_for_reservation"
           >
             <span>{row.item}{" "}</span>
-          </a>
-          <a
-            href="https://www.miejski.pl/slowo-FFF"
-            target="_blank"
-            rel="noopener noreferrer"
+          </Link>
+           <Link  to={`/itemReservation/${row.item_id}`}
             className="link_for_reservation2"
           >
             <i className="fa-solid fa-circle-info infoItemIcon" style={{ marginLeft: "6px" }}></i>
-          </a>
+          </ Link>
         </p>
       ),
     },

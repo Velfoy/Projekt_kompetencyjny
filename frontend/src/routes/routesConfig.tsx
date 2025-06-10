@@ -10,6 +10,7 @@ const ZgloszeniaPage = lazy(() => import('../pages/Zgloszenia/ZgloszeniaAdmin'))
 const KalendarzPage = lazy(() => import('../pages/Kalendarz/KalendarzPage'));
 const HistoriaPage = lazy(() => import('../pages/Historia/HistoriaPage'));
 const ProfilePage = lazy(() => import('../pages/Profile/ProfilePage'));
+const ItemDetails = lazy(() => import('../pages/ItemDetails'));
 
 const withProtected = (Component: ReactElement, roles: string[]) => (
   <ProtectedRoute allowedRoles={roles}>
@@ -33,6 +34,10 @@ export const routes: RouteObject[] = [
   {
     path: '/admin',
     element: withProtected(<HomePage />, ['admin']),
+  },
+  {
+    path:'/itemReservation/:id',
+    element:withProtected(<ItemDetails></ItemDetails>,['user','admin']),
   },
   {
     path: '/zgloszenia',

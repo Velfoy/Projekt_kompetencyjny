@@ -28,7 +28,7 @@
   border-top: 1px solid #8F9A8D;
   border-bottom: 1px solid #8F9A8D;
   box-shadow: 2px 2px 1px rgba(1, 45, 8, 0.3);
-  padding-left: 30px;
+  padding-left: 20px;
 }
 
 
@@ -61,7 +61,7 @@
   background-color: #F4F4F4;
   text-align: left;
   border-bottom: 1px solid #8F9A8D;
-   padding-left: 30px;
+   padding-left: 20px;
 }
 .dataTable_custom tbody{
     transform: translateY(3px);
@@ -200,11 +200,18 @@
 }
 
 .expanded_details {
-  padding: 5px;
+  padding: 15px;
+  width: 102%;
+  margin-top: 5px;
+  margin-bottom: 5px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-      margin-left: -5px;
+  background-color: #f8f8f8;
+    border-radius:  12px;
+    border: 1px solid #ddd;
+    margin-left: -10px;
+    border-top: none;
 }
 
 .detail_row {
@@ -216,6 +223,8 @@
 .detail_label {
   font-weight: bold;
   min-width: 150px;
+  text-align: start;
+  margin-right: auto;
 }
 
 .detailButton {
@@ -246,6 +255,9 @@
 }
 
 @media(max-width:1050px){
+  .link_for_reservation2{
+    margin-right: 0px;
+  }
     .dataTable_chevron {
     display: flex;
     flex-direction: row;
@@ -260,6 +272,7 @@
 @media (max-width: 380px) {
   .detail_row {
     align-items: flex-start;
+    justify-content: space-between;
   }
   
   .detail_label {

@@ -94,7 +94,19 @@
   transform: translateY(-4px);
   color: #353535;
 }
-
+.Link{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  text-decoration: none;
+  align-items: center;
+  justify-content: center;
+  color: #212529;
+}
+.Link i{
+  margin-left: auto;
+  margin-right: auto;
+}
 .toggleButtons {
   display: flex;
   gap: 8px;
@@ -188,8 +200,11 @@
   font-weight: bold;
   color: #3d513d;
 }
-.column_zgloszenia i:last-child{
+.column_zgloszenia i{
     display: none;
+}
+.Link i{
+  display: flex;
 }
 
 /* Responsive styles */
