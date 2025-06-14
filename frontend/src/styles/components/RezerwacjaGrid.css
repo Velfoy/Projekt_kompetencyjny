@@ -1,0 +1,23 @@
+.kalendarzRezerwacja {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-family: 'Outfit';
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); 
+  gap: 15px;
+  width: 100%;
+  margin: 0 auto;
+  padding-top: 15px;
+  padding-bottom: 5px;
+  box-sizing: border-box;
+}
+@media (max-width: 1070px) {
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -16,7 +16,7 @@ const A7ReservationCard: React.FC = () => {
       <div className="text_a7_wrapper">
         <h1 className="a7_header">REZERWACJA A7</h1>
         <p className="description_a7">
-          Nasza platforma umożliwia łatwą i szybką rezerwację sal oraz sprzętu elektrycznego dostosowanego do różnorodnych potrzeb.<br/><br/>
+          Nasza platforma umożliwia łatwą i szybką rezerwację sal oraz sprzętu elektrycznego dostosowanego do różnorodnych potrzeb.
           Dzięki intuicyjnemu systemowi, możesz zarezerwować odpowiednią przestrzeń oraz niezbędne wyposażenie techniczne w zaledwie kilka kliknięć.
         </p>
       </div>
