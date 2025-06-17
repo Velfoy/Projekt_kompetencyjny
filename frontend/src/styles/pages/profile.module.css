@@ -130,6 +130,12 @@
 .profile_container .tabs .active_notes {
     transform: translateX(-45px);
 }
+.scrollable_reservations {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
 
 .profile_container .tab_content {
   position: relative;
@@ -142,4 +148,43 @@
   transform: translateY(-15px);
   border-radius: 15px;
 
+}
+@media screen and (max-width:700px){
+    .profile_container  .tabs{
+        flex-direction: column;
+    }
+    .profile_container .tabs .non_notes{
+  transform: translateX(0px) translateY(-10px);
+    box-shadow: none;
+}
+.profile_container .tabs .non_post{
+  transform: translateX(0px) translateY(-20px);
+
+}
+.profile_container .tabs .active_post{
+  transform: translateX(0px) translateY(-20px);
+}
+.profile_container .tabs .active_notes {
+    transform: translateX(0px)translateY(-15px);
+}
+.profile_container .tab_content{
+    transform: translateY(5px);
+}
+.profile_container .tabs button {
+    padding: 10px 20px;
+}
+.profile_container .tabs{
+    transform: translateY(10px);
+}
+}
+@media screen and (max-width:420px){
+    .profile_container .top_container{
+        flex-direction: column;
+        align-items: start;
+        justify-content: flex-start;
+    }
+    .top_container .panels_change{
+        margin-top: 10px;
+        width: 100%;
+    }
 }

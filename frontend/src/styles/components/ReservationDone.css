@@ -1,0 +1,159 @@
+.reservation-done-card {
+  background-color: #e7ece8;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid #b0b0b0;
+  font-family: 'Outfit', sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  margin-bottom: 10px;
+}
+.reservation-done-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  flex-wrap: wrap; /* allow wrapping if needed */
+}
+
+.reservation-done-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.reservation-done-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.completed-at {
+  font-size: 0.8rem;
+  color: #666;
+  font-style: italic;
+  white-space: nowrap;
+}
+
+.reservation-done-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+}
+
+.done-menu-icon {
+  font-size: 16px;
+  color: #888;
+  cursor: pointer;
+}
+
+.schedule-done-button {
+  background-color: #3D513D;
+  color: white;
+  border: none;
+  margin-left: auto;
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.schedule-done-button:hover {
+  background-color: #2e4431;
+  transform: translateY(-4px);
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+.reservation-done-description {
+  font-size: 0.75rem;
+  color: #444;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.menu-wrapper {
+  position: relative;
+
+}
+
+.dropdown-menu {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  padding: 0px;
+  top: 30px;
+  right: 0;
+  background-color: #e7ece8; 
+  border: 1px solid #b0b0b0;
+  z-index: 100;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15); 
+  min-width: 120px;
+  font-family: 'Outfit', sans-serif;
+}
+
+.dropdown-item {
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  color: #3D513D; 
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border-radius: 8px;
+}
+
+.dropdown-item:hover {
+  background-color: #d2ddd2; 
+}
+@media screen and (max-width: 540px) {
+  .reservation-done-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .reservation-done-info {
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .reservation-done-actions {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+  }
+
+  .schedule-done-button {
+    width: 100%;
+  }
+
+  .reservation-done-description {
+    transform: translateY(-20px);
+    margin-right: 50px;
+  }
+
+  .reservation-done-card {
+    padding-bottom: calc(16px - 20px); 
+  }
+
+  .menu-wrapper {
+    position: relative;
+    top: 5px;
+  }
+  .dropdown-menu{
+      top: 25px;
+     right: -3px;
+  }
+}
