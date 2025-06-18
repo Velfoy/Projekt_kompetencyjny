@@ -1,0 +1,79 @@
+.object-form {
+  background: #f4f4f4;
+  border-radius: 12px;
+  font-family: 'Outfit', sans-serif;
+  box-shadow: 0px 2px 5px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.object-form h2 {
+  color: #3D513D;
+  margin-bottom: 10px;
+}
+.first_row{
+    display: flex;
+    gap: 20px;
+}
+.object-form .row {
+  display: flex;
+  gap: 15px;
+
+}
+
+.object-form input,
+.object-form select,
+.object-form textarea {
+  flex: 1;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #aaa;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.object-form textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.object-form button {
+  background-color: #3D513D;
+  color: white;
+  padding: 10px 25px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 150px;
+  align-self: flex-end;
+  transition: background 0.3s;
+}
+
+.object-form button:hover {
+  background-color: #4e7f4e;
+}
+
+.object-form .file-upload {
+  background-color: #E8E8E8;
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px dashed #777;
+  text-align: center;
+  font-size: 14px;
+  color: #333;
+}
+
+.object-form .file-upload input {
+  display: none;
+}
+
+.object-form .file-row {
+  background: #ddd;
+  padding: 5px 10px;
+  margin-top: 5px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+}
