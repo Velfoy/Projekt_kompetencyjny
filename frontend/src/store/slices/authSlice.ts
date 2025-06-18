@@ -3,9 +3,9 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import type { AuthState, UserRole } from '../../types/authTypes';
 
 const initialState: AuthState = {
-  isAuthenticated: false, 
-  userRole: null,
-  username: null,
+  isAuthenticated: true, 
+  userRole: 'admin',
+  username: 'test',
   isLoading: false,
   error: null,
 };

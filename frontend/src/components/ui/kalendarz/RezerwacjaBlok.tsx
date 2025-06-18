@@ -12,11 +12,6 @@ interface ProductCardProps {
 }
 
 const RezerwacjaBlok: React.FC<ProductCardProps> = ({ id,title, description, imageUrl ,role,onDelete}) => {
-    const handleDelete = () => {
-        if (onDelete) {
-        onDelete(id);
-        }
-    };
   return (
     <div className="product-card">
       <div className="product-text">
