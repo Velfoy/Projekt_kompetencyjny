@@ -1,0 +1,45 @@
+.date-easy {
+  font-family: 'Outfit', sans-serif;
+  color: #2e2e2e;
+
+}
+
+.date-easy__list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.date-easy__item {
+  background-color: #f8f8f8;
+  padding: 15px 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  color: rgba(51, 51, 51, 0.803);
+  border: 1px solid #50505081;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s ease;
+}
+
+.date-easy__item:hover {
+  background-color: #f0f0f0;
+}
+
+.date-easy__item strong {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #2b2b2b;
+}
+
+.date-easy__item span {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.date-easy__item i{
+    color:#05490a;
+    margin-right: 5px;
+}

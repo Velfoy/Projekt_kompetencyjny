@@ -62,8 +62,10 @@ const mockReservations: Reservation[] = [
 ];
 
 const mockTime:DaySchedule[]=[
-   {day:"29.05.2025",from:"10:00",to:"12:00"},
-  {day:"29.05.2025",from:"18:00",to:"19:00"},
+  { day: '02.03.2025', from: '10:00', to: '12:00' },
+  { day: '09.03.2025', from: '10:00', to: '12:00' },
+  { day: '16.03.2025', from: '10:00', to: '12:00' },
+  { day: '30.03.2025', from: '10:00', to: '12:00' },
 ]
 const mockDifficulty:string="difficult";
 
@@ -76,7 +78,7 @@ const ZgloszeniaPage = () => {
   const [expandedRow, setExpandedRow] = useState<number | null>(null);
   const [selectedReservationId, setSelectedReservationId] = useState<number | null>(null);
   const [actionType, setActionType] = useState<'accept' | 'reject' | null>(null);
-  const [timeWindow,setTimeWindow]=useState(0);
+  const [timeWindow,setTimeWindow]=useState(false);
   const itemsPerPage = 5;
 
   useEffect(() => {
@@ -119,7 +121,7 @@ const ZgloszeniaPage = () => {
     }
   };
   const DisplayTimeDetails=()=>{
-    setTimeWindow(1);
+    setTimeWindow(true);
   }
 
   return (
@@ -207,7 +209,7 @@ const ZgloszeniaPage = () => {
               {(windowWidth <= 850)&&(
                 <div className={styles.detail_row}>
                   <span className={styles.detail_label}>Termin rezerwacji:</span>
-                  <button className={styles.detailButton_zgloszenia}>Zobacz szczegóły</button>
+                  <button onClick={DisplayTimeDetails} className={styles.detailButton_zgloszenia}>Zobacz szczegóły</button>
                 </div>
               )}
             </div>
@@ -334,8 +336,8 @@ const ZgloszeniaPage = () => {
         <ReservationTime
           difficulty={mockDifficulty}
           schedule={mockTime}
+          onClose={() => setTimeWindow(false)}
         />
-
       )
       }
     </div>
