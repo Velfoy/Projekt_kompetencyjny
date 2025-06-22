@@ -2,56 +2,70 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../../styles/pages/zgloszenia.module.css';
 import ReservationAcceptation from '@/src/components/ui/zgloszenia/ReservationAcceptation';
+import ReservationTime from '@/src/components/ui/timeLogic/ReservationTime';
 
 interface Reservation {
   id: number;
   unit: string;
   unit_id:number,
   submittedBy: string;
+  dateReservationId:number;
+}
+interface DaySchedule {
+  day: string;
+  from: string;
+  to: string;
 }
 
+
 const mockReservations: Reservation[] = [
-  { id: 1,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
-  { id: 2,unit_id:3, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
-  { id: 3, unit_id:4,unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
-  { id: 4,unit_id:5, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 5,unit_id:6, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 6,unit_id:6, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
-  { id: 7, unit_id:7,unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 8, unit_id:1,unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 9,unit_id:54, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
-  { id: 10,unit_id:6, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 11,unit_id:7, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 12,unit_id:79, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 13,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 14,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 15,unit_id:2, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
-  { id: 16,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 17,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 18,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 19,unit_id:2, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
-  { id: 20,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
-   { id: 21,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
-  { id: 22,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
-  { id: 23,unit_id:2, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
-  { id: 24,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 25,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 26,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
-  { id: 27,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 28,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 29,unit_id:2, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
-  { id: 30,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 31,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 32,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 33,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 34,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 35,unit_id:2, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
-  { id: 36, unit_id:2,unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 37,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 38,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' },
-  { id: 39,unit_id:2, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' },
-  { id: 40,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl'},
+  { id: 1,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1,},
+  { id: 2,unit_id:3, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:2,},
+  { id: 3, unit_id:4,unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl',dateReservationId:3, },
+  { id: 4,unit_id:5, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' ,dateReservationId:4,},
+  { id: 5,unit_id:6, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:5, },
+  { id: 6,unit_id:6, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:6,},
+  { id: 7, unit_id:7,unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:7, },
+  { id: 8, unit_id:1,unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:8, },
+  { id: 9,unit_id:54, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' ,dateReservationId:9,},
+  { id: 10,unit_id:6, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' ,dateReservationId:1,},
+  { id: 11,unit_id:7, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
+  { id: 12,unit_id:79, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
+  { id: 13,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
+  { id: 14,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
+  { id: 15,unit_id:2, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl',dateReservationId:1, },
+  { id: 16,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
+  { id: 17,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' ,dateReservationId:1,},
+  { id: 18,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
+  { id: 19,unit_id:2, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl',dateReservationId:1, },
+  { id: 20,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1,},
+   { id: 21,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1,},
+  { id: 22,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1,},
+  { id: 23,unit_id:2, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl',dateReservationId:1, },
+  { id: 24,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' ,dateReservationId:1,},
+  { id: 25,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
+  { id: 26,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1,},
+  { id: 27,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1,},
+  { id: 28,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
+  { id: 29,unit_id:2, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl',dateReservationId:1, },
+  { id: 30,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
+  { id: 31,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
+  { id: 32,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
+  { id: 33,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
+  { id: 34,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
+  { id: 35,unit_id:2, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl',dateReservationId:1, },
+  { id: 36, unit_id:2,unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
+  { id: 37,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
+  { id: 38,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' ,dateReservationId:1,},
+  { id: 39,unit_id:2, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' ,dateReservationId:1,},
+  { id: 40,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1,},
 ];
+
+const mockTime:DaySchedule[]=[
+   {day:"29.05.2025",from:"10:00",to:"12:00"},
+  {day:"29.05.2025",from:"18:00",to:"19:00"},
+]
+const mockDifficulty:string="difficult";
 
 const ZgloszeniaPage = () => {
   const [reservations, setReservations] = useState<Reservation[]>(mockReservations);
@@ -62,6 +76,7 @@ const ZgloszeniaPage = () => {
   const [expandedRow, setExpandedRow] = useState<number | null>(null);
   const [selectedReservationId, setSelectedReservationId] = useState<number | null>(null);
   const [actionType, setActionType] = useState<'accept' | 'reject' | null>(null);
+  const [timeWindow,setTimeWindow]=useState(0);
   const itemsPerPage = 5;
 
   useEffect(() => {
@@ -103,6 +118,9 @@ const ZgloszeniaPage = () => {
       setCurrentPage(prev => Math.min(prev, pageCount - 1));
     }
   };
+  const DisplayTimeDetails=()=>{
+    setTimeWindow(1);
+  }
 
   return (
     <div className={styles.container_zgloszenia}>
@@ -144,7 +162,7 @@ const ZgloszeniaPage = () => {
             )}
             {windowWidth > 850 && (
               <div className={styles.column_zgloszenia}>
-                <button className={styles.detailButton_zgloszenia}>Zobacz szczegóły</button>
+                <button onClick={DisplayTimeDetails} className={styles.detailButton_zgloszenia}>Zobacz szczegóły</button>
               </div>
             )}
             <div className={styles.column_zgloszenia}>
@@ -312,6 +330,14 @@ const ZgloszeniaPage = () => {
           initialAction={actionType}
         />
       )}
+      {timeWindow && (
+        <ReservationTime
+          difficulty={mockDifficulty}
+          schedule={mockTime}
+        />
+
+      )
+      }
     </div>
   );
 };
