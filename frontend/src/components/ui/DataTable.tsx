@@ -50,7 +50,7 @@ const DataTable: React.FC<DataTableProps> = ({
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [tableData, setTableData] = useState<RowData[]>(data);
   const [editingRowId, setEditingRowId] = useState<number | null>(null);
-const [editedFields, setEditedFields] = useState<Record<number, { status?: string; access?: string }>>({});
+  const [editedStatus, setEditedStatus] = useState<Record<number, string>>({});
   const [expandedRow, setExpandedRow] = useState<number | null>(null);
 
   useEffect(() => {
@@ -59,6 +59,9 @@ const [editedFields, setEditedFields] = useState<Record<number, { status?: strin
     handleResize();
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+  useEffect(() => {
+    setTableData(data);
+  }, [data]);
 
   const pageCount = Math.ceil(tableData.length / itemsPerPage);
   const paginatedData = tableData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -81,65 +84,40 @@ const [editedFields, setEditedFields] = useState<Record<number, { status?: strin
   };
 
   const handleEditRow = (id: number) => {
-  setEditingRowId(id);
-  const row = tableData.find(r => r.id === id);
-  if (row) {
-    setEditedFields(prev => ({
-      ...prev,
-      [id]: {
-        status: row.status,
-        access: row.access,
-      },
-    }));
-  }
-};
+    setEditingRowId(id);
+    const row = tableData.find(r => r.id === id);
+    if (row) {
+      setEditedStatus(prev => ({ ...prev, [id]: row.status }));
+    }
+  };
 
-const handleSubmitRow = async (id: number) => {
-  const edited = editedFields[id];
-  const oldRow = tableData.find(row => row.id === id);
+  const handleSubmitRow = async (id: number) => {
+    const newStatus = editedStatus[id];
+    const oldRow = tableData.find(row => row.id === id);
 
-  if (!oldRow || !edited) {
-    setEditingRowId(null);
-    return;
-  }
+    if (!oldRow || oldRow.status === newStatus) {
+      setEditingRowId(null);
+      return;
+    }
 
-  const statusChanged = edited.status && edited.status !== oldRow.status;
-  const accessChanged = edited.access && edited.access !== oldRow.access;
+    try {
+      await fetch(`/api/update-status/${id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      });
 
-  if (!statusChanged && !accessChanged) {
-    setEditingRowId(null);
-    return;
-  }
-
-  try {
-    await fetch(`/api/update-row/${id}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...(statusChanged && { status: edited.status }),
-        ...(accessChanged && { access: edited.access }),
-      }),
-    });
-
-    setTableData(prev =>
-      prev.map(row =>
-        row.id === id
-          ? {
-              ...row,
-              ...(statusChanged && { status: edited.status }),
-              ...(accessChanged && { access: edited.access }),
-            }
-          : row
-      )
-    );
-
-    setEditingRowId(null);
-  } catch (error) {
-    console.error("Błąd aktualizacji:", error);
-    alert("Nie udało się zaktualizować wiersza.");
-  }
-};
-
+      setTableData(prev =>
+        prev.map(row =>
+          row.id === id ? { ...row, status: newStatus } : row
+        )
+      );
+      setEditingRowId(null);
+    } catch (error) {
+      console.error("Błąd aktualizacji:", error);
+      alert("Nie udało się zaktualizować statusu.");
+    }
+  };
 
   const getActionHandler = (label: string): (() => void) | undefined => {
     switch (label) {
@@ -163,7 +141,6 @@ const handleSubmitRow = async (id: number) => {
 const columnKeys = columns.map(col => col.key);
 const visibleColumns = columns.filter(col => {
   if (col.key === "id" || col.key === "name" || col.key === "actions") return true;
-  if (col.key==="access" && columnKeys.includes("access")) return windowWidth > 1050;
   if (col.key === "type" && columnKeys.includes("type")) return windowWidth > 450;
   if (col.key === "item" && columnKeys.includes("item")) return windowWidth > 650;
   if (col.key === "unit" && columnKeys.includes("unit")) return windowWidth > 750;
@@ -222,13 +199,13 @@ const visibleColumns = columns.filter(col => {
             <td key={col.key}>
               {col.key === "status" && editingRowId === row.id ? (
                 <select
-                  value={editedFields[row.id]?.status ?? row.status}
-                    onChange={(e) =>
-                      setEditedFields(prev => ({
-                        ...prev,
-                        [row.id]: { ...prev[row.id], status: e.target.value },
-                      }))
-                    }
+                  value={editedStatus[row.id]}
+                  onChange={(e) =>
+                    setEditedStatus(prev => ({
+                      ...prev,
+                      [row.id]: e.target.value,
+                    }))
+                  }
                   className="select_editRow"
                 >
                   <option value="Brak akceptacji">Brak akceptacji</option>
@@ -245,22 +222,7 @@ const visibleColumns = columns.filter(col => {
                 
               ) : col.key==="termin_id"?(
                 <button className="detailButton_historia">Zobacz szczegóły</button>
-              ): col.key==="access"&& editingRowId === row.id?(
-                <select
-                   value={editedFields[row.id]?.access ?? row.access}
-                    onChange={(e) =>
-                      setEditedFields(prev => ({
-                        ...prev,
-                        [row.id]: { ...prev[row.id], access: e.target.value },
-                      }))
-                    }
-                  className="select_access"
-                >
-                  <option value="null"  disabled hidden>Wybierz poziom dostępu</option>
-                  <option value="user">Użytkownik</option>
-                  <option value="admin">Admin</option>
-                </select>
-              ):  col.render ? col.render(row) : row[col.key]}
+              ): col.render ? col.render(row) : row[col.key]}
             </td>
           ))}
         {columns.some(col => col.key === "actions") && (
@@ -287,37 +249,13 @@ const visibleColumns = columns.filter(col => {
         <tr>
           <td colSpan={columns.length + 1}>
             <div className="expanded_details">
-              {(windowWidth <= 450 && columnKeys.includes("type"))&& (
+                 {windowWidth <= 450 && (
                 <div className="detail_row">
                   <span className="detail_label">Typ:</span>
                   <span>{row["type"]}</span>
                 </div>
               )}
-               {(windowWidth <= 1050 && columnKeys.includes("access"))&& (
-                <div className="detail_row">
-                  <span className="detail_label">Poziom dostępu:</span>
-                  {editingRowId === row.id ? (
-                    <select
-                  value={editedFields[row.id]?.access ?? row.access}
-                    onChange={(e) =>
-                      setEditedFields(prev => ({
-                        ...prev,
-                        [row.id]: { ...prev[row.id], access: e.target.value },
-                      }))
-                    }
-                  className="select_access"
-                >
-                  <option value="null"  disabled hidden>Wybierz poziom dostępu</option>
-                  <option value="user">Użytkownik</option>
-                  <option value="admin">Admin</option>
-                </select>
-                  ):(
-                    row["access"]
-                  )}
-                  
-                </div>
-              )}
-              {(windowWidth <= 650&&columnKeys.includes("item")) && (
+              {windowWidth <= 650 && (
                 <div className="detail_row">
                   <span className="detail_label">Do rezerwacji:</span>
                   <p className="link_for_reservation_all" style={{ width: "150px" }}>
@@ -335,24 +273,24 @@ const visibleColumns = columns.filter(col => {
                   
                 </div>
               )}
-              {(windowWidth <= 750&& columnKeys.includes("unit")) && (
+              {windowWidth <= 750 && (
                 <div className="detail_row">
                   <span className="detail_label">Jednostka:</span>
                   <span>{row["unit"]}</span>
                 </div>
               )}
-              {(windowWidth <= 850&& columnKeys.includes("status")) && (
+              {windowWidth <= 850 && (
                 <div className="detail_row">
                   <span className="detail_label">Status rezerwacji:</span>
                   {editingRowId === row.id ? (
                         <select
-                        value={editedFields[row.id]?.status ?? row.status}
-                          onChange={(e) =>
-                            setEditedFields(prev => ({
-                              ...prev,
-                              [row.id]: { ...prev[row.id], status: e.target.value },
+                        value={editedStatus[row.id]}
+                        onChange={(e) =>
+                            setEditedStatus(prev => ({
+                            ...prev,
+                            [row.id]: e.target.value,
                             }))
-                          }
+                        }
                         className="select_editRow"
                         >
                         <option value="Brak akceptacji">Brak akceptacji</option>
@@ -368,7 +306,7 @@ const visibleColumns = columns.filter(col => {
                 }
                 </div>
               )}
-               {(windowWidth <= 1050&&columnKeys.includes("termin_id")) && (
+               {windowWidth <= 1050 && (
                 <div className="detail_row">
                   <span className="detail_label">Termin rezerwacji:</span>
                    <button className="detailButton_historia">Zobacz szczegóły</button>
