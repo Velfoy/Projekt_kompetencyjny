@@ -48,6 +48,8 @@ const NewUser=()=>{
                     view='admin'
                     dropdownActions={dropdownActions}
                     itemsPerPage={8}
+                       timeDetails={[]}
+                        timeDifficulty={''}
                 />   
             </div>
             {success && <Overlay message="Nowy post został utworzony" />}

@@ -1,5 +1,7 @@
-import React from "react";
+import React,{useState} from "react";
 import '@styles/components/ReservatioNow.css';
+import type {DaySchedule} from '../../../types/authTypes';
+import ReservationTime from "../timeLogic/ReservationTime";
 
 interface ReservatioNowProps {
     id:number;
@@ -7,7 +9,8 @@ interface ReservatioNowProps {
   description: string;
   timeLeft: string;
   onEndReservation: () => void;
-  onViewSchedule: () => void;
+    timeDetails?:DaySchedule[];
+    timeDifficulty:string;
 }
 
 const ReservatioNow: React.FC<ReservatioNowProps> = ({
@@ -16,8 +19,10 @@ const ReservatioNow: React.FC<ReservatioNowProps> = ({
   description,
   timeLeft,
   onEndReservation,
-  onViewSchedule
+  timeDetails=[],
+  timeDifficulty
 }) => {
+   const [timeWindow,setTimeWindow]=useState(false);
   return (
     <div className="reservation-card">
       <div className="reservation-row reservation-header">
@@ -33,10 +38,18 @@ const ReservatioNow: React.FC<ReservatioNowProps> = ({
         <button className="end-button" onClick={onEndReservation}>
           Zakończ rezerwację
         </button>
-        <button className="schedule-button" onClick={onViewSchedule}>
+        <button className="schedule-button" onClick={()=>setTimeWindow(true)}>
           Rozkład tej rezerwacji
         </button>
       </div>
+      {timeWindow && (
+        <ReservationTime
+          difficulty={timeDifficulty}
+          schedule={timeDetails}
+          onClose={() => setTimeWindow(false)}
+        />
+      )
+      }
     </div>
   );
 };
