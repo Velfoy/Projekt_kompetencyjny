@@ -70,7 +70,7 @@ namespace backend.Controllers
 			};
 			Response.Cookies.Append("auth_token", internal_token);
 			//return Content($"Authorized as {JWTIssuer.ReadToken(token, _validation_parameters, _logger).Claims.FirstOrDefault(claim => claim.Type == "user")}");
-			return Redirect($"{_configuration.GetSection("SiteAddresses").GetValue<string>("frontend") ?? ""}/storagetoken?token={internal_token}");
+			return Redirect($"{_configuration.GetSection("SiteAddresses").GetValue<string>("frontend") ?? "https://localhost:5173"}/storagetoken?token={internal_token}");
 		}
     }
 }

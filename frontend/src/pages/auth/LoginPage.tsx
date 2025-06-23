@@ -44,7 +44,7 @@ const LoginPage = () => {
             required
           />
         </div>
-        
+          
         <button type="submit" className={styles.submitButton}>Zaloguj</button>
       </form>
     </div>
