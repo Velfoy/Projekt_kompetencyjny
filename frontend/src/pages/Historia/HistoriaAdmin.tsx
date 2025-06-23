@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import DataTable from "@components/ui/DataTable";
 import type {Column, RowData, DropdownAction} from "@components/ui/DataTable";
-import { backend_url } from "@/src/main";
+// import { backend_url } from "@/src/main";
 import type {DaySchedule} from '../../types/authTypes';
 const HistoriaAdmin = async () => {
   const rows: RowData[] = [
@@ -92,17 +92,17 @@ const HistoriaAdmin = async () => {
     { id: 14, type: "Pokój", item: "p. 09", item_id: "11", unit: "Omega", status: "Zakończona" ,termin_id:3},
     
   ];
-  const [rows, setRows] = useState<RowData[]>([]);
+  // const [rows, setRows] = useState<RowData[]>([]);
   
-    useEffect(() => {
-      const fetchData = async () => {
-        console.log(backend_url + "api/reservations/get_reservations");
-        const response = await fetch(backend_url + "api/reservations/get_reservations");
-        const data: RowData[] = await response.json();
-        setRows(data);
-      };
-      fetchData();
-    }, []);//Лера если хочешь можешь добавить фильтры для поиска и пагинации
+    // useEffect(() => {
+    //   const fetchData = async () => {
+    //     console.log(backend_url + "api/reservations/get_reservations");
+    //     const response = await fetch(backend_url + "api/reservations/get_reservations");
+    //     const data: RowData[] = await response.json();
+    //     setRows(data);
+    //   };
+    //   fetchData();
+    // }, []);//Лера если хочешь можешь добавить фильтры для поиска и пагинации
   //page, pageSize,
   //completed, approved,
   //userId, itemId

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import styles from '../../styles/pages/zgloszenia.module.css';
 import ReservationAcceptation from '@/src/components/ui/zgloszenia/ReservationAcceptation';
 import ReservationTime from '@/src/components/ui/timeLogic/ReservationTime';
-import { backend_url } from '@/src/main';
+// import { backend_url } from '@/src/main';
 
 interface Reservation {
   id: number;
@@ -72,14 +72,14 @@ const mockDifficulty:string="difficult";
 
 const ZgloszeniaPage = () => {
   const [reservations, setReservations] = useState<Reservation[]>(mockReservations);
-  useEffect(() => {
-      const fetchData = async () => {
-        const response = await fetch(backend_url + "api/admin/get_reservations");
-        const data: Reservation[] = await response.json();
-        setReservations(data);
-      };
-      fetchData();
-    }, []);
+  // useEffect(() => {
+  //     const fetchData = async () => {
+  //       const response = await fetch(backend_url + "api/admin/get_reservations");
+  //       const data: Reservation[] = await response.json();
+  //       setReservations(data);
+  //     };
+  //     fetchData();
+  //   }, []);
     console.log(reservations);
   const [currentPage, setCurrentPage] = useState(1);
   const [windowWidth, setWindowWidth] = useState(
