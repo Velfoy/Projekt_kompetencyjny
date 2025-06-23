@@ -65,7 +65,7 @@ const ReservationTime: React.FC<ReservationProps> = ({ difficulty, schedule, onC
           </div>
           {difficulty === 'difficult' ? (
              <DateDifficult
-        schedule={sampleSchedule}
+        schedule={schedule}
         semesterStart={semestrStart}
         semesterEnd={semestrEnd}
       />

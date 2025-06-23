@@ -1,13 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
 import '@styles/components/ReservationDone.css';
+import type {DaySchedule} from '../../../types/authTypes';
+import ReservationTime from "../timeLogic/ReservationTime";
 
 interface ReservationDoneProps {
   id: number;
   title: string;
   description: string;
   completedAt: string;
-  onViewSchedule: () => void;
   onDelete?: () => void;
+  timeDetails?:DaySchedule[];
+  timeDifficulty:string;
 }
 
 const ReservationDone: React.FC<ReservationDoneProps> = ({
@@ -15,11 +18,13 @@ const ReservationDone: React.FC<ReservationDoneProps> = ({
   title,
   description,
   completedAt,
-  onViewSchedule,
-  onDelete
+  onDelete,
+  timeDetails=[],
+  timeDifficulty
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+   const [timeWindow,setTimeWindow]=useState(false);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -42,7 +47,7 @@ const ReservationDone: React.FC<ReservationDoneProps> = ({
             <span className="completed-at">Zakończono: {completedAt}</span>
         </div>
         <div className="reservation-done-actions">
-            <button className="schedule-done-button" onClick={onViewSchedule}>
+            <button className="schedule-done-button" onClick={()=>setTimeWindow(true)}>
             Szczegóły rezerwacji
             </button>
             <div className="menu-wrapper" ref={menuRef}>
@@ -63,6 +68,14 @@ const ReservationDone: React.FC<ReservationDoneProps> = ({
 
 
       <p className="reservation-done-description">{description}</p>
+      {timeWindow && (
+        <ReservationTime
+          difficulty={timeDifficulty}
+          schedule={timeDetails}
+          onClose={() => setTimeWindow(false)}
+        />
+      )
+      }
     </div>
   );
 };

@@ -6,7 +6,7 @@ import ReservationDone from '@/src/components/ui/Profile/ReservationDone';
 import NewItem from '@/src/components/ui/Profile/NewItem';
 import NewUser from '@/src/components/ui/Profile/NewUser';
 import NewPost from '@/src/components/ui/Profile/NewPost';
-
+import type {DaySchedule} from '../../types/authTypes';
 
 interface Reservation {
   id: number;
@@ -44,6 +44,20 @@ const ProfilePage: React.FC = () => {
     { id: 104, title: "SEM", description: "Analiza próbki zakończona.", completedAt: "2025-06-13 10:00" },
      { id: 105, title: "Google", description: "Rezerwacja zakończona...", completedAt: "2025-06-15 14:30" },
   ];
+  const mockTime:DaySchedule[]=[
+  { day: '02.03.2025', from: '10:00', to: '12:00' },
+  { day: '09.03.2025', from: '10:00', to: '12:00' },
+  { day: '16.03.2025', from: '10:00', to: '12:00' },
+  { day: '30.03.2025', from: '10:00', to: '12:00' },
+]
+const mockDifficulty:string="difficult";
+  const mockTimeDone:DaySchedule[]=[
+  { day: '02.03.2025', from: '10:00', to: '12:00' },
+  { day: '09.03.2025', from: '10:00', to: '12:00' },
+  { day: '16.03.2025', from: '10:00', to: '12:00' },
+  { day: '30.03.2025', from: '10:00', to: '12:00' },
+]
+const mockDifficultyDone:string="difficult";
 
   const [reservations, setReservations] = useState<Reservation[]>(initialReservations);
   const [doneReservations, setDoneReservations] = useState<DoneReservation[]>(initialDoneReservations);
@@ -115,7 +129,8 @@ const ProfilePage: React.FC = () => {
                     description={reservation.description}
                     timeLeft={reservation.timeLeft}
                     onEndReservation={() => handleEndReservation(reservation.id)}
-                    onViewSchedule={() => alert("Wyświetlono rozkład")}
+                    timeDetails={mockTime}
+                    timeDifficulty={mockDifficulty}
                   />
                 ))
               ) : (
@@ -132,8 +147,9 @@ const ProfilePage: React.FC = () => {
                     title={reservation.title}
                     description={reservation.description}
                     completedAt={reservation.completedAt}
-                    onViewSchedule={() => alert(`Rozkład dla: ${reservation.title}`)}
                     onDelete={() => handleDeleteDoneReservation(reservation.id)}
+                    timeDetails={mockTimeDone}
+                    timeDifficulty={mockDifficultyDone}
                   />
                 ))
               ) : (

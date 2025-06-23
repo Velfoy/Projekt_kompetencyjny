@@ -3,8 +3,11 @@ import '@styles/components/A7ReservationCard.css';
 import buildingSvg from '@assets/img/back_svg.svg';
 import buttonImg from '@assets/img/button.png';
 import a7Image from '@assets/img/building.jpg';
+import { useAuth } from '@/src/hooks/useAuth';
+import { Link } from 'react-router-dom';
 
 const A7ReservationCard: React.FC = () => {
+  const {isAuth,role,login}=useAuth();
   return (
     <div className="a7-card-wrapper">
       <img src={buildingSvg} alt="Tło karty" className="a7-background-image" />
@@ -22,10 +25,12 @@ const A7ReservationCard: React.FC = () => {
       </div>
       
       <div className="a7-button-wrapper">
-        <button className="a7-button" aria-label="Zaloguj się">
+        <Link to={isAuth?(role==='admin'?("/zgloszenia"):("/kalendarz")): ("/login")}  onClick={!isAuth ? login : undefined} className="a7-button">
           <img src={buttonImg} alt="" className="a7-button-image" />
-          <span className="a7-button-text">Zaloguj się</span>
-        </button>
+          <span className="a7-button-text">
+            {isAuth?(role==='admin'?("Zobacz zgłoszenia"):("Przejdź do rezerwacji")): ("Zaloguj się")}
+          </span>
+        </Link>
       </div>
     </div>
   );

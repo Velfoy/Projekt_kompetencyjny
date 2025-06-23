@@ -19,3 +19,8 @@ export interface UserData {
   email: string;
   role: UserRole;
 }
+export interface DaySchedule {
+  day: string;
+  from: string;
+  to: string;
+}

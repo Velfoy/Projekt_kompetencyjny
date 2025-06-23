@@ -2,6 +2,7 @@ import styles from '../../styles/pages/historiauser.module.css';
 import { Link } from 'react-router-dom';
 import DataTable from "@components/ui/DataTable";
 import type {Column, RowData, DropdownAction} from "@components/ui/DataTable";
+import type {DaySchedule} from '../../types/authTypes';
 const HistoriaUser = () => {
   const rows: RowData[] = [
     { id: 1, type: "Pokój", item: "p. 17", item_id: "5", unit: "Voxel", status: "Brak akceptacji",termin_id:3 },
@@ -121,7 +122,14 @@ const HistoriaUser = () => {
     { label: "Usuń zaznaczone" },
     { label: "Usuń wszystkie" },
   ];
-
+   
+  const mockTime:DaySchedule[]=[
+    { day: '02.03.2025', from: '10:00', to: '12:00' },
+    { day: '09.03.2025', from: '10:00', to: '12:00' },
+    { day: '16.03.2025', from: '10:00', to: '12:00' },
+    { day: '30.03.2025', from: '10:00', to: '12:00' },
+  ]
+  const mockDifficulty:string="difficult";
   return (
     <div>
       <DataTable
@@ -130,6 +138,8 @@ const HistoriaUser = () => {
         view="user"
         dropdownActions={dropdownActions}
         itemsPerPage={8}
+         timeDetails={mockTime}
+        timeDifficulty={mockDifficulty}
       />
     </div>
   );

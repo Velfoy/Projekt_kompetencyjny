@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "@styles/components/DataTable.css";
 import styles from "../../styles/pages/historiaadmin.module.css";
+import type {DaySchedule} from '../../types/authTypes';
+import ReservationTime from "@/src/components/ui/timeLogic/ReservationTime";
 
 export interface Column {
   key: string;
@@ -26,6 +28,8 @@ export interface DataTableProps {
   view?: TableView;
   dropdownActions?: DropdownAction[];
   itemsPerPage?: number;
+  timeDetails?:DaySchedule[];
+  timeDifficulty:string;
 }
 
 const StatusBadge = ({ status }: { status: string }) => {
@@ -44,6 +48,8 @@ const DataTable: React.FC<DataTableProps> = ({
   view = "user",
   dropdownActions = [],
   itemsPerPage = 5,
+  timeDetails=[],
+  timeDifficulty
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [windowWidth, setWindowWidth] = useState(1024);
@@ -52,6 +58,7 @@ const DataTable: React.FC<DataTableProps> = ({
   const [editingRowId, setEditingRowId] = useState<number | null>(null);
 const [editedFields, setEditedFields] = useState<Record<number, { status?: string; access?: string }>>({});
   const [expandedRow, setExpandedRow] = useState<number | null>(null);
+    const [timeWindow,setTimeWindow]=useState(false);
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -244,7 +251,7 @@ const visibleColumns = columns.filter(col => {
                 </div>
                 
               ) : col.key==="termin_id"?(
-                <button className="detailButton_historia">Zobacz szczegóły</button>
+                <button onClick={()=> setTimeWindow(true)} className="detailButton_historia">Zobacz szczegóły</button>
               ): col.key==="access"&& editingRowId === row.id?(
                 <select
                    value={editedFields[row.id]?.access ?? row.access}
@@ -371,7 +378,7 @@ const visibleColumns = columns.filter(col => {
                {(windowWidth <= 1050&&columnKeys.includes("termin_id")) && (
                 <div className="detail_row">
                   <span className="detail_label">Termin rezerwacji:</span>
-                   <button className="detailButton_historia">Zobacz szczegóły</button>
+                   <button  onClick={()=> setTimeWindow(true)} className="detailButton_historia">Zobacz szczegóły</button>
                 </div>
               )}
             </div>
@@ -507,6 +514,14 @@ const visibleColumns = columns.filter(col => {
           </button>
         </div>
       )}
+       {timeWindow && (
+        <ReservationTime
+          difficulty={timeDifficulty}
+          schedule={timeDetails}
+          onClose={() => setTimeWindow(false)}
+        />
+      )
+      }
     </div>
   );
 };
