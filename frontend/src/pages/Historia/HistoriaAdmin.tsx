@@ -1,9 +1,10 @@
-import React ,{useState}from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import DataTable from "@components/ui/DataTable";
 import type {Column, RowData, DropdownAction} from "@components/ui/DataTable";
+import { backend_url } from "@/src/main";
 import type {DaySchedule} from '../../types/authTypes';
-const HistoriaAdmin = () => {
+const HistoriaAdmin = async () => {
   const rows: RowData[] = [
     { id: 1, type: "Pokój", item: "p. 17", item_id: "5", unit: "Voxel", status: "Brak akceptacji",termin_id:3 },
     { id: 2, type: "Sala", item: "s. 22", item_id: "6", unit: "Alpha", status: "Zakończona",termin_id:3 },
@@ -91,6 +92,20 @@ const HistoriaAdmin = () => {
     { id: 14, type: "Pokój", item: "p. 09", item_id: "11", unit: "Omega", status: "Zakończona" ,termin_id:3},
     
   ];
+  const [rows, setRows] = useState<RowData[]>([]);
+  
+    useEffect(() => {
+      const fetchData = async () => {
+        console.log(backend_url + "api/reservations/get_reservations");
+        const response = await fetch(backend_url + "api/reservations/get_reservations");
+        const data: RowData[] = await response.json();
+        setRows(data);
+      };
+      fetchData();
+    }, []);//Лера если хочешь можешь добавить фильтры для поиска и пагинации
+  //page, pageSize,
+  //completed, approved,
+  //userId, itemId
 
   const columns: Column[] = [
     { key: "id", label: "Id/Imię" },
