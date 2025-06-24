@@ -32,12 +32,6 @@ namespace backend.Controllers
         {
             return await (from r in _context.Requests where r.Renter == email select r).ToListAsync();
         }
-
-		[HttpGet("get_comments/{*email}")]
-		public async Task<IEnumerable<Comment>> GetComments(string email)
-		{
-			return await (from r in _context.Comments where r.Author == email select r).ToListAsync();
-		}
 		[HttpGet("whoami")]
 		[Authorize]
 		public async Task<Object> GetUsername()

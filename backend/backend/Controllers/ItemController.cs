@@ -31,5 +31,10 @@ namespace backend.Controllers
 			return await item.FirstOrDefaultAsync();
 		}
 		//Get_documentation will be added later after discussions with our frontend team
+		[HttpGet("get_comments/{*id}")]
+		public async Task<ActionResult<IEnumerable<Object>>> GetComments(int id)
+		{
+			return await _context.Comments.Include(a => a.Item).Where(a => a.Item.Id == id).ToListAsync();
+		}
 	}
 }

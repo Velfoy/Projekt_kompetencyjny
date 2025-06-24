@@ -1,5 +1,7 @@
-﻿using backend.Data;
+﻿using backend.Attributes;
+using backend.Data;
 using backend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -38,31 +40,16 @@ namespace backend.Controllers
 
             return await (from reservation in (res.Skip(pageSize*(page - 1)).Take(pageSize)) select reservation.ToJSON()).ToListAsync();//This is one of my favorite lines in this project ngl
         }
-        [HttpPost("accept/{*id}")]
-        public async Task<ActionResult<string>> Accept(int id)
-        {
-            try {
-                Context.ChangeStatus(true, _context, id);
-			} catch(InvalidOperationException)
-            {
-                return NotFound();
-            }
-            return "Request successfully approved";
-        }
 
-		[HttpPost("deny/{*id}")]
-		public async Task<ActionResult<string>> Deny(int id)
-		{
-			try
-			{
-				Context.ChangeStatus(false, _context, id);
-			}
-			catch (InvalidOperationException)
-			{
-				return NotFound();
-			}
-			return "Request successfully approved";
-		}
+        [HttpGet("get_timespans/{*id}")]
+        public async Task<IEnumerable<Object>> GetDatetimes(int id)
+        {
+	        var requests = (from res in _context.Requests.Include(r => r.RequestPeriod) where res.Id == id select res).FirstOrDefault();
+	        return (from ts in requests.RequestPeriod
+		        select ts.ToJSON());
+        }//There is an extremely goofy feature in C# that lets you call async on db query and also apparently to return the result as an ActionResult.
+         //You can't do that with regular LINQ, as I had pleasure to just discover.
+         //xd.
         [HttpPost("make_reservation")]
         public async Task<ActionResult<string>> MakeReservation(Request r)
         {
@@ -74,10 +61,9 @@ namespace backend.Controllers
 		//get_timespans_for_item
 
 		[HttpGet("/seed")]
+		[AdminAccess("global")]
 		public async Task<ActionResult<string>> Seed()
 		{
-			//Placeholder for now, will be changed on demand of frontend team
-			//{}
 			Seed_database.CreateItems(_context);
 			return "Made";
 		}

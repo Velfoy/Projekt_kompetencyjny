@@ -9,5 +9,6 @@ namespace backend.Models
 		[StringLength(20)]
 		public string Username { get; set; }//Politechnika-style email
 		public List<Organization> Organizations { get; set; }
+		public bool GlobalAdmin { get; set; }//Whether the administrator has master access to the reservation system
 	}
 }
