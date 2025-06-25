@@ -25,16 +25,18 @@ namespace backend.Controllers
 			return await _context.Items.Skip(pageSize * (page - 1)).Take(pageSize).ToListAsync(); ;
         }
 		[HttpGet("get_item/{*id}")]
-		public async Task<ActionResult<Item>> GetItem(int id)
+		public async Task<ActionResult<Object>> GetItem(int id)
 		{
-			var item = from i in _context.Items.Include(a => a.Comments) select i;
+			var item = from i in _context.Items.Include(i => i.Manager).
+				Include(i => i.Organivzation) select i.GetItemJSON();
 			return await item.FirstOrDefaultAsync();
 		}
 		//Get_documentation will be added later after discussions with our frontend team
 		[HttpGet("get_comments/{*id}")]
 		public async Task<ActionResult<IEnumerable<Object>>> GetComments(int id)
 		{
-			return await _context.Comments.Include(a => a.Item).Where(a => a.Item.Id == id).ToListAsync();
+			var comments = _context.Comments.Include(a => a.Item).Where(a => a.Item.Id == id);
+			return await (from c in comments select c.ToJSON()).ToListAsync();
 		}
 	}
 }

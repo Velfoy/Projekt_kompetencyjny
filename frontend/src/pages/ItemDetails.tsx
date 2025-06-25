@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "@styles/pages/ItemDetails.css";
 import productImage from "/img/default-image.png";
+import { backend_url } from "../main";
 
 
 const mockData = [
@@ -92,25 +93,46 @@ const userName = "Valeriia Zlydar";
 const ItemDetails = () => {
   const { id } = useParams<{ id: string }>();
   const [activeTab, setActiveTab] = useState("specs");
-  const [comments, setComments] = useState(mockComments);
+  const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
 
-  const booking = mockData.find((item) => item.id === id);
+
+  useEffect(() => {
+      const fetchData = async () => {
+        const response = await fetch(backend_url + "api/item/get_comments/" + id);
+        const data = await response.json();
+        setComments(data);
+      };
+      fetchData();
+    }, []);
+
+  const [booking, setBooking] = useState(mockData.find((item) => item.id === id));
+  console.log(booking);
+
+    useEffect(() => {
+      const fetchData = async () => {
+        const response = await fetch(backend_url + "api/item/get_item/" + id);
+        const data = await response.json();
+        setBooking(data);
+      };
+      fetchData();
+    }, []);
   
 
-  if (!booking)
-  return (
-    <div className="not-found-container">
-      <div className="not-found-card">
-        <h2>Nie znaleziono rezerwacji</h2>
-        <p>
-          Rezerwacja o ID: <strong>{id}</strong> nie istnieje lub została
-          usunięta.
-        </p>
-        <p>Sprawdź poprawność adresu URL lub wybierz inną pozycję z listy.</p>
-      </div>
-    </div>
-  );
+  // if (!booking)
+  // return (
+  //   <div className="not-found-container">
+  //     <div className="not-found-card">
+  //       <h2>Nie znaleziono rezerwacji</h2>
+  //       <p>
+  //         Rezerwacja o ID: <strong>{id}</strong> nie istnieje lub została
+  //         usunięta.
+  //       </p>
+  //       <p>Sprawdź poprawność adresu URL lub wybierz inną pozycję z listy.</p>
+  //     </div>
+  //   </div>
+  // );
+  //Lera will later change that so that it displays "Loading" 
 
 
   const handleAddComment = () => {
