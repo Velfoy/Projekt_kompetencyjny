@@ -1,155 +1,45 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 import "@styles/pages/ItemCalendar.css";
+import type {Reservation,DayInfo,TimeSlot,SelectedSlot,User,RecurringReservation,ReservationForDifficultProps,ComplexTimeSlot} from "../types/authTypes";
+import ReservationForDifficult from "../components/ui/kalendarz/ReservationForDifficult";
+import ReservationForm from "../components/ui/kalendarz/ReservationForm";
+import ReservationDetails from "../components/ui/kalendarz/ReservationDetails";
 
-interface Reservation {
-  day: string;
-  startHour: number;
-  startMinute: number;
-  endHour: number;
-  endMinute: number;
-  title: string;
-  reservedBy: string;
-}
-
-interface DayInfo {
-  label: string;
-  date: string;
-  dateObj: Date;
-}
-
-interface TimeSlot {
-  startHour: number;
-  startMinute: number;
-  endHour: number;
-  endMinute: number;
-  reserved: boolean;
-  reservation?: Reservation;
-}
-
-// Reservation Form Component
-const ReservationForm: React.FC<{
-  selectedSlot: { startHour: number; startMinute: number; day: string } | null;
-  onClose: () => void;
-  onSubmit: (reservation: Reservation) => void;
-}> = ({ selectedSlot, onClose, onSubmit }) => {
-  const [title, setTitle] = useState("");
-  const [reservedBy, setReservedBy] = useState("");
-  const [endHour, setEndHour] = useState(selectedSlot?.startHour || 0);
-  const [endMinute, setEndMinute] = useState((selectedSlot?.startMinute || 0) + 30);
-
-  useEffect(() => {
-    if (selectedSlot) {
-      setEndHour(selectedSlot.startHour);
-      setEndMinute(selectedSlot.startMinute + 30);
-    }
-  }, [selectedSlot]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedSlot) return;
-    
-    onSubmit({
-      title,
-      reservedBy,
-      startHour: selectedSlot.startHour,
-      startMinute: selectedSlot.startMinute,
-      endHour,
-      endMinute,
-      day: selectedSlot.day
-    });
-    onClose();
-  };
-
-  if (!selectedSlot) return null;
-
-  return (
-    <div className="modal-overlay">
-      <div className="reservation-form">
-        <h3>Add Reservation</h3>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label>Title:</label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label>Reserved By:</label>
-            <input
-              type="text"
-              value={reservedBy}
-              onChange={(e) => setReservedBy(e.target.value)}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label>Start Time:</label>
-            <div className="time-display">
-              {selectedSlot.startHour}:{selectedSlot.startMinute.toString().padStart(2, '0')}
-            </div>
-          </div>
-          <div className="form-group">
-            <label>End Time:</label>
-            <div className="time-inputs">
-              <select
-                value={endHour}
-                onChange={(e) => setEndHour(Number(e.target.value))}
-              >
-                {Array.from({ length: 24 }, (_, i) => (
-                  <option key={i} value={i}>{i.toString().padStart(2, '0')}</option>
-                ))}
-              </select>
-              :
-              <select
-                value={endMinute}
-                onChange={(e) => setEndMinute(Number(e.target.value))}
-              >
-                <option value={0}>00</option>
-                <option value={15}>15</option>
-                <option value={30}>30</option>
-                <option value={45}>45</option>
-              </select>
-            </div>
-          </div>
-          <div className="form-buttons">
-            <button type="button" onClick={onClose}>Cancel</button>
-            <button type="submit">Save</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
+// Simulate API call for reservation approval
+const submitReservationForApproval = async (reservation: Reservation): Promise<boolean> => {
+  console.log("Submitting reservation for approval:", reservation);
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  const randomApproval = false;
+  return randomApproval;
 };
 
-// Reservation Details Component
-const ReservationDetails: React.FC<{
-  reservation: Reservation | null;
-  onClose: () => void;
-  onDelete: () => void;
-}> = ({ reservation, onClose, onDelete }) => {
-  if (!reservation) return null;
+const submitReservationsForApproval = async (reservations: Reservation[]): Promise<boolean> => {
+  console.log("Submitting multiple reservations for approval:", reservations);
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  const randomApproval = Math.random() > 0.3;
+  return randomApproval;
+};
 
-  return (
-    <div className="modal-overlay">
-      <div className="reservation-details">
-        <h3>Reservation Details</h3>
-        <div className="details-content">
-          <p><strong>Title:</strong> {reservation.title}</p>
-          <p><strong>Reserved By:</strong> {reservation.reservedBy}</p>
-          <p><strong>Date:</strong> {new Date(reservation.day).toLocaleDateString()}</p>
-          <p><strong>Time:</strong> {reservation.startHour}:{reservation.startMinute.toString().padStart(2, '0')} - {reservation.endHour}:{reservation.endMinute.toString().padStart(2, '0')}</p>
-        </div>
-        <div className="details-buttons">
-          <button onClick={onDelete} className="delete-btn">Delete</button>
-          <button onClick={onClose}>Close</button>
-        </div>
-      </div>
-    </div>
-  );
+const parseDateString = (dateStr: string): Date => {
+  const [day, month, year] = dateStr.split('.').map(Number);
+  return new Date(year, month - 1, day);
+};
+
+const formatDateToDisplay = (date: Date): string => {
+  return date.toLocaleDateString('pl-PL', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+};
+
+const formatDateToKey = (date: Date): string => {
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}.${month}.${year}`;
 };
 
 const ItemCalendar: React.FC = () => {
@@ -160,68 +50,94 @@ const ItemCalendar: React.FC = () => {
   const [displayMode, setDisplayMode] = useState<"reserved" | "available">("reserved");
   const [page, setPage] = useState<number>(0);
   const [currentDay, setCurrentDay] = useState<DayInfo | null>(null);
-  const [selectedSlot, setSelectedSlot] = useState<{ startHour: number; startMinute: number; day: string } | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<SelectedSlot | null>(null);
   const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
+  const [addingForm, setAddingForm] = useState(false);
+  const {  role, username } = useAuth();
   
   const startHour = 8;
   const endHour = 21;
-  const slotDuration = 30;
+  const slotDuration = 15;
   const slotHeight = 20;
+
+  const [currentUser] = useState<User>({
+    id: username as string,
+    name: username as string,
+    role: role
+  });
 
   const [reservations, setReservations] = useState<Reservation[]>([
     {
-      day: "2025-05-12",
+      day: "12.05.2025",
       startHour: 9,
       startMinute: 0,
       endHour: 11,
       endMinute: 0,
       title: "Morning Meeting",
-      reservedBy: "John Doe"
+      reservedBy: "John Doe",
+      userId: "test",
+      userName: "John Doe",
+      status: "W trakcie"
     },
     {
-      day: "2025-05-12",
+      day: "12.05.2025",
       startHour: 11,
       startMinute: 0,
       endHour: 12,
       endMinute: 0,
       title: "Follow-up Discussion",
-      reservedBy: "Jane Smith"
+      reservedBy: "Jane Smith",
+      userId: "Jane Smith",
+      userName: "Jane Smith",
+      status: "W trakcie"
     },
     {
-      day: "2025-05-12",
+      day: "12.05.2025",
       startHour: 14,
       startMinute: 0,
       endHour: 16,
       endMinute: 0,
       title: "Client Call",
-      reservedBy: "John Doe"
+      reservedBy: "John Doe",
+      userId: "John Doe",
+      userName: "John Doe",
+      status: "W trakcie"
     },
     {
-      day: "2025-05-13",
+      day: "13.05.2025",
       startHour: 10,
       startMinute: 0,
       endHour: 12,
       endMinute: 0,
       title: "Project Review",
-      reservedBy: "Team"
+      reservedBy: "Team",
+      userId: "Team",
+      userName: "Team",
+      status: "W trakcie"
     },
     {
-      day: "2025-05-14",
+      day: "14.05.2025",
       startHour: 13,
       startMinute: 0,
       endHour: 15,
       endMinute: 0,
       title: "Team Workshop",
-      reservedBy: "Manager"
+      reservedBy: "Manager",
+      userId: "Manager",
+      userName: "Manager",
+      status: "Brak akceptacji"
     },
     {
-      day: "2025-05-15",
+      day: "15.05.2025",
       startHour: 9,
       startMinute: 0,
       endHour: 17,
       endMinute: 0,
       title: "All Day Event",
-      reservedBy: "Company"
+      reservedBy: "Company",
+      userId: "Company",
+      userName: "Company",
+      status: "Brak akceptacji"
     },
   ]);
 
@@ -239,7 +155,7 @@ const ItemCalendar: React.FC = () => {
       
       days.push({
         label: dayLabels[currentDay.getDay()],
-        date: currentDay.toISOString().split('T')[0],
+        date: formatDateToKey(currentDay),
         dateObj: currentDay
       });
     }
@@ -284,13 +200,29 @@ const ItemCalendar: React.FC = () => {
   const visibleDays = daysOfWeek.slice(page * daysPerPage, (page + 1) * daysPerPage);
 
   const getCurrentMonthYear = (): string => {
-    return currentDate.toLocaleString('pl-PL', { month: 'long', year: 'numeric' });
+    return currentDate.toLocaleString('pl-PL', { 
+      month: 'long', 
+      year: 'numeric',
+      timeZone: 'Europe/Warsaw'
+    });
   };
-
+  
   const getWeekRangeString = (): string => {
-    const start = new Date(daysOfWeek[0].date);
-    const end = new Date(daysOfWeek[6].date);
-    return `${start.getDate()}-${end.getDate()} ${start.toLocaleString('pl-PL', { month: 'long' })} ${start.getFullYear()}`;
+    const start = parseDateString(daysOfWeek[0].date);
+    const end = parseDateString(daysOfWeek[6].date);
+    
+    const startDay = start.getDate();
+    const startMonth = start.toLocaleDateString('pl-PL', { month: 'long' });
+    const startYear = start.getFullYear();
+    
+    const endDay = end.getDate();
+    const endMonth = end.toLocaleDateString('pl-PL', { month: 'long' });
+    
+    if (startMonth === endMonth) {
+      return `${startDay}-${endDay} ${startMonth} ${startYear}`;
+    } else {
+      return `${startDay} ${startMonth} - ${endDay} ${endMonth} ${startYear}`;
+    }
   };
 
   const changeDate = (direction: "prev" | "next"): void => {
@@ -354,7 +286,11 @@ const ItemCalendar: React.FC = () => {
   };
 
   const getAvailableSlots = (day: string): TimeSlot[] => {
-    const dayReservations = reservations.filter(r => r.day === day);
+    const dayReservations = reservations.filter(r => 
+      r.day === day && 
+      r.status !== 'Odrzucona' && 
+      r.status !== 'Zakonczona'
+    );
     const mergedReservations = mergeAdjacentReservations(dayReservations);
     const allSlots: TimeSlot[] = generateTimeSlots().map(slot => {
       const endMinute = slot.minute + slotDuration;
@@ -400,7 +336,7 @@ const ItemCalendar: React.FC = () => {
         current.endHour === slot.startHour && 
         current.endMinute === slot.startMinute &&
         (current.reserved === false || 
-         (current.reservation && slot.reservation && current.reservation.title === slot.reservation.title))
+         (current.reservation && slot.reservation && current.reservation.userId === slot.reservation.userId))
       ) {
         current.endHour = slot.endHour;
         current.endMinute = slot.endMinute;
@@ -431,18 +367,40 @@ const ItemCalendar: React.FC = () => {
         const topPosition = startMinutes * (slotHeight / 30);
         const height = durationMinutes * (slotHeight / 30);
         
+        const statusClass = slot.reserved ? 
+          (slot.reservation?.status === 'Brak akceptacji' ? 'pending' : 
+           slot.reservation?.status === 'W trakcie' ? 'approved' : 
+           slot.reservation?.status === 'Odrzucona' ? 'rejected' : 
+           slot.reservation?.status === 'Zakonczona' ? 'completed' : '') : '';
+        
         return (
           <div 
             key={index}
-            className={`timeBlock ${slot.reserved ? 'reserved' : 'available'}`}
+            className={`timeBlock ${slot.reserved ? 'reserved' : 'available'} ${statusClass}`}
             style={{
               top: `${topPosition}px`,
               height: `${height}px`
             }}
-            onClick={() => handleSlotClick(day, {
-              startHour: slot.startHour,
-              startMinute: slot.startMinute
-            })}
+            onClick={() => {
+              if (slot.reserved) {
+                const reservation = reservations.find(r => 
+                  r.day === day && 
+                  r.startHour === slot.startHour && 
+                  r.startMinute === slot.startMinute
+                );
+                if (reservation) setSelectedReservation(reservation);
+              } else {
+                setSelectedSlot({ 
+                  startHour: slot.startHour,
+                  startMinute: slot.startMinute,
+                  day,
+                  availableStartHour: slot.startHour,
+                  availableStartMinute: slot.startMinute,
+                  availableEndHour: slot.endHour,
+                  availableEndMinute: slot.endMinute
+                });
+              }
+            }}
           >
             {slot.reserved ? (
               <div className="reservationContent">
@@ -450,6 +408,12 @@ const ItemCalendar: React.FC = () => {
                 <div className="reservationTime">
                   {slot.startHour}:{slot.startMinute.toString().padStart(2, '0')} - {slot.endHour}:{slot.endMinute.toString().padStart(2, '0')}
                 </div>
+                <div className="reservationUser">{slot.reservation?.userName}</div>
+                {slot.reservation?.status && (
+                  <div className={`statusBadge ${statusClass}`}>
+                    {slot.reservation.status}
+                  </div>
+                )}
               </div>
             ) : (
               'Available'
@@ -461,41 +425,149 @@ const ItemCalendar: React.FC = () => {
     });
   };
 
-  const handleSlotClick = (day: string, slot: { startHour: number; startMinute: number }) => {
-    const reservation = reservations.find(r => 
-      r.day === day && 
-      r.startHour === slot.startHour && 
-      r.startMinute === slot.startMinute
-    );
-    
-    if (reservation) {
-      setSelectedReservation(reservation);
-    } else {
-      setSelectedSlot({ ...slot, day });
-    }
-  };
-
   const handleAddButtonClick = () => {
     if (viewMode === "day" && currentDay) {
-      setSelectedSlot({ 
-        startHour: startHour, 
-        startMinute: 0,
-        day: currentDay.date 
-      });
-    } else {
-      // In week view, user needs to click a specific time slot
-      // So we don't automatically show the form
+      const slots = getAvailableSlots(currentDay.date);
+      const availableSlot = slots.find(slot => !slot.reserved);
+      
+      if (availableSlot) {
+        setSelectedSlot({ 
+          startHour: availableSlot.startHour, 
+          startMinute: availableSlot.startMinute,
+          day: currentDay.date,
+          availableStartHour: availableSlot.startHour,
+          availableStartMinute: availableSlot.startMinute,
+          availableEndHour: availableSlot.endHour,
+          availableEndMinute: availableSlot.endMinute
+        });
+      }
     }
   };
 
-  const handleAddReservation = (reservation: Reservation) => {
-    setReservations([...reservations, reservation]);
+  const handleAddReservation = async (reservation: Reservation) => {
+    try {
+      if (currentUser.role === 'user') {
+        const isApproved = await submitReservationForApproval(reservation);
+        
+        const newReservation: Reservation = {
+          ...reservation,
+          status: isApproved ? 'W trakcie' : 'Brak akceptacji'
+        };
+        
+        setReservations([...reservations, newReservation]);
+        setSelectedSlot(null);
+      } else {
+        setReservations([...reservations, {...reservation, status: 'W trakcie'}]);
+        setSelectedSlot(null);
+      }
+    } catch (err) {
+      console.error("Failed to add reservation:", err);
+    }
   };
 
-  const handleDeleteReservation = () => {
+  const handleDeleteReservation = async () => {
     if (!selectedReservation) return;
-    setReservations(reservations.filter(r => r !== selectedReservation));
-    setSelectedReservation(null);
+    
+    try {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      setReservations(reservations.filter(r => r !== selectedReservation));
+      setSelectedReservation(null);
+    } catch (err) {
+      console.error("Failed to delete reservation:", err);
+      throw err;
+    }
+  };
+
+  const [semesterStartDate] = useState<Date>(new Date('2025-06-01'));
+  const [semesterEndDate] = useState<Date>(new Date('2025-08-31'));
+
+  const handleAddComplexReservation = async (slots: ComplexTimeSlot[], title: string) => {
+    try {
+      let newReservations: Reservation[] = [];
+      
+      for (const slot of slots) {
+        const fromDate = parseDateString(slot.fromDate);
+        const toDate = parseDateString(slot.toDate);
+        
+        for (let d = new Date(fromDate); d <= toDate; d.setDate(d.getDate() + 1)) {
+          const dateStr = formatDateToKey(d);
+          
+          newReservations.push({
+            day: dateStr,
+            startHour: slot.fromHour,
+            startMinute: slot.fromMinute,
+            endHour: slot.toHour,
+            endMinute: slot.toMinute,
+            title: title,
+            reservedBy: currentUser.name,
+            userId: currentUser.id,
+            userName: currentUser.name,
+            status: currentUser.role === 'user' ? 'Brak akceptacji' : 'W trakcie'
+          });
+        }
+      }
+      
+      if (currentUser.role === 'user') {
+        const isApproved = await submitReservationsForApproval(newReservations);
+        
+        newReservations = newReservations.map(r => ({
+          ...r,
+          status: isApproved ? 'W trakcie' : 'Brak akceptacji'
+        }));
+      }
+      
+      setReservations([...reservations, ...newReservations]);
+    } catch (err) {
+      console.error("Failed to add complex reservation:", err);
+      throw err;
+    }
+  };
+
+  const handleAddRecurringReservation = async (reservation: RecurringReservation) => {
+    try {
+      let newReservations: Reservation[] = [];
+      
+      for (const week of reservation.weeks) {
+        const weekStartDate = new Date(semesterStartDate);
+        weekStartDate.setDate(weekStartDate.getDate() + (week - 1) * 7);
+        
+        for (const dayOfWeek of reservation.daysOfWeek) {
+          const reservationDate = new Date(weekStartDate);
+          reservationDate.setDate(reservationDate.getDate() + dayOfWeek);
+          
+          if (reservationDate > semesterEndDate) continue;
+          
+          const dateStr = formatDateToKey(reservationDate);
+          
+          newReservations.push({
+            day: dateStr,
+            startHour: reservation.startHour,
+            startMinute: reservation.startMinute,
+            endHour: reservation.endHour,
+            endMinute: reservation.endMinute,
+            title: reservation.title,
+            reservedBy: currentUser.name,
+            userId: currentUser.id,
+            userName: currentUser.name,
+            status: currentUser.role === 'user' ? 'Brak akceptacji' : 'W trakcie'
+          });
+        }
+      }
+      
+      if (currentUser.role === 'user') {
+        const isApproved = await submitReservationsForApproval(newReservations);
+        
+        newReservations = newReservations.map(r => ({
+          ...r,
+          status: isApproved ? 'W trakcie' : 'Brak akceptacji'
+        }));
+      }
+      
+      setReservations([...reservations, ...newReservations]);
+    } catch (err) {
+      console.error("Failed to add recurring reservation:", err);
+      throw err;
+    }
   };
 
   const handleViewModeChange = (mode: "week" | "day") => {
@@ -510,12 +582,12 @@ const ItemCalendar: React.FC = () => {
   return (
     <div className="calendarWrapper">
       <div className="calendarTopControls">
-        <button onClick={goToToday}>Today</button>
+        <button onClick={goToToday}>Dzisiaj</button>
         <div className="dateNavigation">
           <button onClick={() => changeDate("prev")}>&lt;</button>
           <span className="dateRange">
             {viewMode === "week" ? getWeekRangeString() : 
-             currentDay?.dateObj.toLocaleDateString('pl-PL', { day: 'numeric', month: 'long' })}
+             currentDay && formatDateToDisplay(parseDateString(currentDay.date))}
           </span>
           <button onClick={() => changeDate("next")}>&gt;</button>
         </div>
@@ -525,27 +597,33 @@ const ItemCalendar: React.FC = () => {
             className={viewMode === "week" ? "active" : ""}
             onClick={() => handleViewModeChange("week")}
           >
-            Week
+            Tydzień
           </button>
           <button 
             className={viewMode === "day" ? "active" : ""}
             onClick={() => handleViewModeChange("day")}
           >
-            Day
+            Dzień
           </button>
         </div>
         <select
           value={displayMode}
           onChange={(e) => setDisplayMode(e.target.value as "reserved" | "available")}
         >
-          <option value="reserved">Reserved</option>
-          <option value="available">Available</option>
+          <option value="reserved">Zarezerwowane</option>
+          <option value="available">Dostępne</option>
         </select>
       </div>
 
       <div className="calendarGrid">
         <div className="calendarTimeHeader">
           <button className="addBtn" onClick={handleAddButtonClick}>+</button>
+          <button 
+            className="addComplexBtn"
+            onClick={() => setAddingForm(true)}
+          >
+            + Złożona rezerwacja
+          </button>
         </div>
 
         {viewMode === "week" ? (
@@ -554,7 +632,7 @@ const ItemCalendar: React.FC = () => {
               {visibleDays.map((day) => (
                 <div className="dayHeader" key={day.date}>
                   <div>{day.label}</div>
-                  <div>{day.dateObj.getDate()}</div>
+                  <div>{parseDateString(day.date).getDate()}</div>
                 </div>
               ))}
             </div>
@@ -595,7 +673,7 @@ const ItemCalendar: React.FC = () => {
             <div className="calendarDayHeaders">
               <div className="dayHeader">
                 <div>{currentDay?.label}</div>
-                <div>{currentDay?.dateObj.getDate()}</div>
+                <div>{currentDay && formatDateToDisplay(parseDateString(currentDay.date))}</div>
               </div>
             </div>
 
@@ -623,6 +701,7 @@ const ItemCalendar: React.FC = () => {
           selectedSlot={selectedSlot}
           onClose={() => setSelectedSlot(null)}
           onSubmit={handleAddReservation}
+          currentUser={currentUser}
         />
       )}
 
@@ -631,6 +710,19 @@ const ItemCalendar: React.FC = () => {
           reservation={selectedReservation}
           onClose={() => setSelectedReservation(null)}
           onDelete={handleDeleteReservation}
+          currentUser={currentUser}
+        />
+      )}
+
+      {addingForm && (
+        <ReservationForDifficult
+          onClose={() => setAddingForm(false)}
+          onSubmit={handleAddComplexReservation}
+          onSubmitRecurring={handleAddRecurringReservation}
+          currentUser={currentUser}
+          existingReservations={reservations}
+          semesterStartDate={semesterStartDate}
+          semesterEndDate={semesterEndDate}
         />
       )}
     </div>

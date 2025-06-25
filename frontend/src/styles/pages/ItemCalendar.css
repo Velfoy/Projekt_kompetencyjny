@@ -309,6 +309,330 @@ button:hover {
   border-radius: 4px;
 }
 
+/* Add to ItemCalendar.css */
+.timeBlock.reserved.owned {
+  background-color: #ffcccc; /* Light red for your reservations */
+  border-left: 3px solid #ff0000;
+}
+
+.timeBlock.reserved.not-owned {
+  background-color: #f0f0f0; /* Light gray for others' reservations */
+  border-left: 3px solid #cccccc;
+  cursor: not-allowed;
+}
+/* Complex Reservation Form Styles */
+.reservation-form-difficult {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.time-slot-group {
+  background: #f5f5f5;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+.time-slot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.time-range-group, .date-range-group {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.time-inputs {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.add-slot-btn {
+  background: #e0e0e0;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+.add-slot-btn:hover {
+  background: #d0d0d0;
+}
+
+.add-slot-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.remove-slot-btn {
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.remove-slot-btn:hover {
+  background: #ff5252;
+}
+
+.error-message {
+  color: #ff6b6b;
+  margin: 10px 0;
+  padding: 10px;
+  background: #ffeeee;
+  border-radius: 4px;
+}
+
+.success-message {
+  color: #4caf50;
+  margin: 10px 0;
+  padding: 10px;
+  background: #eeffee;
+  border-radius: 4px;
+}
+
+.addComplexBtn {
+  margin-left: 10px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.addComplexBtn:hover {
+  background: #3e8e41;
+}
+
+/* Modal overlay styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Form group styles */
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group input[type="text"],
+.form-group input[type="date"],
+.form-group select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* Form buttons */
+.form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.form-buttons button {
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.form-buttons button:first-child {
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+}
+
+.form-buttons button:last-child {
+  background: #4CAF50;
+  color: white;
+  border: none;
+}
+
+.form-buttons button:last-child:hover {
+  background: #3e8e41;
+}
+.timeBlock.reserved {
+  background-color: #4CAF50; /* Default green for reserved */
+}
+
+.timeBlock.pending {
+  background-color: #FFC107; /* Yellow for pending approval */
+}
+
+.timeBlock.approved {
+  background-color: #2196F3; /* Blue for in progress */
+}
+
+.pendingBadge {
+  background-color: #FFA000;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 0.8em;
+}
+
+.approvedBadge {
+  background-color: #1976D2;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 0.8em;
+}
+
+/* Compact form styles */
+.recurring-form .compact .time-inputs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.days-checkboxes.compact {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.days-checkboxes.compact .day-checkbox {
+  padding: 5px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.days-checkboxes.compact .day-checkbox.active {
+  background-color: #4CAF50;
+  color: white;
+  border-color: #4CAF50;
+}
+
+.weeks-selection.compact {
+  margin-top: 5px;
+}
+
+.weeks-scroll-container {
+  max-height: 120px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+  margin-top: 5px;
+}
+
+.weeks-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.weeks-checkboxes .week-checkbox {
+  padding: 3px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.weeks-checkboxes .week-checkbox.active {
+  background-color: #4CAF50;
+  color: white;
+  border-color: #4CAF50;
+}
+
+.weeks-controls {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 5px;
+}
+
+.weeks-controls .small-btn {
+  padding: 3px 8px;
+  font-size: 0.8rem;
+}
+.timeBlock.reserved {
+  background-color: #ffcccc;
+  border-color: #ff9999;
+}
+
+.timeBlock.pending {
+  background-color: #fff3cd;
+  border-color: #ffeeba;
+}
+
+.timeBlock.approved {
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+}
+
+.timeBlock.rejected {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  opacity: 0.7;
+}
+
+.timeBlock.completed {
+  background-color: #e2e3e5;
+  border-color: #d6d8db;
+  opacity: 0.7;
+}
+
+.statusBadge {
+  font-size: 0.8em;
+  padding: 2px 5px;
+  border-radius: 3px;
+  margin-top: 3px;
+  display: inline-block;
+}
+
+.statusBadge.pending {
+  background-color: #ffc107;
+  color: #000;
+}
+
+.statusBadge.approved {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.statusBadge.rejected {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.statusBadge.completed {
+  background-color: #6c757d;
+  color: #fff;
+}
 @media (max-width: 768px) {
   .calendarTopControls {
     flex-direction: column;
@@ -316,7 +640,7 @@ button:hover {
   }
   
   .timeSlot {
-    height: 40px;
+    height: 160px;
   }
   
   .calendarDayColumn {
