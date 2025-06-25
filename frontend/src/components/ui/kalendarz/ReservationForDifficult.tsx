@@ -2,6 +2,8 @@ import type {Reservation,DayInfo,TimeSlot,SelectedSlot,User,RecurringReservation
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import "@styles/pages/ItemCalendar.css";
+
+
 const ReservationForDifficult: React.FC<ReservationForDifficultProps> = ({ 
   onClose, 
   onSubmit, 
@@ -12,20 +14,37 @@ const ReservationForDifficult: React.FC<ReservationForDifficultProps> = ({
   semesterEndDate 
 }) => {
   const [mode, setMode] = useState<"single" | "recurring">("single");
+  const formatDateToKey = (date: Date): string => {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}.${month}.${year}`;
+  };
+
   const [timeSlots, setTimeSlots] = useState<ComplexTimeSlot[]>([
     { 
       fromHour: 8, 
       fromMinute: 0, 
       toHour: 9, 
       toMinute: 0, 
-      fromDate: new Date().toISOString().split('T')[0],
-      toDate: new Date().toISOString().split('T')[0]
+      fromDate: formatDateToKey(new Date()),
+      toDate: formatDateToKey(new Date())
     }
   ]);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [title, setTitle] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Time boundaries
+  const MIN_HOUR = 8;
+  const MAX_HOUR = 21;
+
+  // Helper functions for date handling
+  const parseDateString = (dateStr: string): Date => {
+    const [day, month, year] = dateStr.split('.').map(Number);
+    return new Date(year, month - 1, day);
+  };
 
   // Recurring reservation state
   const [recurringSlot, setRecurringSlot] = useState({
@@ -56,7 +75,7 @@ const ReservationForDifficult: React.FC<ReservationForDifficultProps> = ({
   }, [semesterStartDate, semesterEndDate]);
 
   // Day names for checkboxes
-  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const dayNames = ["Niedz", "Pon", "Wt", "Śr", "Czw", "Pt", "Sob"];
 
   const handleAddSlot = () => {
     if (timeSlots.length >= 5) return;
@@ -73,6 +92,15 @@ const ReservationForDifficult: React.FC<ReservationForDifficultProps> = ({
 
   const handleTimeChange = (index: number, field: keyof ComplexTimeSlot, value: number | string) => {
     const newSlots = [...timeSlots];
+    
+    // Convert date from HTML input format (YYYY-MM-DD) to Polish format (DD.MM.YYYY)
+    if ((field === 'fromDate' || field === 'toDate') && typeof value === 'string') {
+      const date = new Date(value);
+      if (!isNaN(date.getTime())) {
+        value = formatDateToKey(date);
+      }
+    }
+    
     (newSlots[index] as any)[field] = typeof value === 'string' ? value : Number(value);
     setTimeSlots(newSlots);
     setError(null);
@@ -89,12 +117,23 @@ const ReservationForDifficult: React.FC<ReservationForDifficultProps> = ({
     const fromTotal = slot.fromHour * 60 + slot.fromMinute;
     const toTotal = slot.toHour * 60 + slot.toMinute;
     
+    // Check time boundaries
+    if (slot.fromHour < MIN_HOUR || slot.fromHour > MAX_HOUR) {
+      setError(`Time slot ${timeSlots.indexOf(slot) + 1}: Start time must be between 8:00 and 21:00`);
+      return false;
+    }
+    
+    if (slot.toHour < MIN_HOUR || slot.toHour > MAX_HOUR) {
+      setError(`Time slot ${timeSlots.indexOf(slot) + 1}: End time must be between 8:00 and 21:00`);
+      return false;
+    }
+    
     if (toTotal <= fromTotal) {
       setError(`Time slot ${timeSlots.indexOf(slot) + 1}: End time must be after start time`);
       return false;
     }
 
-    if (new Date(slot.toDate) < new Date(slot.fromDate)) {
+    if (parseDateString(slot.toDate) < parseDateString(slot.fromDate)) {
       setError(`Time slot ${timeSlots.indexOf(slot) + 1}: End date must be after or equal to start date`);
       return false;
     }
@@ -104,20 +143,31 @@ const ReservationForDifficult: React.FC<ReservationForDifficultProps> = ({
 
   const validateRecurringSlot = (): boolean => {
     if (recurringSlot.daysOfWeek.length === 0) {
-      setError("Please select at least one day of the week");
+      setError("Proszę wybrać przynajmniej jeden dzień tygodnia");
       return false;
     }
 
     if (recurringSlot.weeks.length === 0) {
-      setError("Please select at least one week");
+      setError("Proszę wybrać przynajmniej jeden tydzień");
       return false;
     }
 
     const startTotal = recurringSlot.startHour * 60 + recurringSlot.startMinute;
     const endTotal = recurringSlot.endHour * 60 + recurringSlot.endMinute;
     
+    // Check time boundaries
+    if (recurringSlot.startHour < MIN_HOUR || recurringSlot.startHour > MAX_HOUR) {
+      setError("Godzina rozpoczęcia musi być między 8:00 a 21:00");
+      return false;
+    }
+    
+    if (recurringSlot.endHour < MIN_HOUR || recurringSlot.endHour > MAX_HOUR) {
+      setError("Godzina zakończenia musi być między 8:00 a 21:00");
+      return false;
+    }
+    
     if (endTotal <= startTotal) {
-      setError("End time must be after start time");
+      setError("Godzina zakończenia musi być późniejsza niż godzina rozpoczęcia");
       return false;
     }
 
@@ -126,11 +176,11 @@ const ReservationForDifficult: React.FC<ReservationForDifficultProps> = ({
 
   const checkForConflicts = (slot: ComplexTimeSlot): {hasConflict: boolean, conflictMessage: string} => {
     const conflicts = [];
-    const fromDate = new Date(slot.fromDate);
-    const toDate = new Date(slot.toDate);
+    const fromDate = parseDateString(slot.fromDate);
+    const toDate = parseDateString(slot.toDate);
     
     for (let d = new Date(fromDate); d <= toDate; d.setDate(d.getDate() + 1)) {
-      const dateStr = d.toISOString().split('T')[0];
+      const dateStr = formatDateToKey(d);
       const slotStart = slot.fromHour * 60 + slot.fromMinute;
       const slotEnd = slot.toHour * 60 + slot.toMinute;
       
@@ -153,11 +203,11 @@ const ReservationForDifficult: React.FC<ReservationForDifficultProps> = ({
 
     if (conflicts.length > 0) {
       const conflictMessages = conflicts.map(c => 
-        `On ${c.date} at ${c.time} (${c.title})`
+        `W dniu ${c.date} w godzinach ${c.time} (${c.title})`
       ).join("\n");
       return {
         hasConflict: true,
-        conflictMessage: `Time slot ${timeSlots.indexOf(slot) + 1} has conflicts:\n${conflictMessages}`
+        conflictMessage: `Slot czasowy ${timeSlots.indexOf(slot) + 1} ma konflikty:\n${conflictMessages}`
       };
     }
     
@@ -180,7 +230,7 @@ const ReservationForDifficult: React.FC<ReservationForDifficultProps> = ({
         
         if (reservationDate > semesterEndDate) continue;
         
-        const dateStr = reservationDate.toISOString().split('T')[0];
+        const dateStr = formatDateToKey(reservationDate);
         reservedDates.push({
           date: dateStr,
           start: recurringSlot.startHour * 60 + recurringSlot.startMinute,
@@ -211,11 +261,11 @@ const ReservationForDifficult: React.FC<ReservationForDifficultProps> = ({
     
     if (conflicts.length > 0) {
       const conflictMessages = conflicts.map(c => 
-        `On ${c.date} at ${c.time} (${c.title})`
+        `W dniu ${c.date} w godzinach ${c.time} (${c.title})`
       ).join("\n");
       return {
         hasConflict: true,
-        conflictMessage: `Recurring reservation has conflicts:\n${conflictMessages}`
+        conflictMessage: `Powtarzająca się rezerwacja ma konflikty:\n${conflictMessages}`
       };
     }
     
@@ -224,7 +274,7 @@ const ReservationForDifficult: React.FC<ReservationForDifficultProps> = ({
 
   const handleSubmit = async () => {
     if (!title) {
-      setError("Please enter a title for the reservation");
+      setError("Proszę wprowadzić tytuł rezerwacji");
       return;
     }
 
@@ -269,12 +319,12 @@ const ReservationForDifficult: React.FC<ReservationForDifficultProps> = ({
         });
       }
       
-      setSuccess("Reservation successfully created!");
+      setSuccess("Rezerwacja została pomyślnie utworzona!");
       setTimeout(() => {
         onClose();
       }, 1500);
     } catch (err) {
-      setError("Failed to create reservation. Please try again.");
+      setError("Nie udało się utworzyć rezerwacji. Proszę spróbować ponownie.");
     } finally {
       setIsSubmitting(false);
     }
@@ -308,34 +358,37 @@ const ReservationForDifficult: React.FC<ReservationForDifficultProps> = ({
     setError(null);
   };
 
+  // Generate hour options for time selectors (8:00-21:00)
+  const hourOptions = Array.from({length: MAX_HOUR - MIN_HOUR + 1}, (_, i) => MIN_HOUR + i);
+
   return (
     <div className="modal-overlay">
       <div className="reservation-form-difficult">
-        <h3>Add Complex Reservation</h3>
+        <h3>Dodaj złożoną rezerwację</h3>
         
         <div className="mode-switch">
           <button
             className={mode === "single" ? "active" : ""}
             onClick={() => setMode("single")}
           >
-            One-time/Multiple
+            Jednorazowa/Wielokrotna
           </button>
           <button
             className={mode === "recurring" ? "active" : ""}
             onClick={() => setMode("recurring")}
           >
-            Recurring
+            Powtarzająca się
           </button>
         </div>
         
         <div className="form-group">
-          <label>Title:</label>
+          <label>Tytuł:</label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
-            placeholder="Enter reservation title"
+            placeholder="Wprowadź tytuł rezerwacji"
           />
         </div>
 
@@ -344,28 +397,28 @@ const ReservationForDifficult: React.FC<ReservationForDifficultProps> = ({
             {timeSlots.map((slot, index) => (
               <div key={index} className="time-slot-group">
                 <div className="time-slot-header">
-                  <h4>Time Slot {index + 1}</h4>
+                  <h4>Slot czasowy {index + 1}</h4>
                   {index > 0 && (
                     <button 
                       type="button"
                       className="remove-slot-btn"
                       onClick={() => handleRemoveSlot(index)}
                     >
-                      Remove
+                      Usuń
                     </button>
                   )}
                 </div>
 
                 <div className="time-range-group">
                   <div className="form-group">
-                    <label>Start Time:</label>
+                    <label>Godzina rozpoczęcia:</label>
                     <div className="time-inputs">
                       <select
                         value={slot.fromHour}
                         onChange={(e) => handleTimeChange(index, 'fromHour', parseInt(e.target.value))}
                       >
-                        {Array.from({length: 24}, (_, i) => (
-                          <option key={i} value={i}>{i.toString().padStart(2, '0')}</option>
+                        {hourOptions.map(hour => (
+                          <option key={hour} value={hour}>{hour.toString().padStart(2, '0')}</option>
                         ))}
                       </select>
                       :
@@ -382,14 +435,14 @@ const ReservationForDifficult: React.FC<ReservationForDifficultProps> = ({
                   </div>
 
                   <div className="form-group">
-                    <label>End Time:</label>
+                    <label>Godzina zakończenia:</label>
                     <div className="time-inputs">
                       <select
                         value={slot.toHour}
                         onChange={(e) => handleTimeChange(index, 'toHour', parseInt(e.target.value))}
                       >
-                        {Array.from({length: 24}, (_, i) => (
-                          <option key={i} value={i}>{i.toString().padStart(2, '0')}</option>
+                        {hourOptions.map(hour => (
+                          <option key={hour} value={hour}>{hour.toString().padStart(2, '0')}</option>
                         ))}
                       </select>
                       :
@@ -408,22 +461,22 @@ const ReservationForDifficult: React.FC<ReservationForDifficultProps> = ({
 
                 <div className="date-range-group">
                   <div className="form-group">
-                    <label>Start Date:</label>
+                    <label>Data rozpoczęcia:</label>
                     <input
                       type="date"
-                      value={slot.fromDate}
+                      value={new Date(parseDateString(slot.fromDate)).toISOString().split('T')[0]}
                       onChange={(e) => handleTimeChange(index, 'fromDate', e.target.value)}
                       min={new Date().toISOString().split('T')[0]}
                     />
                   </div>
 
                   <div className="form-group">
-                    <label>End Date:</label>
+                    <label>Data zakończenia:</label>
                     <input
                       type="date"
-                      value={slot.toDate}
+                      value={new Date(parseDateString(slot.toDate)).toISOString().split('T')[0]}
                       onChange={(e) => handleTimeChange(index, 'toDate', e.target.value)}
-                      min={slot.fromDate}
+                      min={new Date(parseDateString(slot.fromDate)).toISOString().split('T')[0]}
                     />
                   </div>
                 </div>
@@ -436,21 +489,21 @@ const ReservationForDifficult: React.FC<ReservationForDifficultProps> = ({
               onClick={handleAddSlot}
               disabled={timeSlots.length >= 5}
             >
-              + Add Another Time Slot (Max 5)
+              + Dodaj kolejny slot czasowy (Maks. 5)
             </button>
           </>
         ) : (
           <div className="recurring-form">
             <div className="time-range-group compact">
               <div className="form-group">
-                <label>Time:</label>
+                <label>Godziny:</label>
                 <div className="time-inputs">
                   <select
                     value={recurringSlot.startHour}
                     onChange={(e) => setRecurringSlot({...recurringSlot, startHour: parseInt(e.target.value)})}
                   >
-                    {Array.from({length: 24}, (_, i) => (
-                      <option key={i} value={i}>{i.toString().padStart(2, '0')}</option>
+                    {hourOptions.map(hour => (
+                      <option key={hour} value={hour}>{hour.toString().padStart(2, '0')}</option>
                     ))}
                   </select>
                   :
@@ -463,13 +516,13 @@ const ReservationForDifficult: React.FC<ReservationForDifficultProps> = ({
                     <option value={30}>30</option>
                     <option value={45}>45</option>
                   </select>
-                  &nbsp;to&nbsp;
+                  &nbsp;do&nbsp;
                   <select
                     value={recurringSlot.endHour}
                     onChange={(e) => setRecurringSlot({...recurringSlot, endHour: parseInt(e.target.value)})}
                   >
-                    {Array.from({length: 24}, (_, i) => (
-                      <option key={i} value={i}>{i.toString().padStart(2, '0')}</option>
+                    {hourOptions.map(hour => (
+                      <option key={hour} value={hour}>{hour.toString().padStart(2, '0')}</option>
                     ))}
                   </select>
                   :
@@ -487,7 +540,7 @@ const ReservationForDifficult: React.FC<ReservationForDifficultProps> = ({
             </div>
 
             <div className="form-group">
-              <label>Repeat on:</label>
+              <label>Powtarzaj w:</label>
               <div className="days-checkboxes compact">
                 {dayNames.map((day, index) => (
                   <label 
@@ -507,7 +560,7 @@ const ReservationForDifficult: React.FC<ReservationForDifficultProps> = ({
             </div>
 
             <div className="form-group">
-              <label>For weeks:</label>
+              <label>Dla tygodni:</label>
               <div className="weeks-selection compact">
                 <div className="weeks-controls">
                   <button 
@@ -515,14 +568,14 @@ const ReservationForDifficult: React.FC<ReservationForDifficultProps> = ({
                     className="small-btn"
                     onClick={() => toggleAllWeeks(true)}
                   >
-                    All
+                    Wszystkie
                   </button>
                   <button 
                     type="button" 
                     className="small-btn"
                     onClick={() => toggleAllWeeks(false)}
                   >
-                    None
+                    Żaden
                   </button>
                 </div>
                 <div className="weeks-scroll-container">
@@ -558,14 +611,15 @@ const ReservationForDifficult: React.FC<ReservationForDifficultProps> = ({
         {success && <div className="success-message">{success}</div>}
 
         <div className="form-buttons">
-          <button type="button" onClick={onClose} disabled={isSubmitting}>Cancel</button>
+          <button type="button" onClick={onClose} disabled={isSubmitting}>Anuluj</button>
           <button type="button" onClick={handleSubmit} disabled={isSubmitting}>
-            {isSubmitting ? "Processing..." : 
-             mode === "single" ? "Reserve All Slots" : "Create Recurring Reservation"}
+            {isSubmitting ? "Przetwarzanie..." : 
+             mode === "single" ? "Zarezerwuj wszystkie sloty" : "Utwórz powtarzającą się rezerwację"}
           </button>
         </div>
       </div>
     </div>
   );
 };
+
 export default ReservationForDifficult;

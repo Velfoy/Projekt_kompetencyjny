@@ -478,8 +478,8 @@ const ItemCalendar: React.FC = () => {
     }
   };
 
-  const [semesterStartDate] = useState<Date>(new Date('2025-06-01'));
-  const [semesterEndDate] = useState<Date>(new Date('2025-08-31'));
+  const [semesterStartDate] = useState<Date>(parseDateString('01.06.2025'));
+const [semesterEndDate] = useState<Date>(parseDateString('31.08.2025'));
 
   const handleAddComplexReservation = async (slots: ComplexTimeSlot[], title: string) => {
     try {
