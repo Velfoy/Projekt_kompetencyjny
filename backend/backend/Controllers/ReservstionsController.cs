@@ -1,5 +1,4 @@
 ﻿using backend.Attributes;
-using backend.Data;
 using backend.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -59,13 +58,5 @@ namespace backend.Controllers
             return "Made";
         }
 		//get_timespans_for_item
-
-		[HttpGet("/seed")]
-		[AdminAccess("global")]
-		public async Task<ActionResult<string>> Seed()
-		{
-			Seed_database.CreateItems(_context);
-			return "Made";
-		}
 	}
 }

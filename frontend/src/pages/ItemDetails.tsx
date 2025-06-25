@@ -106,7 +106,7 @@ const ItemDetails = () => {
       fetchData();
     }, []);
 
-  const [booking, setBooking] = useState(mockData.find((item) => item.id === id));
+  const [booking, setBooking] = useState(mockData.find((item) => id === id));
   console.log(booking);
 
     useEffect(() => {

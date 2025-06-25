@@ -3,6 +3,7 @@ using backend.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using backend.Data;
 
 namespace backend.Controllers
 {
@@ -55,6 +56,14 @@ namespace backend.Controllers
 		        return NotFound();
 	        }
 	        return "Request successfully approved";
+        }
+        
+        [HttpGet("/seed")]
+        [AdminAccess("global")]
+        public async Task<ActionResult<string>> Seed()
+        {
+	        Seed_database.CreateItems(_context);
+	        return "Made";
         }
     }
 }
