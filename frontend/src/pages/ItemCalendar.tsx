@@ -581,8 +581,14 @@ const [semesterEndDate] = useState<Date>(parseDateString('31.08.2025'));
 
   return (
     <div className="calendarWrapper">
+      <div className="calendarName">
+        <p className="itemName">{}VR Headset</p>
+        <div className="breadcrumpsRes">
+          Raptors - Urządzenia -Mikrokontrolery
+        </div>
+      </div>
       <div className="calendarTopControls">
-        <button onClick={goToToday}>Dzisiaj</button>
+        <button className="button_today" onClick={goToToday}>Dzisiaj</button>
         <div className="dateNavigation">
           <button onClick={() => changeDate("prev")}>&lt;</button>
           <span className="dateRange">
@@ -607,6 +613,7 @@ const [semesterEndDate] = useState<Date>(parseDateString('31.08.2025'));
           </button>
         </div>
         <select
+        className="CalendarSelect"
           value={displayMode}
           onChange={(e) => setDisplayMode(e.target.value as "reserved" | "available")}
         >
