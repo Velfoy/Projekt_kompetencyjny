@@ -21,7 +21,7 @@ const ReservationDetails: React.FC<{
     try {
       await onDelete();
     } catch (err) {
-      setError("Failed to delete reservation. Please try again.");
+      setError("Nie udało się usunąć rezerwacji. Spróbuj ponownie.");
     } finally {
       setIsDeleting(false);
     }
@@ -30,12 +30,12 @@ const ReservationDetails: React.FC<{
   return (
     <div className="modal-overlay">
       <div className="reservation-details">
-        <h3>Reservation Details</h3>
+        <h3>Szczegóły rezerwacji</h3>
         <div className="details-content">
-          <p><strong>Date:</strong> {reservation.day}</p>
-          <p><strong>Time:</strong> {reservation.startHour}:{reservation.startMinute.toString().padStart(2, '0')} - {reservation.endHour}:{reservation.endMinute.toString().padStart(2, '0')}</p>
-          <p><strong>Reserved by:</strong> {reservation.userName}</p>
-          <p><strong>Title:</strong> {reservation.title}</p>
+          <p><strong>Data:</strong> {reservation.day}</p>
+          <p><strong>Godzina:</strong> {reservation.startHour}:{reservation.startMinute.toString().padStart(2, '0')} - {reservation.endHour}:{reservation.endMinute.toString().padStart(2, '0')}</p>
+          <p><strong>Zarezerwowano przez:</strong> {reservation.userName}</p>
+          <p><strong>Tytuł:</strong> {reservation.title}</p>
           {reservation.status && (
             <p><strong>Status:</strong> 
               <span className={`status-${reservation.status}`}>
@@ -48,10 +48,10 @@ const ReservationDetails: React.FC<{
         <div className="details-buttons">
           {canDelete && (
             <button onClick={handleDelete} className="delete-btn" disabled={isDeleting}>
-              {isDeleting ? "Deleting..." : "Delete"}
+              {isDeleting ? "Usuwanie..." : "Usuń"}
             </button>
           )}
-          <button onClick={onClose}>Close</button>
+          <button onClick={onClose}>Zamknij</button>
         </div>
       </div>
     </div>

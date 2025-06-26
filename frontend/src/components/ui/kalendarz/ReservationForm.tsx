@@ -202,11 +202,11 @@ const ReservationForm: React.FC<{
   return (
     <div className="modal-overlay">
       <div className="reservation-form">
-        <h3>Add Reservation</h3>
+        <h3>Dodaj rezerwację</h3>
         <form onSubmit={handleSubmit}>
           {error && <div className="error-message">{error}</div>}
           <div className="form-group">
-            <label>Title:</label>
+            <label>Nazwa:</label>
             <input
               type="text"
               value={title}
@@ -215,7 +215,7 @@ const ReservationForm: React.FC<{
             />
           </div>
           <div className="form-group">
-            <label>Start Time:</label>
+            <label>Czas rozpoczęcia:</label>
             <div className="time-inputs">
               <select
                 value={startHour}
@@ -243,7 +243,7 @@ const ReservationForm: React.FC<{
             </div>
           </div>
           <div className="form-group">
-            <label>End Time:</label>
+            <label>Czas zakończenia:</label>
             <div className="time-inputs">
               <select
                 value={endHour}
@@ -271,9 +271,9 @@ const ReservationForm: React.FC<{
             </div>
           </div>
           <div className="form-buttons">
-            <button type="button" onClick={onClose} disabled={isSubmitting}>Cancel</button>
+            <button type="button" onClick={onClose} disabled={isSubmitting}>Zamknij</button>
             <button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Processing..." : "Save"}
+              {isSubmitting ? "Przetwarzanie..." : "Zapisz"}
             </button>
           </div>
         </form>

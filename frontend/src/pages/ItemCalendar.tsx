@@ -41,19 +41,39 @@ const formatDateToKey = (date: Date): string => {
   const year = date.getFullYear();
   return `${day}.${month}.${year}`;
 };
+// Mock data
+const mockData: Record<string, { name: string; breadcrumbs: string }> = {
+  "1": {
+    name: "VR Headset",
+    breadcrumbs: "Raptors - Urządzenia - Mikrokontrolery"
+  },
+  "2": {
+    name: "Smart Watch",
+    breadcrumbs: "Wearables - Gadgets - Electronics"
+  },
+  "3": {
+    name: "Wireless Earbuds",
+    breadcrumbs: "Audio - Accessories - Bluetooth"
+  },
+  // add more if needed
+};
 
 const ItemCalendar: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [daysPerPage, setDaysPerPage] = useState<number>(7);
   const [viewMode, setViewMode] = useState<"week" | "day">("week");
-  const [displayMode, setDisplayMode] = useState<"reserved" | "available">("reserved");
+  const [displayMode, setDisplayMode] = useState<"reserved" | "available">("available");
   const [page, setPage] = useState<number>(0);
   const [currentDay, setCurrentDay] = useState<DayInfo | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<SelectedSlot | null>(null);
   const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
   const [addingForm, setAddingForm] = useState(false);
   const {  role, username } = useAuth();
+   const data = mockData[id || ""] || {
+    name: "Unknown Item",
+    breadcrumbs: "No breadcrumbs available"
+  };
   
   const startHour = 8;
   const endHour = 21;
@@ -416,7 +436,7 @@ const ItemCalendar: React.FC = () => {
                 )}
               </div>
             ) : (
-              'Available'
+              'Dostępne'
             )}
           </div>
         );
@@ -479,7 +499,7 @@ const ItemCalendar: React.FC = () => {
   };
 
   const [semesterStartDate] = useState<Date>(parseDateString('01.06.2025'));
-const [semesterEndDate] = useState<Date>(parseDateString('31.08.2025'));
+  const [semesterEndDate] = useState<Date>(parseDateString('31.08.2025'));
 
   const handleAddComplexReservation = async (slots: ComplexTimeSlot[], title: string) => {
     try {
@@ -581,12 +601,10 @@ const [semesterEndDate] = useState<Date>(parseDateString('31.08.2025'));
 
   return (
     <div className="calendarWrapper">
-      <div className="calendarName">
-        <p className="itemName">{}VR Headset</p>
-        <div className="breadcrumpsRes">
-          Raptors - Urządzenia -Mikrokontrolery
-        </div>
-      </div>
+       <div className="calendarName">
+      <p className="itemName">{data.name}</p>
+      <div className="breadcrumpsRes">{data.breadcrumbs}</div>
+    </div>
       <div className="calendarTopControls">
         <button className="button_today" onClick={goToToday}>Dzisiaj</button>
         <div className="dateNavigation">
@@ -597,7 +615,6 @@ const [semesterEndDate] = useState<Date>(parseDateString('31.08.2025'));
           </span>
           <button onClick={() => changeDate("next")}>&gt;</button>
         </div>
-        <div className="monthYear">{getCurrentMonthYear()}</div>
         <div className="viewModeControls">
           <button 
             className={viewMode === "week" ? "active" : ""}
@@ -613,23 +630,22 @@ const [semesterEndDate] = useState<Date>(parseDateString('31.08.2025'));
           </button>
         </div>
         <select
-        className="CalendarSelect"
+          className="CalendarSelect"
           value={displayMode}
           onChange={(e) => setDisplayMode(e.target.value as "reserved" | "available")}
         >
-          <option value="reserved">Zarezerwowane</option>
           <option value="available">Dostępne</option>
+          <option value="reserved">Zarezerwowane</option>
         </select>
       </div>
 
       <div className="calendarGrid">
         <div className="calendarTimeHeader">
-          <button className="addBtn" onClick={handleAddButtonClick}>+</button>
           <button 
             className="addComplexBtn"
             onClick={() => setAddingForm(true)}
           >
-            + Złożona rezerwacja
+            +
           </button>
         </div>
 
