@@ -88,14 +88,38 @@ const mockComments = [
   },
 ];
 
-const userName = "Valeriia Zlydar";
+//const userName = "Valeriia Zlydar";
 
 const ItemDetails = () => {
   const { id } = useParams<{ id: string }>();
   const [activeTab, setActiveTab] = useState("specs");
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
+  const [userName, setUserName] = useState("")
+  const [booking, setBooking] = useState(mockData.find(() => id === id));
+  const token = localStorage.getItem('auth_token')
+  if (!token)
+  return (
+    <div className="not-found-container">
+      <div className="not-found-card">
+        <h2>Nie znaleziono rezerwacji</h2>
+        <p>
+          Rezerwacja o ID: <strong>{id}</strong> nie istnieje lub została
+          usunięta.
+        </p>
+        <p>Sprawdź poprawność adresu URL lub wybierz inną pozycję z listy.</p>
+      </div>
+    </div>
+  );//Access error, 404 is temporary
 
+  useEffect(() => {
+      const fetchData = async () => {
+        const response = await fetch(backend_url + "api/users/whoami");
+        const data = await response.json();
+        setUserName(data.username);
+      };
+      fetchData();
+    }, []);
 
   useEffect(() => {
       const fetchData = async () => {
@@ -106,7 +130,6 @@ const ItemDetails = () => {
       fetchData();
     }, []);
 
-  const [booking, setBooking] = useState(mockData.find((item) => id === id));
   console.log(booking);
 
     useEffect(() => {
@@ -117,6 +140,7 @@ const ItemDetails = () => {
       };
       fetchData();
     }, []);
+    console.log(id)
   
 
   // if (!booking)
@@ -135,21 +159,23 @@ const ItemDetails = () => {
   //Lera will later change that so that it displays "Loading" 
 
 
-  const handleAddComment = () => {
+  const handleAddComment = async () => {
     if (!newComment.trim()) return;
+    console.log(id)
 
     const comment = {
-      id: Date.now(),
+      item_id: id,
       author: userName,
       text: newComment,
-      date: new Date().toLocaleDateString("pl-PL", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-      }),
+      date: new Date().toISOString(),
     };
-
-    setComments([comment, ...comments]);
+    console.log(JSON.stringify(comment))
+    await fetch(backend_url + "api/item/add_comment/", {method: 'POST', 
+      body: JSON.stringify(comment), 
+      headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}});
+    const response = await fetch(backend_url + "api/item/get_comments/" + id);
+    const data = await response.json();
+    setComments(data);
     setNewComment("");
   };
 

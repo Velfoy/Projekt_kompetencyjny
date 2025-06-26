@@ -1,4 +1,6 @@
-﻿using backend.Models;
+﻿using System.Security.Claims;
+using backend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -35,8 +37,29 @@ namespace backend.Controllers
 		[HttpGet("get_comments/{*id}")]
 		public async Task<ActionResult<IEnumerable<Object>>> GetComments(int id)
 		{
-			var comments = _context.Comments.Include(a => a.Item).Where(a => a.Item.Id == id);
+			var comments = _context.Comments.Include(a => a.Item).Where(a => a.Item.Id == id).OrderBy(a => a.Created);
 			return await (from c in comments select c.ToJSON()).ToListAsync();
 		}
+
+		
+		[Authorize]//IMPORTANT:Add check that the user is the one leaving the comment. Or, even better, make the comment display user's name
+		[HttpPost("add_comment")]
+		public async Task<ActionResult> AddComment(NewComment comment)
+		{
+			Comment commentToAdd = new Comment() {Author = User.Claims.First(claim => claim.Type == ClaimTypes.Email).Value, 
+				Contents = comment.text, Created = comment.date, 
+				Item = await _context.Items.FirstOrDefaultAsync(a => a.Id == comment.item_id)};
+			_context.Comments.Add(commentToAdd);
+			await _context.SaveChangesAsync();
+			return CreatedAtAction("AddComment", new { id = commentToAdd.Id }, comment);
+		}
 	}
+
+    public class NewComment
+    {
+	    public int item_id {get; set;}
+	    public string author {get; set;}
+	    public string text {get; set;}
+	    public DateTime date {get; set;}
+    }
 }
