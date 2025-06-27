@@ -10,8 +10,8 @@
 		{
 			return new
 			{
-				day = this.Start.Date, start = $"{this.Start.Hour}:{this.Start.Minute}",
-				end = $"{this.End.Hour}:{this.End.Minute}"
+				day = $"{Start.Day:D2}.{Start.Month:D2}.{Start.Year:D4}", from = $"{Start.Hour:D2}:{Start.Minute:D2}",
+				to = $"{End.Hour:D2}:{End.Minute:D2}"
 			};
 		}
 	}

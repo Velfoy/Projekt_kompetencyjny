@@ -4,6 +4,7 @@ import "@styles/components/DataTable.css";
 import styles from "../../styles/pages/historiaadmin.module.css";
 import type {DaySchedule} from '../../types/authTypes';
 import ReservationTime from "@/src/components/ui/timeLogic/ReservationTime";
+import { backend_url } from "@/src/main";
 
 export interface Column {
   key: string;
@@ -32,6 +33,7 @@ export interface DataTableProps {
   timeDifficulty:string;
 }
 
+
 const StatusBadge = ({ status }: { status: string }) => {
   const statusClassMap: Record<string, string> = {
     "Brak akceptacji": "badge warning",
@@ -48,7 +50,6 @@ const DataTable: React.FC<DataTableProps> = ({
   view = "user",
   dropdownActions = [],
   itemsPerPage = 5,
-  timeDetails=[],
   timeDifficulty
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -59,6 +60,12 @@ const DataTable: React.FC<DataTableProps> = ({
   const [editedStatus, setEditedStatus] = useState<Record<number, string>>({});
   const [expandedRow, setExpandedRow] = useState<number | null>(null);
     const [timeWindow,setTimeWindow]=useState(false);
+  const [timeDetails, setTimeDetails] = useState<DaySchedule[]>([
+    { day: '02.03.2025', from: '10:00', to: '12:00' },
+    { day: '09.03.2025', from: '10:00', to: '12:00' },
+    { day: '16.03.2025', from: '10:00', to: '12:00' },
+    { day: '30.03.2025', from: '10:00', to: '12:00' },
+  ])
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -228,7 +235,12 @@ const visibleColumns = columns.filter(col => {
                 </div>
                 
               ) : col.key==="termin_id"?(
-                <button onClick={()=> setTimeWindow(true)} className="detailButton_historia">Zobacz szczegóły</button>
+                <button onClick={async () => {
+                  const data = await fetch(backend_url + "api/reservations/get_timespans/" + row.termin_id);
+                  setTimeDetails(await data.json());
+                  setTimeWindow(true)
+                  
+                }} className="detailButton_historia">Zobacz szczegóły</button>
               ): col.key==="access"&& editingRowId === row.id?(
                 <select
                    value={editedFields[row.id]?.access ?? row.access}
@@ -331,7 +343,12 @@ const visibleColumns = columns.filter(col => {
                {windowWidth <= 1050 && (
                 <div className="detail_row">
                   <span className="detail_label">Termin rezerwacji:</span>
-                   <button  onClick={()=> setTimeWindow(true)} className="detailButton_historia">Zobacz szczegóły</button>
+                   <button  onClick={async () => {
+                  const data = await fetch(backend_url + "api/reservations/get_timespans/" + row.termin_id);
+                  setTimeDetails(await data.json());
+                  setTimeWindow(true)
+                  
+                }} className="detailButton_historia">Zobacz szczegóły</button>
                 </div>
               )}
             </div>

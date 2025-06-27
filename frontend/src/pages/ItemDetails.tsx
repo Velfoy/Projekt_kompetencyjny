@@ -186,6 +186,7 @@ const ItemDetails = () => {
 
 
   return (
+    
     <div className="itemDetails_container">
       <div className="top-section">
         <div className="image-container">

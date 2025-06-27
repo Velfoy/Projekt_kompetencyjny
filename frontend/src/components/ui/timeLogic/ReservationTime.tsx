@@ -19,6 +19,7 @@ interface ReservationProps {
 
 const semestrStart="01.03.2025";
 const semestrEnd="30.06.2025";
+//TODO:Change to being dynamic
 const sampleSchedule = [
   { day: '01.03.2025', from: '08:00', to: '10:00' },  // Saturday, week 1
   { day: '03.03.2025', from: '09:00', to: '11:00' },  // Monday, week 2

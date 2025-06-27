@@ -29,9 +29,9 @@
 						break;
 					}
 				}
-				approval_status ??= (bool)(Approved) ? "Nie używana" : "Odrzucona";//This is the worst code I've written in a while
+				approval_status ??= (bool)(Approved) ? "Zakończona" : "Odrzucona";//This is the worst code I've written in a while
 			}
-				return new { id = Renter, type = Item.Type, item = Item.Description, item_id = Item.Id, unit = Item.Organivzation.Name, status = approval_status, termin_id = Id };
+				return new { id = Id, type = Item.Type, item = Item.Description, item_id = Item.Id, unit = Item.Organivzation.Name, status = approval_status, termin_id = Id };
 		}
 	}
 }

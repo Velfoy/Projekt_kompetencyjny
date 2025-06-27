@@ -37,7 +37,7 @@ namespace backend.Controllers
 		[HttpGet("get_comments/{*id}")]
 		public async Task<ActionResult<IEnumerable<Object>>> GetComments(int id)
 		{
-			var comments = _context.Comments.Include(a => a.Item).Where(a => a.Item.Id == id).OrderBy(a => a.Created);
+			var comments = _context.Comments.Include(a => a.Item).Where(a => a.Item.Id == id).OrderByDescending(a => a.Created);
 			return await (from c in comments select c.ToJSON()).ToListAsync();
 		}
 

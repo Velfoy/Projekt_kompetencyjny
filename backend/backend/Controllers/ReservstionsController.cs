@@ -25,15 +25,15 @@ namespace backend.Controllers
         public async Task<ActionResult<IEnumerable<Object>>> GetReservations(int page = 1, int pageSize = 0,
             bool? completed = null, bool? approved = null,
             string userId = "", int itemId = 0) {
-            var res = from r in _context.Requests.Include(r => r.Item).Include(r => r.Item.Organivzation) where 
-                      ((completed == null) ? ((completed ?? true) ? r.Approved != (!completed ?? null) : r.Approved == null) : true)&&
+            var res = from r in _context.Requests.Include(r => r.Item).Include(r => r.Item.Organivzation) where
                       ((userId == "") ? true : r.Renter == userId)&&
                       ((itemId == 0)? true : r.Item.Id == itemId)
                       select r;
             //_context.Requests.Add(new Request { Approved = true, Item = null,})
             if (pageSize == 0)
             {
-                return await (from reservation in res select reservation.ToJSON()).ToListAsync();
+	            var l = await (from reservation in res select reservation.ToJSON()).ToListAsync();
+                return l;
             }
 
 
