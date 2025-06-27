@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState,useEffect } from "react";
 import { useParams } from "react-router-dom";
 import "@styles/pages/ItemDetails.css";
 import productImage from "/img/default-image.png";
-import { backend_url } from "../main";
-
+import LoadingOverlay from "../components/layout/LoadingOverlay";
+//wot eto wziat^^^^^^^^^^^
 
 const mockData = [
   {
@@ -91,10 +91,15 @@ const mockComments = [
 //const userName = "Valeriia Zlydar";
 
 const ItemDetails = () => {
+  const [loading,setLoading]=useState(true);
   const { id } = useParams<{ id: string }>();
   const [activeTab, setActiveTab] = useState("specs");
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);//Change it later
   const [userName, setUserName] = useState("")
   const [booking, setBooking] = useState(mockData.find(() => id === id));
   const token = localStorage.getItem('auth_token')
@@ -286,6 +291,7 @@ const ItemDetails = () => {
           </div>
         )}
       </div>
+       {loading && <LoadingOverlay />}
     </div>
   );
 };
