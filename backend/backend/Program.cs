@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using backend.Middleware;
 
 namespace backend
 {
@@ -83,6 +84,7 @@ namespace backend
             app.UseHttpsRedirection();
             app.UseCors("_allowReactJS");
             app.UseAuthorization();
+            app.UseMiddleware<AdminAccessMiddleware>();
 
 
             app.MapControllers();

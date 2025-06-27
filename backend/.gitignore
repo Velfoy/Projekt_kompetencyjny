@@ -7,3 +7,4 @@ CAS/bin/
 CAS/appsettings.json
 CAS/appsettings.Development.json
 .vs/
+.idea/

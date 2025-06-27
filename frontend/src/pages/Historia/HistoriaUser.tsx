@@ -134,13 +134,15 @@ const HistoriaUser = () => {
     { label: "Usuń zaznaczone" },
     { label: "Usuń wszystkie" },
   ];
-   
+  //???????
+  //NOTE TO SELF: ASK LERA WHAT THE HELL IS WITH SAME DATETIME FOR EVERY ITEM
   const mockTime:DaySchedule[]=[
     { day: '02.03.2025', from: '10:00', to: '12:00' },
     { day: '09.03.2025', from: '10:00', to: '12:00' },
     { day: '16.03.2025', from: '10:00', to: '12:00' },
     { day: '30.03.2025', from: '10:00', to: '12:00' },
   ]
+  //???????
   const mockDifficulty:string="difficult";
   return (
     <div>
