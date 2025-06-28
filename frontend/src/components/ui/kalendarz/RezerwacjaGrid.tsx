@@ -3,6 +3,15 @@ import RezerwacjaBlok from './RezerwacjaBlok';
 import '@styles/components/RezerwacjaGrid.css';
 import { useAuth } from '@hooks/useAuth';
 import styles from "@styles/pages/historiaadmin.module.css";
+import LoadingOverlay from '../../layout/LoadingOverlay';
+import { backend_url } from '@/src/main';
+
+interface Item {
+  id: number,
+  name: string,
+  description: string,
+  image:string
+}
 
 const allProducts = [
   {
@@ -227,9 +236,25 @@ const itemsPerPage = 6;
 
 const RezerwacjaGrid: React.FC = () => {
   const { role} = useAuth();
-  const [products, setProducts] = useState(allProducts); 
+  const [products, setProducts] = useState<Item[]>([]); 
   const [currentPage, setCurrentPage] = useState(1);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [loading, setLoading]=useState(true);
+
+  useEffect(() => {
+    if (products.length > 0) {
+      setLoading(false);
+    }
+  }, [products]);
+
+  useEffect(() => {
+      const fetchData = async () => {
+        const response = await fetch(backend_url + "api/item/get_items");
+        const data = await response.json();
+        setProducts(data);
+      };
+      fetchData();
+    }, []);
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -248,6 +273,7 @@ const RezerwacjaGrid: React.FC = () => {
     setProducts(prev => prev.filter(product => product.id !== id));
   };
 
+  if (loading) return <LoadingOverlay />;
   return (
     <>
       <div className="product-grid">
@@ -255,9 +281,9 @@ const RezerwacjaGrid: React.FC = () => {
           <RezerwacjaBlok
             key={product.id}
             id={product.id}
-            title={product.title}
+            title={product.name}
             description={product.description}
-            imageUrl={product.imageUrl}
+            imageUrl={product.image}
             role={role as string}
             onDelete={handleDelete}
           />
@@ -265,7 +291,9 @@ const RezerwacjaGrid: React.FC = () => {
       </div>
 
       <div className={styles.pagination_zgloszenia} style={{ backgroundColor: "#F4F4F4", border: "1px solid #99C49A", borderRadius: "10px", padding: "5px 10px" }}>
-        <button className={styles.pageButton_zgloszenia} disabled={currentPage === 1} onClick={() => setCurrentPage(1)}>
+        <button className={styles.pageButton_zgloszenia} disabled={currentPage === 1} onClick={() => setCurrentPage(1)//Here be pagination
+
+        }>
           <i className="fa-solid fa-angles-left"></i>
         </button>
         <button className={styles.pageButton_zgloszenia} disabled={currentPage === 1} onClick={() => setCurrentPage((prev) => prev - 1)}>

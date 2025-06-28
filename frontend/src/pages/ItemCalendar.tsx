@@ -6,6 +6,7 @@ import type {Reservation,DayInfo,TimeSlot,SelectedSlot,User,RecurringReservation
 import ReservationForDifficult from "../components/ui/kalendarz/ReservationForDifficult";
 import ReservationForm from "../components/ui/kalendarz/ReservationForm";
 import ReservationDetails from "../components/ui/kalendarz/ReservationDetails";
+import { backend_url } from "../main";
 
 // Simulate API call for reservation approval
 const submitReservationForApproval = async (reservation: Reservation): Promise<boolean> => {
@@ -70,10 +71,19 @@ const ItemCalendar: React.FC = () => {
   const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
   const [addingForm, setAddingForm] = useState(false);
   const {  role, username } = useAuth();
-   const data = mockData[id || ""] || {
+
+   const [data, setData] = useState({
     name: "Unknown Item",
-    breadcrumbs: "No breadcrumbs available"
-  };
+    description: "No breadcrumbs available"});
+
+    useEffect(() => {
+        const fetchData = async () => {
+          const response = await fetch(backend_url + "api/item/get_item/" + id);
+          const data = await response.json();
+          setData(data);
+        };
+        fetchData();
+      }, []);
   
   const startHour = 8;
   const endHour = 21;
@@ -603,7 +613,7 @@ const ItemCalendar: React.FC = () => {
     <div className="calendarWrapper">
        <div className="calendarName">
       <p className="itemName">{data.name}</p>
-      <div className="breadcrumpsRes">{data.breadcrumbs}</div>
+      <div className="breadcrumpsRes">{data.description}</div>
     </div>
       <div className="calendarTopControls">
         <button className="button_today" onClick={goToToday}>Dzisiaj</button>

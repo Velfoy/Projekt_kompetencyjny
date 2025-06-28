@@ -21,16 +21,16 @@ namespace backend.Controllers
 			this.configuration = configuration;
 		}
 		[HttpGet("get_items")]
-		public async Task<ActionResult<IEnumerable<Item>>> GetItems(int page = 1, int pageSize = 0)
+		public async Task<ActionResult<IEnumerable<Object>>> GetItems(int page = 1, int pageSize = 0)
         {
 			//More params will be added on demand from frontend team
-			return await _context.Items.Skip(pageSize * (page - 1)).Take(pageSize).ToListAsync(); ;
+			return await (from i in _context.Items select i.GetItemJSON(false)).ToListAsync(); ;
         }
 		[HttpGet("get_item/{*id}")]
 		public async Task<ActionResult<Object>> GetItem(int id)
 		{
 			var item = from i in _context.Items.Include(i => i.Manager).
-				Include(i => i.Organivzation) select i.GetItemJSON();
+				Include(i => i.Organivzation) where (i.Id == id) select i.GetItemJSON(true);
 			return await item.FirstOrDefaultAsync();
 		}
 		//Get_documentation will be added later after discussions with our frontend team
@@ -53,7 +53,7 @@ namespace backend.Controllers
 			await _context.SaveChangesAsync();
 			return CreatedAtAction("AddComment", new { id = commentToAdd.Id }, comment);
 		}
-	}
+	}  
 
     public class NewComment
     {

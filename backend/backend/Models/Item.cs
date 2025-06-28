@@ -20,11 +20,18 @@ namespace backend.Models
 		public List<Comment> Comments { get; set; } = new();
 		public DateTime DateAdded { get; set; }
 
-		public Object GetItemJSON()
+		public Object GetItemJSON(bool l)
 		{
-			return new {id=Id, name=Name, description=Description, unit=Organivzation.Name, category = Type, 
-				address=Location, guardian_email=Manager.Username, exploration_rules=TermsOfUse, specs=new List<string>(), notes=Notes,
-				documentation= AttachedDocuments, image=ImagePath};
+			if (l) {
+				return new
+				{
+					id = Id, name = Name, description = Description, unit = Organivzation.Name, category = Type,
+					address = Location, guardian_email = Manager.Username, exploration_rules = TermsOfUse,
+					specs = new List<string>(), notes = Notes,
+					documentation = AttachedDocuments, image = ImagePath
+				};
+			}
+			return new { id = Id, name = Name, description = Description, image = ImagePath};
 		}
 
 	}
