@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import styles from '../../styles/pages/zgloszenia.module.css';
 import ReservationAcceptation from '@/src/components/ui/zgloszenia/ReservationAcceptation';
 import ReservationTime from '@/src/components/ui/timeLogic/ReservationTime';
+import { backend_url } from '@/src/main';
 // import { backend_url } from '@/src/main';
 
 interface Reservation {
@@ -10,57 +11,12 @@ interface Reservation {
   unit: string;
   unit_id:number,
   submittedBy: string;
-  dateReservationId:number;
 }
 interface DaySchedule {
   day: string;
   from: string;
   to: string;
 }
-
-
-const mockReservations: Reservation[] = [
-  { id: 1,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1,},
-  { id: 2,unit_id:3, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:2,},
-  { id: 3, unit_id:4,unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl',dateReservationId:3, },
-  { id: 4,unit_id:5, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' ,dateReservationId:4,},
-  { id: 5,unit_id:6, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:5, },
-  { id: 6,unit_id:6, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:6,},
-  { id: 7, unit_id:7,unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:7, },
-  { id: 8, unit_id:1,unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:8, },
-  { id: 9,unit_id:54, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' ,dateReservationId:9,},
-  { id: 10,unit_id:6, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' ,dateReservationId:1,},
-  { id: 11,unit_id:7, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
-  { id: 12,unit_id:79, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
-  { id: 13,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
-  { id: 14,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
-  { id: 15,unit_id:2, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl',dateReservationId:1, },
-  { id: 16,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
-  { id: 17,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' ,dateReservationId:1,},
-  { id: 18,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
-  { id: 19,unit_id:2, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl',dateReservationId:1, },
-  { id: 20,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1,},
-   { id: 21,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1,},
-  { id: 22,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1,},
-  { id: 23,unit_id:2, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl',dateReservationId:1, },
-  { id: 24,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' ,dateReservationId:1,},
-  { id: 25,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
-  { id: 26,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1,},
-  { id: 27,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1,},
-  { id: 28,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
-  { id: 29,unit_id:2, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl',dateReservationId:1, },
-  { id: 30,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
-  { id: 31,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
-  { id: 32,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
-  { id: 33,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
-  { id: 34,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
-  { id: 35,unit_id:2, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl',dateReservationId:1, },
-  { id: 36, unit_id:2,unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
-  { id: 37,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1, },
-  { id: 38,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl' ,dateReservationId:1,},
-  { id: 39,unit_id:2, unit: 'Sala 12', submittedBy: 'p.drzymala@edu.p.lodz.pl' ,dateReservationId:1,},
-  { id: 40,unit_id:2, unit: 'STM32', submittedBy: '248655@edu.p.lodz.pl',dateReservationId:1,},
-];
 
 const mockTime:DaySchedule[]=[
   { day: '02.03.2025', from: '10:00', to: '12:00' },
@@ -71,15 +27,16 @@ const mockTime:DaySchedule[]=[
 const mockDifficulty:string="difficult";
 
 const ZgloszeniaPage = () => {
-  const [reservations, setReservations] = useState<Reservation[]>(mockReservations);
-  // useEffect(() => {
-  //     const fetchData = async () => {
-  //       const response = await fetch(backend_url + "api/admin/get_reservations");
-  //       const data: Reservation[] = await response.json();
-  //       setReservations(data);
-  //     };
-  //     fetchData();
-  //   }, []);
+  const [reservations, setReservations] = useState<Reservation[]>([]);
+  useEffect(() => {
+      const fetchData = async () => {
+        const response = await fetch(backend_url + "api/admin/get_reservations", {method: 'GET',  
+          headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}});
+        const data: Reservation[] = await response.json();
+        setReservations(data);
+      };
+      fetchData();
+    }, []);
     console.log(reservations);
   const [currentPage, setCurrentPage] = useState(1);
   const [windowWidth, setWindowWidth] = useState(
@@ -89,6 +46,7 @@ const ZgloszeniaPage = () => {
   const [selectedReservationId, setSelectedReservationId] = useState<number | null>(null);
   const [actionType, setActionType] = useState<'accept' | 'reject' | null>(null);
   const [timeWindow,setTimeWindow]=useState(false);
+  const token = localStorage.getItem('auth_token')
   const itemsPerPage = 5;
 
   useEffect(() => {
@@ -112,14 +70,18 @@ const ZgloszeniaPage = () => {
     setActionType(action);
   };
 
-  const handleConfirmAction = (accepted: boolean) => {
+  const handleConfirmAction = async (accepted: boolean) => {
     if (!selectedReservationId) return;
     
     // Here you would typically make an API call
     console.log(`Reservation ${selectedReservationId} ${accepted ? 'accepted' : 'rejected'}`);
-    
-    // Remove the reservation from the list
-    setReservations(prev => prev.filter(r => r.id !== selectedReservationId));
+
+    await fetch(backend_url + "api/admin/" + (accepted ? "accept/" : "deny/") + selectedReservationId, {method: 'POST',  
+          headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}});
+    const response = await fetch(backend_url + "api/admin/get_reservations", {method: 'GET',  
+          headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}});
+    const data: Reservation[] = await response.json();
+    setReservations(data);
     
     // Reset selection
     setSelectedReservationId(null);
@@ -348,7 +310,7 @@ const ZgloszeniaPage = () => {
           schedule={mockTime}
           onClose={() => setTimeWindow(false)}
         />
-      )
+      )//Here is a big problem since seamless integration is not possible w/o significantly remaking the logic and I ain't doing that.
       }
     </div>
   );

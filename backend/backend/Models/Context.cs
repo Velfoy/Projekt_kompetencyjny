@@ -16,11 +16,11 @@ namespace backend.Models
 		public DbSet<Timespan> Timespans { get; set; }
 		public DbSet<Comment> Comments { get; set; }
 
-		public async static void ChangeStatus(bool status, Context _context, int id)
+		public async static Task ChangeStatus(bool status, Context _context, int id)
 		{
 			var element = await (from r in _context.Requests where (r.Id == id) select r).FirstAsync();
-			element.Approved = true;
-			element.LastModified = DateTime.Now;
+			element.Approved = status;
+			element.LastModified = DateTime.UtcNow;
 			await _context.SaveChangesAsync();
 		}
 	}

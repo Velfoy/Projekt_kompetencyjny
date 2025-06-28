@@ -25,16 +25,16 @@ namespace backend.Controllers
 		public async Task<ActionResult<IEnumerable<Object>>> GetReservations()
         {
 			var res = from r in _context.Requests.Include(r => r.Item).Include(r => r.Item.Organivzation) where
-				(_context.Organizations.Contains(r.Item.Organivzation)) select new { id=r.Id, unit_id=r.Item.Id, unit=r.Item.Description, submittedby=r.Renter };
+				(_context.Organizations.Contains(r.Item.Organivzation)&&r.Approved == null) select new { id=r.Id, unit_id=r.Item.Id, unit=r.Item.Description, submittedBy = r.Renter,  };
             return await res.ToListAsync();
         }
         [HttpPost("accept/{*id}")]
         [Authorize]
-        [AdminAccess("*id")]
+        [AdminAccess("id")]
         public async Task<ActionResult<string>> Accept(int id)
         {
 	        try {
-		        Context.ChangeStatus(true, _context, id);
+		        await Context.ChangeStatus(true, _context, id);
 	        } catch(InvalidOperationException)
 	        {
 		        return NotFound();
@@ -44,22 +44,22 @@ namespace backend.Controllers
 
         [HttpPost("deny/{*id}")]
         [Authorize]
-        [AdminAccess("*id")]
+        [AdminAccess("id")]
         public async Task<ActionResult<string>> Deny(int id)
         {
 	        try
 	        {
-		        Context.ChangeStatus(false, _context, id);
+		        await Context.ChangeStatus(false, _context, id);
 	        }
 	        catch (InvalidOperationException)
 	        {
 		        return NotFound();
 	        }
-	        return "Request successfully approved";
+	        return "Request denied";
         }
         
         [HttpGet("/seed")]
-        [AdminAccess("global")]
+        //[AdminAccess("global")]
         public async Task<ActionResult<string>> Seed()
         {
 	        Seed_database.CreateItems(_context);
