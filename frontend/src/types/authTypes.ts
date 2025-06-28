@@ -34,8 +34,6 @@ export interface Reservation {
   endHour: number;
   endMinute: number;
   title: string;
-  reservedBy: string;
-  userId: string;
   userName: string;
   status?: 'Brak akceptacji' | 'W trakcie' | 'Zakonczona' | 'Odrzucona'; // Updated status field
 }
@@ -66,7 +64,6 @@ export interface SelectedSlot {
 }
 
 export interface User {
-  id: string;
   name: string;
   role: 'user' | 'admin'|null; // Added role field
 }

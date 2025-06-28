@@ -91,7 +91,6 @@ const ItemCalendar: React.FC = () => {
   const slotHeight = 20;
 
   const [currentUser] = useState<User>({
-    id: username as string,
     name: username as string,
     role: role
   });
@@ -104,8 +103,6 @@ const ItemCalendar: React.FC = () => {
       endHour: 11,
       endMinute: 0,
       title: "Morning Meeting",
-      reservedBy: "John Doe",
-      userId: "test",
       userName: "John Doe",
       status: "W trakcie"
     },
@@ -116,8 +113,6 @@ const ItemCalendar: React.FC = () => {
       endHour: 12,
       endMinute: 0,
       title: "Follow-up Discussion",
-      reservedBy: "Jane Smith",
-      userId: "Jane Smith",
       userName: "Jane Smith",
       status: "W trakcie"
     },
@@ -128,8 +123,6 @@ const ItemCalendar: React.FC = () => {
       endHour: 16,
       endMinute: 0,
       title: "Client Call",
-      reservedBy: "John Doe",
-      userId: "John Doe",
       userName: "John Doe",
       status: "W trakcie"
     },
@@ -140,8 +133,6 @@ const ItemCalendar: React.FC = () => {
       endHour: 12,
       endMinute: 0,
       title: "Project Review",
-      reservedBy: "Team",
-      userId: "Team",
       userName: "Team",
       status: "W trakcie"
     },
@@ -152,8 +143,6 @@ const ItemCalendar: React.FC = () => {
       endHour: 15,
       endMinute: 0,
       title: "Team Workshop",
-      reservedBy: "Manager",
-      userId: "Manager",
       userName: "Manager",
       status: "Brak akceptacji"
     },
@@ -164,8 +153,6 @@ const ItemCalendar: React.FC = () => {
       endHour: 17,
       endMinute: 0,
       title: "All Day Event",
-      reservedBy: "Company",
-      userId: "Company",
       userName: "Company",
       status: "Brak akceptacji"
     },
@@ -366,7 +353,7 @@ const ItemCalendar: React.FC = () => {
         current.endHour === slot.startHour && 
         current.endMinute === slot.startMinute &&
         (current.reserved === false || 
-         (current.reservation && slot.reservation && current.reservation.userId === slot.reservation.userId))
+         (current.reservation && slot.reservation && current.reservation.userName === slot.reservation.userName))
       ) {
         current.endHour = slot.endHour;
         current.endMinute = slot.endMinute;
@@ -529,8 +516,6 @@ const ItemCalendar: React.FC = () => {
             endHour: slot.toHour,
             endMinute: slot.toMinute,
             title: title,
-            reservedBy: currentUser.name,
-            userId: currentUser.id,
             userName: currentUser.name,
             status: currentUser.role === 'user' ? 'Brak akceptacji' : 'W trakcie'
           });
@@ -576,8 +561,6 @@ const ItemCalendar: React.FC = () => {
             endHour: reservation.endHour,
             endMinute: reservation.endMinute,
             title: reservation.title,
-            reservedBy: currentUser.name,
-            userId: currentUser.id,
             userName: currentUser.name,
             status: currentUser.role === 'user' ? 'Brak akceptacji' : 'W trakcie'
           });
