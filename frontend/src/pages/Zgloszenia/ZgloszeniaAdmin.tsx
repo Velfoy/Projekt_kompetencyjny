@@ -46,7 +46,7 @@ const ZgloszeniaPage = () => {
   const [selectedReservationId, setSelectedReservationId] = useState<number | null>(null);
   const [actionType, setActionType] = useState<'accept' | 'reject' | null>(null);
   const [timeWindow,setTimeWindow]=useState(false);
-  const token = localStorage.getItem('auth_token')
+  const token = localStorage.getItem('auth_token');
   const itemsPerPage = 5;
 
   useEffect(() => {

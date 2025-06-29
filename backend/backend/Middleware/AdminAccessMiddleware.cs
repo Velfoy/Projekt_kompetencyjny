@@ -63,11 +63,13 @@ public class AdminAccessMiddleware
 					{
 
 						await _next(context);
+						return;
 					}
 				} else
 				{
                     if (_context.Managers.Any(a => (a.Username == name) && a.GlobalAdmin)) {
 						await _next(context);
+						return;
 					}
                 }
 

@@ -57,8 +57,26 @@ namespace backend.Controllers
 	        }
 	        return "Request denied";
         }
-        
-        [HttpGet("/seed")]
+
+		[HttpDelete("delete_reservations/")]
+		[Authorize]
+		[AdminAccess("global")]
+		public async Task<ActionResult> DeleteReservations(List<int> ids)
+		{
+			int deleted = await _context.Requests.Include(a => a.RequestPeriod).Where(a => ids.Contains(a.Id)).ExecuteDeleteAsync();
+			return Ok(deleted);
+		}
+
+		[HttpDelete("delete_all_reservations/")]
+		[Authorize]
+		[AdminAccess("global")]
+		public async Task<ActionResult> PurgeReservations()
+		{
+			int deleted = await _context.Requests.Include(a => a.RequestPeriod).ExecuteDeleteAsync();
+			return Ok(deleted);
+		}
+
+		[HttpGet("/seed")]
         //[AdminAccess("global")]
         public async Task<ActionResult<string>> Seed()
         {

@@ -60,6 +60,7 @@ const DataTable: React.FC<DataTableProps> = ({
   const [editedStatus, setEditedStatus] = useState<Record<number, string>>({});
   const [expandedRow, setExpandedRow] = useState<number | null>(null);
     const [timeWindow,setTimeWindow]=useState(false);
+  const token = localStorage.getItem('auth_token');
   const [timeDetails, setTimeDetails] = useState<DaySchedule[]>([
     { day: '02.03.2025', from: '10:00', to: '12:00' },
     { day: '09.03.2025', from: '10:00', to: '12:00' },
@@ -136,13 +137,26 @@ const DataTable: React.FC<DataTableProps> = ({
   const getActionHandler = (label: string): (() => void) | undefined => {
     switch (label) {
       case "Usuń zaznaczone":
-        return () => {
-          setTableData(prev => prev.filter(row => !selectedRows.includes(row.id)));
+        return async () => {
+          console.log(selectedRows);
+          await fetch(backend_url + "api/admin/delete_reservations/", {method: 'DELETE', 
+          body: JSON.stringify(selectedRows), 
+            headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
+          const response = await fetch(backend_url + "api/reservations/get_reservations", {method: 'GET', 
+            headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}});
+          const data: RowData[] = await response.json();
+          setTableData(data);
           setSelectedRows([]);
         };
       case "Usuń wszystkie":
-        return () => {
-          setTableData([]);
+        return async () => {
+          console.log(selectedRows);
+          await fetch(backend_url + "api/admin/delete_all_reservations/", {method: 'DELETE', 
+            headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
+          const response = await fetch(backend_url + "api/reservations/get_reservations", {method: 'GET', 
+            headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}});
+          const data: RowData[] = await response.json();
+          setTableData(data);
           setSelectedRows([]);
         };
       default:
