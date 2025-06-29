@@ -96,67 +96,16 @@ const ItemCalendar: React.FC = () => {
   });
 
   const [reservations, setReservations] = useState<Reservation[]>([
-    {
-      day: "12.05.2025",
-      startHour: 9,
-      startMinute: 0,
-      endHour: 11,
-      endMinute: 0,
-      title: "Morning Meeting",
-      userName: "John Doe",
-      status: "W trakcie"
-    },
-    {
-      day: "12.05.2025",
-      startHour: 11,
-      startMinute: 0,
-      endHour: 12,
-      endMinute: 0,
-      title: "Follow-up Discussion",
-      userName: "Jane Smith",
-      status: "W trakcie"
-    },
-    {
-      day: "12.05.2025",
-      startHour: 14,
-      startMinute: 0,
-      endHour: 16,
-      endMinute: 0,
-      title: "Client Call",
-      userName: "John Doe",
-      status: "W trakcie"
-    },
-    {
-      day: "13.05.2025",
-      startHour: 10,
-      startMinute: 0,
-      endHour: 12,
-      endMinute: 0,
-      title: "Project Review",
-      userName: "Team",
-      status: "W trakcie"
-    },
-    {
-      day: "14.05.2025",
-      startHour: 13,
-      startMinute: 0,
-      endHour: 15,
-      endMinute: 0,
-      title: "Team Workshop",
-      userName: "Manager",
-      status: "Brak akceptacji"
-    },
-    {
-      day: "15.05.2025",
-      startHour: 9,
-      startMinute: 0,
-      endHour: 17,
-      endMinute: 0,
-      title: "All Day Event",
-      userName: "Company",
-      status: "Brak akceptacji"
-    },
+    
   ]);
+  useEffect(() => {
+      const fetchData = async () => {
+        const response = await fetch(backend_url + "api/reservations/get_reservation_with_timespans/" + id);
+        const data: Reservation[] = await response.json();
+        setReservations(data);
+      };
+      fetchData();
+    }, []);
 
   const generateDaysOfWeek = (date: Date): DayInfo[] => {
     const days: DayInfo[] = [];

@@ -25,7 +25,7 @@ namespace backend.Controllers
 		public async Task<ActionResult<IEnumerable<Object>>> GetReservations()
         {
 			var res = from r in _context.Requests.Include(r => r.Item).Include(r => r.Item.Organivzation) where
-				(_context.Organizations.Contains(r.Item.Organivzation)&&r.Approved == null) select new { id=r.Id, unit_id=r.Item.Id, unit=r.Item.Description, submittedBy = r.Renter,  };
+				(r.Approved == null) select new { id=r.Id, unit_id=r.Item.Id, unit=r.Item.Description, submittedBy = r.Renter,  };
             return await res.ToListAsync();
         }
         [HttpPost("accept/{*id}")]

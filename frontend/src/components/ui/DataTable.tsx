@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { href, Link, useLocation } from "react-router-dom";
 import "@styles/components/DataTable.css";
 import styles from "../../styles/pages/historiaadmin.module.css";
 import type {DaySchedule} from '../../types/authTypes';
@@ -135,6 +135,10 @@ const DataTable: React.FC<DataTableProps> = ({
   };
 
   const getActionHandler = (label: string): (() => void) | undefined => {
+    const location = useLocation();
+    if (location.pathname == "/profile") {
+      return;//User handler
+    }
     switch (label) {
       case "Usuń zaznaczone":
         return async () => {

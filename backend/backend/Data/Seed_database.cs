@@ -5,176 +5,136 @@ using System.Linq;
 
 namespace backend.Data
 {
-    public class Seed_database
-    {
-        public static void CreateItems(Context _context)
-        {
-            // Clear existing data
-            _context.Comments.RemoveRange(_context.Comments);
-            _context.Requests.RemoveRange(_context.Requests);
-            _context.Timespans.RemoveRange(_context.Timespans);
-            _context.Items.RemoveRange(_context.Items);
-            _context.Organizations.RemoveRange(_context.Organizations);
-            _context.Managers.RemoveRange(_context.Managers);
-            _context.SaveChanges();
+	public class Seed_database
+	{
+		public static void CreateItems(Context _context)
+		{
+			// Clear existing data
+			_context.Comments.RemoveRange(_context.Comments);
+			_context.Timespans.RemoveRange(_context.Timespans);
+			_context.Requests.RemoveRange(_context.Requests);
+			_context.Items.RemoveRange(_context.Items);
+			_context.Organizations.RemoveRange(_context.Organizations);
+			_context.Managers.RemoveRange(_context.Managers);
+			_context.SaveChanges();
 
-            // Seed Managers
-            var managers = new List<Manager>
-            {
-                new Manager { Username = "g.zwolinski", GlobalAdmin = true },
-                new Manager { Username = "m.nowak", GlobalAdmin = false },
-                new Manager { Username = "a.kowalski", GlobalAdmin = false },
-                new Manager { Username = "j.szymanska", GlobalAdmin = true },
-                new Manager { Username = "k.wisniewski", GlobalAdmin = false }
-            };
-            _context.Managers.AddRange(managers);
-            _context.SaveChanges();
+			// Create managers
+			var managers = new List<Manager>
+			{
+				new Manager { Username = "g.zwolinski", GlobalAdmin = true },
+				new Manager { Username = "m.nowak", GlobalAdmin = false },
+				new Manager { Username = "a.kowalski", GlobalAdmin = false },
+				new Manager { Username = "j.szymanska", GlobalAdmin = true },
+				new Manager { Username = "k.wisniewski", GlobalAdmin = false }
+			};
+			_context.Managers.AddRange(managers);
+			_context.SaveChanges();
 
-            // Seed Organizations
-            var voxel = new Organization
-            {
-                Name = "Voxel",
-                Admins = new List<Manager> { managers[0], managers[1] }
-            };
+			// Create organizations
+			var voxel = new Organization
+			{
+				Name = "Voxel",
+				Admins = new List<Manager> { managers[0], managers[1] }
+			};
 
-            var raptors = new Organization
-            {
-                Name = "Raptors",
-                Admins = new List<Manager> { managers[2], managers[3], managers[4] }
-            };
+			var raptors = new Organization
+			{
+				Name = "Raptors",
+				Admins = new List<Manager> { managers[2], managers[3], managers[4] }
+			};
 
-            _context.Organizations.AddRange(voxel, raptors);
-            _context.SaveChanges();
+			_context.Organizations.AddRange(voxel, raptors);
+			_context.SaveChanges();
 
-            // Seed Items
-            var rand = new Random();
-            var items = new List<Item>();
+			// Helper to generate comments
+			List<Comment> GenerateComments(Item item, string author)
+			{
+				return new List<Comment>
+				{
+					new Comment { Author = author, Contents = "Świetnie działa.", Created = DateTime.UtcNow.AddDays(-7), Item = item },
+					new Comment { Author = author, Contents = "Zauważyłem błąd w instrukcji.", Created = DateTime.UtcNow.AddDays(-3), Item = item },
+					new Comment { Author = author, Contents = "Użyteczne w projektach studenckich.", Created = DateTime.UtcNow.AddDays(-1), Item = item }
+				};
+			}
 
-            List<Comment> CreateComments(Item item, string author)
-            {
-                return new List<Comment>
-                {
-                    new Comment
-                    {
-                        Author = author,
-                        Contents = "Działa bez zarzutu.",
-                        Created = DateTime.UtcNow.AddDays(-rand.Next(2, 10)),
-                        Item = item
-                    },
-                    new Comment
-                    {
-                        Author = author,
-                        Contents = "Trochę trudna instrukcja obsługi.",
-                        Created = DateTime.UtcNow.AddDays(-rand.Next(1, 3)),
-                        Item = item
-                    },
-                    new Comment
-                    {
-                        Author = author,
-                        Contents = "Rekomenduję dla nowych użytkowników.",
-                        Created = DateTime.UtcNow.AddDays(-1),
-                        Item = item
-                    }
-                };
-            }
+			var items = new List<Item>();
+			var rand = new Random();
 
-            for (int i = 1; i <= 13; i++)
-            {
-                var manager = managers[rand.Next(0, 2)];
-                var item = new Item
-                {
-                    Name = $"Voxel Device {i}",
-                    Type = i % 2 == 0 ? "Room" : "Thing",
-                    Description = $"Opis urządzenia Voxel {i}.",
-                    Location = $"Piętro {i % 5 + 1}, Pokój {100 + i}",
-                    ImagePath = $"/images/voxel_{i}.png",
-                    Organivzation = voxel,
-                    Manager = manager,
-                    TermsOfUse = "Używać zgodnie z regulaminem.",
-                    AttachedDocuments = new List<string> { $"doc_voxel_{i}.pdf" },
-                    Specs = $"Specyfikacja techniczna urządzenia Voxel {i}.",
-                    Notes = i % 3 == 0 ? "Wymaga kalibracji co miesiąc." : null,
-                    DateAdded = DateTime.UtcNow.AddDays(-i)
-                };
-                item.Comments = CreateComments(item, manager.Username);
-                items.Add(item);
-            }
+			// Create 28 items (13 for Voxel, 15 for Raptors)
+			for (int i = 1; i <= 28; i++)
+			{
+				bool isVoxel = i <= 13;
+				var org = isVoxel ? voxel : raptors;
+				var manager = isVoxel ? managers[rand.Next(0, 2)] : managers[rand.Next(2, 5)];
 
-            for (int i = 1; i <= 15; i++)
-            {
-                var manager = managers[rand.Next(2, 5)];
-                var item = new Item
-                {
-                    Name = $"Raptors Equipment {i}",
-                    Type = i % 2 == 0 ? "Thing" : "Room",
-                    Description = $"Opis sprzętu Raptors {i}.",
-                    Location = $"Laboratorium {i % 4 + 1}, Pokój {200 + i}",
-                    ImagePath = $"/images/raptors_{i}.jpg",
-                    Organivzation = raptors,
-                    Manager = manager,
-                    TermsOfUse = "Do użytku tylko przez upoważnione osoby.",
-                    AttachedDocuments = new List<string> { $"raptors_manual_{i}.pdf" },
-                    Specs = $"Parametry techniczne Raptors {i}.",
-                    Notes = i % 5 == 0 ? "Nie działa z oprogramowaniem Linux." : null,
-                    DateAdded = DateTime.UtcNow.AddDays(-i)
-                };
-                item.Comments = CreateComments(item, manager.Username);
-                items.Add(item);
-            }
+				var item = new Item
+				{
+					Name = $"{org.Name} Item {i}",
+					Type = (i % 2 == 0) ? "Room" : "Thing",
+					Description = $"Sprzęt {org.Name} nr {i}.",
+					Location = $"Budynek {i % 4 + 1}, pokój {100 + i}",
+					ImagePath = $"/images/{org.Name.ToLower()}_{i}.png",
+					Organivzation = org,
+					Manager = manager,
+					TermsOfUse = "Używaj zgodnie z instrukcją.",
+					AttachedDocuments = new List<string> { $"{org.Name.ToLower()}_manual_{i}.pdf" },
+					Specs = $"Specyfikacja modelu {i}: moc, waga, zasilanie.",
+					Notes = (i % 3 == 0) ? "Wymaga corocznej kalibracji." : null,
+					DateAdded = DateTime.UtcNow.AddDays(-i),
+					Comments = new List<Comment>() // filled below
+				};
 
-            _context.Items.AddRange(items);
-            _context.SaveChanges();
+				item.Comments = GenerateComments(item, manager.Username);
+				items.Add(item);
+			}
 
-            // Seed Requests & Timespans
-            var requests = new List<Request>();
-            var renters = new[] { "adam.k", "ewa.p", "zofia.j", "marek.b", "piotr.m" };
+			_context.Items.AddRange(items);
+			_context.SaveChanges();
 
-            for (int i = 0; i < 12; i++)
-            {
-                var item = items[rand.Next(items.Count)];
-                var respondent = rand.Next(0, 2) == 1 ? item.Manager : null;
-                bool? approvedStatus = null;
-                if (i % 3 == 0)
-                {
-                    approvedStatus = true;
-                }
-                else if (i % 3 == 1)
-                {
-                    approvedStatus = false;
-                }
+			// Seed Requests with Timespans
+			var renters = new[] { "adam.k", "ewa.p", "zofia.j", "marek.b", "piotr.m" };
+			var requests = new List<Request>();
 
-                var timespans = new List<Timespan>();
-                var baseStart = DateTime.UtcNow.AddDays(rand.Next(1, 10));
-                var tspanCount = rand.Next(1, 3);
-                for (int j = 0; j < tspanCount; j++)
-                {
-                    timespans.Add(new Timespan
-                    {
-                        Start = baseStart.AddDays(j).AddHours(9),
-                        End = baseStart.AddDays(j).AddHours(17)
-                    });
-                }
+			for (int j = 0; j < items.Count; j++) {
+				for (int i = 0; i < 12; i++)
+				{
+					var item = items[j];
+					var approvedStatus = i % 3 == 0 ? (bool?)null : i % 3 == 1;
+					var start = DateTime.UtcNow.AddDays(rand.Next(1, 5)).AddHours(9);
+					var end = start.AddHours(6);
+					
 
-                requests.Add(new Request
-                {
-                    Item = item,
-                    Renter = renters[rand.Next(renters.Length)],
-                    Approved = approvedStatus,
-                    Respondent = respondent,
-                    type = item.Type,
-                    RequestSubmitted = DateTime.UtcNow.AddDays(-rand.Next(1, 5)),
-                    LastModified = approvedStatus != null ? DateTime.UtcNow : null,
-                    AdditionalInfo = "Potrzebuję na projekt badawczy.",
-                    RequestPeriod = timespans
-                });
+					var timespan = new Timespan
+					{
+						Start = start,
+						End = end
+					};
 
-                _context.Timespans.AddRange(timespans);
-            }
+					var request = new Request
+					{
+						Item = item,
+						Renter = renters[i % renters.Length],
+						Title = $"Wypożyczenie {item.Name}",
+						Approved = approvedStatus,
+						Respondent = approvedStatus.HasValue ? item.Manager : null,
+						type = item.Type,
+						RequestSubmitted = DateTime.UtcNow.AddDays(-rand.Next(1, 4)),
+						LastModified = approvedStatus.HasValue ? DateTime.UtcNow : null,
+						AdditionalInfo = "Potrzebuję sprzętu na zajęcia laboratoryjne.",
+						RequestPeriod = new List<Timespan> { timespan }
+					};
 
-            _context.Requests.AddRange(requests);
-            _context.SaveChanges();
+					timespan.Request = request;
 
-            Console.WriteLine("✅ FULL DATABASE SEED COMPLETE: 5 Managers, 2 Orgs, 28 Items, 84 Comments, 12 Requests + Timespans.");
-        }
-    }
+					_context.Timespans.Add(timespan);
+					requests.Add(request);
+				}
+			}
+
+			_context.Requests.AddRange(requests);
+			_context.SaveChanges();
+
+			Console.WriteLine("✅ Full database seeding complete with managers, orgs, items, comments, requests, and timespans.");
+		}
+	}
 }

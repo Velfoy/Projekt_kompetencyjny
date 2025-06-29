@@ -40,7 +40,24 @@ namespace backend.Controllers
             return await (from reservation in (res.Skip(pageSize*(page - 1)).Take(pageSize)) select reservation.ToJSON()).ToListAsync();//This is one of my favorite lines in this project ngl
         }
 
-        [HttpGet("get_timespans/{*id}")]
+        [HttpGet("get_reservation_with_timespans/{*id}")]
+		public async Task<ActionResult<IEnumerable<Object>>> GetReservationTimespans(int id)
+		{
+                
+                var timespans = from ts in _context.Timespans.Include(t => t.Request).ThenInclude(r => r.Item) where ts.Request.Item.Id == id select new {
+                    day = $"{ts.Start.Day:D2}.{ts.Start.Month:D2}.{ts.Start.Year:D4}",
+                    startHour = ts.Start.Hour,
+                    startMinute = ts.Start.Minute,
+                    endHour = ts.End.Hour,
+                    endMinute = ts.End.Minute,
+                    title = ts.Request.Title,
+                    userName = ts.Request.Renter,
+                    status = ts.Request.ApprovalStatus
+                };
+            return timespans.ToList();
+        }
+
+		[HttpGet("get_timespans/{*id}")]
         public async Task<IEnumerable<Object>> GetDatetimes(int id)
         {
 	        var requests = (from res in _context.Requests.Include(r => r.RequestPeriod) where res.Id == id select res).FirstOrDefault();

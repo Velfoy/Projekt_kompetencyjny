@@ -78,7 +78,6 @@ const Navbar = () => {
             <div className='profile_div'>
               <Link 
                 to="/profile" 
-                aria-label="Profile" 
                 className={`profile-icon ${isActive('/profile') ? 'active_navbar_link' : ''}`}
               >
                 <i className="fa-solid fa-user-pen"></i>
@@ -87,13 +86,12 @@ const Navbar = () => {
             <button className="zalog_button" onClick={logout}>Wyloguj się</button>
           </>
         ) : (
-          <Link 
-            to="/login" 
+          <button 
             className={`zalog_button ${isActive('/login') ? 'active_navbar_link' : ''}`}
             onClick={login}
           >
             Zaloguj się
-          </Link>
+          </button>
         )}
       </div>
 
@@ -139,13 +137,12 @@ const Navbar = () => {
             </>
           )}
           {!isAuth && (
-            <Link 
-              to="/login" 
+            <button 
               className={isActive('/login') ? 'active_navbar_link' : ''}
                onClick={login}
             >
               Zaloguj
-            </Link>
+            </button>
           )}
         </div>
       )}
