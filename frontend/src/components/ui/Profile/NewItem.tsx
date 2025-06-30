@@ -3,6 +3,7 @@ import type { FormEvent } from 'react';
 import '@styles/components/NewItem.css';
 import Overlay from '@components/layout/Overlay';
 import { backend_url } from '@/src/main';
+import type {ChangeEvent } from 'react';
 
 //const units = ['Jednostka A', 'Jednostka B', 'Jednostka C'];
 //const categories = ['Elektronika', 'Meble', 'Narzędzia'];
@@ -178,6 +179,33 @@ const NewItem: React.FC = () => {
       console.error('Error creating new item:', error);
     }
   };
+  interface NewOrganization{
+    nameOrg:string;
+  }
+  const [nameOrg, setNameOrg] = useState('');
+    const [submitted2, setSubmitted2] = useState(false);
+    const [success2, setSuccess2] = useState(false);
+  const handleSubmitOrg = async (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      setSubmitted2(true);
+  
+      if (!nameOrg.trim() ) return;
+  
+      const newUser: NewOrganization = {  nameOrg };
+  
+      try {
+        console.log('Sending post to server:', newUser);
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate request
+  
+        setSuccess2(true);
+        setNameOrg('');
+        setSubmitted2(false);
+  
+        setTimeout(() => setSuccess2(false), 2000);
+      } catch (error) {
+        console.error('Error creating post:', error);
+      }
+    };
 
   return (
     <div className="new_post">
@@ -339,8 +367,28 @@ const NewItem: React.FC = () => {
 
         {isMobile && <button type="submit">Stwórz</button>}
       </form>
+      <div className="explanation_header creating_newpost_header">
+        <p>Stwórz organizację</p>
+      </div>
+       <div className="creating_newpost">
+          <form onSubmit={handleSubmit} className={submitted ? 'submitted' : ''} noValidate>
+            <div className="info_andbutton">
+              <input
+                className="post_title"
+                placeholder="Nazwa organizacji"
+                value={nameOrg}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => setNameOrg(e.target.value)}
+                required
+              />
+              <button type="submit" className="post_create">
+                Stwórz
+              </button>
+            </div>
+          </form>
+        </div>
 
       {success && <Overlay message="Nowy item został utworzony" />}
+       {success2 && <Overlay message="Nowa organizja została utworzona" />}
     </div>
   );
 };

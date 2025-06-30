@@ -11,7 +11,9 @@
   padding: 10px;
   font-size: 1rem;
 }
-
+.creating_newpost_header{
+  margin-top: 15px;
+}
 .object-form h2 {
   color: #3D513D;
   margin-bottom: 10px;
