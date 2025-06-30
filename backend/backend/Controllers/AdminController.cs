@@ -127,6 +127,16 @@ namespace backend.Controllers
 			return Created();
 		}
 
+
+		[HttpGet("get_visitors")]//For adding admins
+		[Authorize]
+		public async Task<ActionResult<List<Object>>> GetVisitors()
+		{
+			var managers = await (from m in _context.Managers select m).ToListAsync();
+			var l = (from v in _context.Visitors select v.ToJSON(managers));
+			return await l.ToListAsync();
+		}
+
 		[HttpGet("/seed")]
         //[AdminAccess("global")]
         public async Task<ActionResult<string>> Seed()

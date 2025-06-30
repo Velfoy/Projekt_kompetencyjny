@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security;
 using System.Security.Claims;
+using System.Xml.Linq;
 
 namespace backend.Controllers
 {
@@ -43,7 +45,7 @@ namespace backend.Controllers
 				_context.SaveChanges();
             }
             string r = (_context.Managers.Where(u => u.Username == name).Any()) ? "admin" : "user";
-            return new { username = name, role= r};
+			return new { username = name, role= r};
 		}
 		[HttpGet("/login")]
 		public async Task<IActionResult> Login(string token)
@@ -62,6 +64,10 @@ namespace backend.Controllers
 				IsEssential = true,
 				Secure = true
 			};
+			var handler = new JwtSecurityTokenHandler();
+			SecurityToken validation_result;
+			ClaimsPrincipal result;
+			result = handler.ValidateToken(token, _validation_parameters, out validation_result);
 			Response.Cookies.Append("auth_token", internal_token);
 			//return Content($"Authorized as {JWTIssuer.ReadToken(token, _validation_parameters, _logger).Claims.FirstOrDefault(claim => claim.Type == "user")}");
 			return Redirect($"{_configuration.GetSection("SiteAddresses").GetValue<string>("frontend") ?? "https://localhost:5173"}/storagetoken?token={internal_token}");

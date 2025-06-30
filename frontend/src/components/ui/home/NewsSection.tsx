@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "@styles/components/NewsSection.css";
 import buildingImg from "@assets/img/building.jpg";
+import { backend_url } from "@/src/main";
 
 // --- Mock Data ---
 interface NewsItem {
@@ -28,6 +29,15 @@ const mockNews: NewsItem[] = [
     link: "https://www.youtube.com/watch?v=q9leDzlNEaY&ab_channel=HYBELABELS",
   },
 ];
+const [news, setNews] = useState<NewsItem[]>([])
+useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(backend_url + "api/news/get_news");
+      const data: NewsItem[] = await response.json();
+      setNews(data);
+    };
+    fetchData();
+  }, []);
 
 // --- News Card Component ---
 interface NewsCardProps extends NewsItem {}
@@ -65,7 +75,7 @@ const NewsSection: React.FC = () => {
   return (
     <div className="my-4 all_news">
       <h2 className="fw-bold mb-3 news_header">Nowości</h2>
-      {mockNews.map((news, index) => (
+      {news.map((news, index) => (
         <NewsCard key={index} {...news} />
       ))}
     </div>

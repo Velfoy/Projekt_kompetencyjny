@@ -3,6 +3,7 @@ import type { FormEvent, ChangeEvent } from 'react';
 
 import '@styles/components/NewPost.css';
 import Overlay from '@components/layout/Overlay'; 
+import { backend_url } from '@/src/main';
 
 interface PostData {
   title: string;
@@ -36,7 +37,13 @@ const NewPost: React.FC = () => {
     const newPost: PostData = { title, link, content };
 
     try {
-      console.log('Sending post to server:', newPost);
+      const response = await fetch(backend_url + "api/admin/create_item", {
+              method: 'POST',
+              headers: {
+                "Authorization": "Bearer " + token, // Don't add Content-Type here when using FormData!
+              },
+              body: newPost,
+            });
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate request
 
       setSuccess(true);

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using backend.Models;
@@ -12,9 +13,11 @@ using backend.Models;
 namespace backend.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20250630175518_Visitor tracking")]
+    partial class Visitortracking
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -164,41 +167,6 @@ namespace backend.Migrations
                     b.ToTable("Organizations");
                 });
 
-            modelBuilder.Entity("backend.Models.Post", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("ButtonText")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("Highlight")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Link")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AuthorId");
-
-                    b.ToTable("Posts");
-                });
-
             modelBuilder.Entity("backend.Models.Request", b =>
                 {
                     b.Property<int>("Id")
@@ -269,16 +237,6 @@ namespace backend.Migrations
                     b.ToTable("Timespans");
                 });
 
-            modelBuilder.Entity("backend.Models.Visitor", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Visitors");
-                });
-
             modelBuilder.Entity("ManagerOrganization", b =>
                 {
                     b.HasOne("backend.Models.Manager", null)
@@ -322,17 +280,6 @@ namespace backend.Migrations
                     b.Navigation("Manager");
 
                     b.Navigation("Organivzation");
-                });
-
-            modelBuilder.Entity("backend.Models.Post", b =>
-                {
-                    b.HasOne("backend.Models.Manager", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Author");
                 });
 
             modelBuilder.Entity("backend.Models.Request", b =>

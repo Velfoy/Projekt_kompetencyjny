@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/src/hooks/useAuth';
 import '@styles/components/NewUser.css';
 import Overlay from '@components/layout/Overlay'; 
 import DataTable from "@components/ui/DataTable";
 import type {Column, RowData, DropdownAction} from "@components/ui/DataTable";
 import type { TableView } from '@components/ui/DataTable';
+import { backend_url } from '@/src/main';
+  const token = localStorage.getItem('auth_token');
 
 const NewUser=()=>{
     const {role } = useAuth();
-    const rows: RowData[] = [
+    const [rows, setRows] = useState<RowData[]>([
         { id: 1, access:'user' },
         { id: 2,access:'admin' },
         { id: 3,access:'user' },
@@ -23,7 +25,7 @@ const NewUser=()=>{
         { id: 12,access:'user' },
         { id: 13,access:'user' },
         { id: 14,access:'null' },   
-  ];
+  ]);
 
   const columns: Column[] = [
     { key: "id", label: "Id/Imię" },
@@ -36,6 +38,15 @@ const NewUser=()=>{
     { label: "Usuń wszystkie" },
   ];
     const [success, setSuccess] = useState(false);
+    useEffect(() => {
+          const fetchData = async () => {
+            const response = await fetch(backend_url + "api/admin/get_visitors", {method: 'GET',  
+                        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}});
+            const data: RowData[] = await response.json();
+            setRows(data);
+            };
+            fetchData();
+        }, []);
      return (
          <>
             <div className="new_post">

@@ -15,6 +15,7 @@ namespace backend.Models
 		public DbSet<Request> Requests { get; set; }
 		public DbSet<Timespan> Timespans { get; set; }
 		public DbSet<Comment> Comments { get; set; }
+		public DbSet<Post> Posts { get; set; }
 
 		public async static Task ChangeStatus(bool status, Context _context, int id)
 		{
