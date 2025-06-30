@@ -50,9 +50,9 @@ public class AdminAccessMiddleware
 						await context.Response.WriteAsync("Missing permissions");
 						return;
 					}
-					var org = await (from i in _context.Items.Include(i => i.Organivzation).Include(i => i.Organivzation.Admins)
+					var org = await (from i in _context.Requests.Include(i => i.Item).ThenInclude(i => i.Organivzation).ThenInclude(i => i.Admins)
 									 where i.Id == id
-									 select i.Organivzation).FirstOrDefaultAsync();
+									 select i.Item.Organivzation).FirstOrDefaultAsync();
                     if (org == null)
                     {
 						context.Response.StatusCode = StatusCodes.Status400BadRequest;

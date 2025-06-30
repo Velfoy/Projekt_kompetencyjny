@@ -21,6 +21,7 @@ const RezerwacjaGrid: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [loading, setLoading]=useState(true);
+  const token = localStorage.getItem('auth_token');
 
   useEffect(() => {
     if (products.length > 0) {
@@ -49,9 +50,14 @@ const RezerwacjaGrid: React.FC = () => {
     currentPage * itemsPerPage
   );
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: number) => {
+    
     console.log(`Deleting item with id: ${id}`);
-    setProducts(prev => prev.filter(product => product.id !== id));
+    await fetch(backend_url + "api/admin/delete_item/" + id, {method: 'DELETE',  
+          headers: {'Authorization': 'Bearer ' + token}});
+    const response = await fetch(backend_url + "api/item/get_items");
+    const data = await response.json();
+    setProducts(data);
   };
 
   if (loading) return <LoadingOverlay />;
@@ -64,7 +70,7 @@ const RezerwacjaGrid: React.FC = () => {
             id={product.id}
             title={product.name}
             description={product.description}
-            imageUrl={product.image}
+            imageUrl={backend_url + "api/item/photos/" + product.image}
             role={role as string}
             onDelete={handleDelete}
           />

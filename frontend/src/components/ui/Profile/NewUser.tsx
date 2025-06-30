@@ -45,7 +45,7 @@ const NewUser=()=>{
                 <DataTable
                     columns={columns}
                     data={rows}
-                    view='admin'
+                    view={role}
                     dropdownActions={dropdownActions}
                     itemsPerPage={8}
                        timeDetails={[]}

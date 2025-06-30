@@ -193,7 +193,7 @@ const ItemDetails = () => {
 
   useEffect(() => {
     if (booking?.image) {
-      setImgSrc(booking.image);
+      setImgSrc(backend_url + "api/item/photos/" + booking.image);
     }
   }, [booking]);
   if (loading) return <LoadingOverlay />;

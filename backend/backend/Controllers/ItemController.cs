@@ -3,7 +3,9 @@ using backend.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace backend.Controllers
 {
@@ -52,6 +54,28 @@ namespace backend.Controllers
 			_context.Comments.Add(commentToAdd);
 			await _context.SaveChangesAsync();
 			return CreatedAtAction("AddComment", new { id = commentToAdd.Id }, comment);
+		}
+		[HttpGet("photos/{*filename}")]
+		public async Task<FileResult> RetrievePhoto(string filename)
+		{
+			var image_path = (configuration.GetSection("Storage").GetValue<string>("Images") ?? "") + filename;
+			var provider = new FileExtensionContentTypeProvider();
+			if (!provider.TryGetContentType(image_path, out var content_type))
+			{
+				content_type = "application/octet-stream";
+			}
+			return PhysicalFile(Path.GetFullPath(image_path), content_type);
+		}
+		[HttpGet("files/{*filename}")]
+		public async Task<FileResult> RetrieveFile(string filename)
+		{
+			var image_path = (configuration.GetSection("Storage").GetValue<string>("Files") ?? "") + filename;
+			var provider = new FileExtensionContentTypeProvider();
+			if (!provider.TryGetContentType(image_path, out var content_type))
+			{
+				content_type = "application/octet-stream";
+			}
+			return PhysicalFile(Path.GetFullPath(image_path), content_type);
 		}
 	}  
 

@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import type { FormEvent } from 'react';
 import '@styles/components/NewItem.css';
 import Overlay from '@components/layout/Overlay';
+import { backend_url } from '@/src/main';
 
-const guardians = ['Jan Kowalski', 'Anna Nowak', 'Piotr Zieliński'];
-const units = ['Jednostka A', 'Jednostka B', 'Jednostka C'];
-const categories = ['Elektronika', 'Meble', 'Narzędzia'];
-const types = ['Typ 1', 'Typ 2', 'Typ 3'];
+//const units = ['Jednostka A', 'Jednostka B', 'Jednostka C'];
+//const categories = ['Elektronika', 'Meble', 'Narzędzia'];
+//const types = ['Typ 1', 'Typ 2', 'Typ 3'];
 
 // Mock data to define which fields are required (just names of fields)
 const requiredFields: (keyof FormData)[] = [
@@ -14,7 +14,6 @@ const requiredFields: (keyof FormData)[] = [
   'guardian',
   'unit',
   'reservationType',
-  'itemType',
   'location',
   'description',
   'exploration',
@@ -47,6 +46,8 @@ const NewItem: React.FC = () => {
     technical: '',
   });
 
+  const token = localStorage.getItem('auth_token');
+
   const [files, setFiles] = useState<File[]>([]);
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -55,12 +56,29 @@ const NewItem: React.FC = () => {
   const [success, setSuccess] = useState(false);
 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 830);
+  const [guardians, setGuardians] = useState<string[]>(['Jan Kowalski', 'Anna Nowak', 'Piotr Zieliński']);
+  const [units, setUnits] = useState<string[]>([]);//Lera I hope we can change those to use numerics id later cuz otherwise it would be awkward
+  const [categories, setCategories] = useState<string[]>([]);
+  const [types, setTypes] = useState<string[]>([]);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 830);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  useEffect(() => {
+      const fetchData = async () => {
+        const response = await fetch(backend_url + "api/admin/get_unit_data", {method: 'GET', 
+              headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}});
+        const data = await response.json();
+        setGuardians(data.admins);
+        setUnits(data.units);
+        setCategories(data.categories);
+        setTypes(data.types);//What is a "type" remains a mystery
+      };
+      fetchData();
+    }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -103,24 +121,41 @@ const NewItem: React.FC = () => {
     // Validate only required fields
     for (const field of requiredFields) {
       if (!formData[field].trim()) {
+        console.log("Nema");
         return; // stop submitting if any required field is empty
       }
     }
 
-    const newItem = {
-      ...formData,
-      files,
-      image,
-    };
+    const payload = new FormData();
+
+    for (const key in formData) {
+      payload.append(key, formData[key as keyof FormData]);
+    }
+
+    if (image) {
+      payload.append('image', image);
+    }
+
+    files.forEach(file => {
+      payload.append('files', file); // backend must expect "files" as multiple entries
+    });
 
     try {
-      console.log('Sending new item to server:', newItem);
+      console.log('Sending new item to server:', payload);
+
+        const response = await fetch(backend_url + "api/admin/create_item", {
+        method: 'POST',
+        headers: {
+          "Authorization": "Bearer " + token, // Don't add Content-Type here when using FormData!
+        },
+        body: payload,
+      });
 
       // Simulate a server request delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      //await new Promise(resolve => setTimeout(resolve, 1000));
 
       // Reset form on success
-      setSuccess(true);
+      setSuccess(true);//We'll do error handling later aight?
       setFormData({
         name: '',
         unit: '',
