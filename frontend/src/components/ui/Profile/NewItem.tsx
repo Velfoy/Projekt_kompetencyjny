@@ -194,9 +194,24 @@ const NewItem: React.FC = () => {
       const newUser: NewOrganization = {  nameOrg };
   
       try {
-        console.log('Sending post to server:', newUser);
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate request
-  
+        const response = await fetch(backend_url + "api/admin/create_organization?orgname=" + nameOrg, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json', 
+            "Authorization": "Bearer " + token, // Don't add Content-Type here when using FormData!
+          },
+        });
+        if (!response.ok) {
+          throw Error("Błąd autoryzacji");
+        }
+        const r = await fetch(backend_url + "api/admin/get_unit_data", {method: 'GET', 
+              headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}});
+        const data = await r.json();
+        setGuardians(data.admins);
+        setUnits(data.units);
+        setCategories(data.categories);
+        setTypes(data.types);//What is a "type" remains a mystery
+
         setSuccess2(true);
         setNameOrg('');
         setSubmitted2(false);
@@ -371,7 +386,7 @@ const NewItem: React.FC = () => {
         <p>Stwórz organizację</p>
       </div>
        <div className="creating_newpost">
-          <form onSubmit={handleSubmit} className={submitted ? 'submitted' : ''} noValidate>
+          <form onSubmit={handleSubmitOrg} className={submitted ? 'submitted' : ''} noValidate>
             <div className="info_andbutton">
               <input
                 className="post_title"

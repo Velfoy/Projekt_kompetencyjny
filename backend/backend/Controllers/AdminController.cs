@@ -159,7 +159,8 @@ namespace backend.Controllers
 
 		[HttpPost("modify_organizations/")]
 		[Authorize]
-		public async Task<ActionResult> ChangeAdminOrgs([FromBody] JovialMerryment kon) {
+		public async Task<ActionResult> ChangeAdminOrgs([FromBody] JovialMerryment kon)
+		{
 			string name = User.Claims.First(claim => claim.Type == ClaimTypes.Email).Value;
 			var m = await _context.Managers.FirstOrDefaultAsync(d => d.Username == name);
 			if (m == null)
@@ -168,7 +169,7 @@ namespace backend.Controllers
 			}
 			foreach (var o in kon.organizations)
 			{
-				if (!_context.Organizations.Include(o => o.Admins).First(a => a.Name == o).Admins.Any(a => a.Username == name)&&!m.GlobalAdmin)
+				if (!_context.Organizations.Include(o => o.Admins).First(a => a.Name == o).Admins.Any(a => a.Username == name) && !m.GlobalAdmin)
 				{
 					return Unauthorized();
 				}
@@ -178,9 +179,19 @@ namespace backend.Controllers
 			{
 				return BadRequest();
 			}
-			var orgy_dobavit = await (from o in _context.Organizations.Include(o => o.Admins) where (!o.Admins.Contains(dudu)&&kon.organizations.Contains(o.Name)) select o).ToListAsync();
+			var orgy_dobavit = await (from o in _context.Organizations.Include(o => o.Admins) where (!o.Admins.Contains(dudu) && kon.organizations.Contains(o.Name)) select o).ToListAsync();
 			dudu.Organizations.AddRange(orgy_dobavit);
 			_context.Managers.Update(dudu);
+			await _context.SaveChangesAsync();
+			return Ok();
+		}
+		[HttpPost("create_organization/")]
+		[Authorize]
+		[AdminAccess("global")]
+		public async Task<ActionResult> Create_Organization(string orgname)
+		{
+			var org = new Organization { Name = orgname, Admins = new List<Manager>() };
+			await _context.AddAsync(org);
 			await _context.SaveChangesAsync();
 			return Ok();
 		}

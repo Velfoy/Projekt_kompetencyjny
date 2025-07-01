@@ -62,15 +62,6 @@ const mockDifficultyDone:string="difficult";
 
   const [reservations, setReservations] = useState<Reservation[]>(initialReservations);
   const [doneReservations, setDoneReservations] = useState<DoneReservation[]>(initialDoneReservations);
-
-  useEffect(() => {
-    const fetchData = async () => {
-            const response = await fetch(backend_url + "api/reservations/get_reservation_with_timespans/" );
-            const data: Reservation[] = await response.json();
-            setReservations(data);
-    };
-  fetchData();
-  })
   const changePanel = () => {
     setPanelState(prev => (prev === 0 ? 1 : 0));
   };
