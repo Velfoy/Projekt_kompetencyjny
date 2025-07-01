@@ -13,7 +13,7 @@ namespace backend.Models
 
 		public Object ToJSON()
 		{
-			return new { id = Username, organizations = from o in Organizations select o.Name, role = "admin" };
+			return new { id = Username, organizations = from o in Organizations select o.Name, access = "admin" };
 		}
 	}
 }

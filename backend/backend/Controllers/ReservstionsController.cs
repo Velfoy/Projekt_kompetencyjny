@@ -90,14 +90,15 @@ namespace backend.Controllers
         }
 		//get_timespans_for_item
 	}
-    public class SimpleReservation
-    {
-		public string day;
-        public int startHour;
-        public int startMinute;
-        public int endHour;
-        public int endMinute;
-        public string title;
-        public string userName;
-    }
+	public class SimpleReservation
+	{
+		public string Day { get; set; }
+		public int StartHour { get; set; }
+		public int StartMinute { get; set; }
+		public int EndHour { get; set; }
+		public int EndMinute { get; set; }
+		public string Title { get; set; }
+		public string UserName { get; set; }
+	}
+
 }
