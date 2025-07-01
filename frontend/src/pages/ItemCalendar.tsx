@@ -79,7 +79,7 @@ const ItemCalendar: React.FC = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-          const response = await fetch(backend_url + "api/item/get_item/" + id);
+          const response = await fetch(backend_url + "api/item/get_breadcrumbs/" + id);
           const data = await response.json();
           setData(data);
         };
