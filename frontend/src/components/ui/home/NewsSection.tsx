@@ -29,15 +29,6 @@ const mockNews: NewsItem[] = [
     link: "https://www.youtube.com/watch?v=q9leDzlNEaY&ab_channel=HYBELABELS",
   },
 ];
-const [news, setNews] = useState<NewsItem[]>([])
-useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch(backend_url + "api/news/get_news");
-      const data: NewsItem[] = await response.json();
-      setNews(data);
-    };
-    fetchData();
-  }, []);
 
 // --- News Card Component ---
 interface NewsCardProps extends NewsItem {}
@@ -72,6 +63,16 @@ const NewsCard: React.FC<NewsCardProps> = ({
 
 // --- News Section ---
 const NewsSection: React.FC = () => {
+  console.log(buildingImg);
+  const [news, setNews] = useState<NewsItem[]>([])
+useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(backend_url + "api/news/get_news");
+      const data: NewsItem[] = await response.json();
+      setNews(data);
+    };
+    fetchData();
+  }, []);
   return (
     <div className="my-4 all_news">
       <h2 className="fw-bold mb-3 news_header">Nowości</h2>

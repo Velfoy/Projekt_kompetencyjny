@@ -10,5 +10,10 @@ namespace backend.Models
 		public string Username { get; set; }//Politechnika-style email
 		public List<Organization> Organizations { get; set; }
 		public bool GlobalAdmin { get; set; }//Whether the administrator has master access to the reservation system
+
+		public Object ToJSON()
+		{
+			return new { id = Username, organizations = from o in Organizations select o.Name, role = "admin" };
+		}
 	}
 }

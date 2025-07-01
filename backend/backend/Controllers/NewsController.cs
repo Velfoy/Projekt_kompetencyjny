@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace backend.Controllers
 {
@@ -24,9 +25,12 @@ namespace backend.Controllers
 		[HttpPost("add_post/")]
 		[Authorize]
 		[AdminAccess("global")]
-		public async Task<ActionResult> AddPost()
+		public async Task<ActionResult> AddPost([FromBody] PostData d)
 		{
-
+			var username = User.Claims.First(claim => claim.Type == ClaimTypes.Email).Value;
+			Post p = new Post { Author = _context.Managers.Where(m => m.Username == username).First(), Title = d.title, Text = d.content, Link = d.link, ButtonText = "Więcej", Image = "/src/assets/img/building.jpg", Highlight = false };
+			await _context.Posts.AddAsync(p);
+			await _context.SaveChangesAsync();
 			return Ok();
 		}
 
@@ -37,4 +41,11 @@ namespace backend.Controllers
 		}
 
 	}
+}
+
+public class PostData
+{
+	public string title { get; set; }
+	public string link { get; set; }
+	public string content { get; set; }
 }

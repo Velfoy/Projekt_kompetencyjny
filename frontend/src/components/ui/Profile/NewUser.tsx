@@ -5,6 +5,7 @@ import Overlay from '@components/layout/Overlay';
 import DataTable from "@components/ui/DataTable";
 import type { Column, RowData, DropdownAction } from "@components/ui/DataTable";
 import type { FormEvent, ChangeEvent } from 'react';
+import { backend_url } from '@/src/main';
 
 interface NewUserData {
   email: string;
@@ -53,46 +54,21 @@ const NewUser = () => {
 
   const { role } = useAuth();
 
-  const rows: RowData[] = [
-    { id: 1, access: 'user' },
-    { id: 2, access: 'admin' },
-    { id: 3, access: 'user' },
-    { id: 4, access: 'null' },
-    { id: 5, access: 'user' },
-    { id: 6, access: 'user' },
-    { id: 7, access: 'user' },
-    { id: 8, access: 'admin' },
-    { id: 9, access: 'user' },
-    { id: 10, access: 'user' },
-    { id: 11, access: 'null' },
-    { id: 12, access: 'user' },
-    { id: 13, access: 'user' },
-    { id: 14, access: 'null' },
-  ];
-import type {Column, RowData, DropdownAction} from "@components/ui/DataTable";
-import type { TableView } from '@components/ui/DataTable';
-import { backend_url } from '@/src/main';
+  const [rows, setRows] = useState<RowData[]>([]);
   const token = localStorage.getItem('auth_token');
-
-const NewUser=()=>{
-    const {role } = useAuth();
-    const [rows, setRows] = useState<RowData[]>([
-        { id: 1, access:'user' },
-        { id: 2,access:'admin' },
-        { id: 3,access:'user' },
-        { id: 4,access:'null'},
-        { id: 5,access:'user' },
-        { id: 6,access:'user'},
-        { id: 7,access:'user' },
-        { id: 8,access:'admin' },
-        { id: 9,access:'user' },
-        { id: 10,access:'user' },
-        { id: 11,access:'null' },
-        { id: 12,access:'user' },
-        { id: 13,access:'user' },
-        { id: 14,access:'null' },   
-  ]);
-
+  useEffect(() => {
+      const fetchData = async () => {
+        const response = await fetch(backend_url + "api/admin/get_admins", {
+              method: 'GET',
+              headers: {
+                "Authorization": "Bearer " + token,
+              },
+            });
+        const data: RowData[] = await response.json();
+        setRows(data);
+      };
+      fetchData();
+    }, []);
   const columns: Column[] = [
     { key: "id", label: "Id/Imię" },
     { key: "access", label: "Poziom dostępu" },

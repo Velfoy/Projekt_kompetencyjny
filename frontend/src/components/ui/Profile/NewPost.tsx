@@ -17,6 +17,7 @@ const NewPost: React.FC = () => {
   const [content, setContent] = useState('');
   const [success, setSuccess] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const token = localStorage.getItem('auth_token');
 
   const isValidUrl = (url: string): boolean => {
     try {
@@ -37,12 +38,13 @@ const NewPost: React.FC = () => {
     const newPost: PostData = { title, link, content };
 
     try {
-      const response = await fetch(backend_url + "api/admin/create_item", {
+      const response = await fetch(backend_url + "api/news/add_post", {
               method: 'POST',
               headers: {
-                "Authorization": "Bearer " + token, // Don't add Content-Type here when using FormData!
+                'Content-Type': 'application/json',
+                "Authorization": "Bearer " + token,
               },
-              body: newPost,
+              body: JSON.stringify(newPost),
             });
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate request
 

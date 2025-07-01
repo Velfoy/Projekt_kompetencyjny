@@ -95,7 +95,7 @@ namespace backend.Controllers
 
 		[HttpGet("get_unit_data")]
 		[Authorize]
-		public async Task<ActionResult<Object>> GetAdmins()
+		public async Task<ActionResult<Object>> GetUnit()
 		{
 			var admins = await (from m in _context.Managers select m.Username).ToListAsync();
 			var units = await (from u in _context.Organizations select u.Name).ToListAsync();
@@ -126,24 +126,21 @@ namespace backend.Controllers
 			await _context.SaveChangesAsync();
 			return Created();
 		}
-
-
-		[HttpGet("get_visitors")]//For adding admins
+		[HttpGet("get_admins")]
 		[Authorize]
-		public async Task<ActionResult<List<Object>>> GetVisitors()
+		public async Task<ActionResult<List<Object>>> GetAdmins()
 		{
-			var managers = await (from m in _context.Managers select m).ToListAsync();
-			var l = (from v in _context.Visitors select v.ToJSON(managers));
-			return await l.ToListAsync();
+			var admins = from a in _context.Managers.Include(a => a.Organizations) select a.ToJSON();
+			return await admins.ToListAsync();
 		}
 
 		[HttpGet("/seed")]
-        //[AdminAccess("global")]
-        public async Task<ActionResult<string>> Seed()
-        {
-	        Seed_database.CreateItems(_context);
-	        return "Made";
-        }
+		//[AdminAccess("global")]
+		public async Task<ActionResult<string>> Seed()
+		{
+			Seed_database.CreateItems(_context);
+			return "Made";
+		}
     }
 
 	public class ItemForm
