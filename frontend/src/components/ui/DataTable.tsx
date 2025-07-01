@@ -5,6 +5,7 @@ import styles from "../../styles/pages/historiaadmin.module.css";
 import type {DaySchedule} from '../../types/authTypes';
 import ReservationTime from "@/src/components/ui/timeLogic/ReservationTime";
 import { backend_url } from "@/src/main";
+import OrganizationSelect from "./OrganizationSelect";
 
 export interface Column {
   key: string;
@@ -310,26 +311,55 @@ const visibleColumns = columns.filter(col => {
                   <option value="user">Użytkownik</option>
                   <option value="admin">Admin</option>
                 </select>
-              ): col.key==="organization"&& editingRowId === row.id?(
-                <select
-                   value={editedFields[row.id]?.organization ?? row.organization}
+              ): col.key === "organization" ? (
+                editingRowId === row.id ? (
+                  <select
+                    value={editedFields[row.id]?.organization ?? row.organization}
                     onChange={(e) =>
-                      setEditedFields(prev => ({
+                      setEditedFields((prev) => ({
                         ...prev,
                         [row.id]: { ...prev[row.id], organization: e.target.value },
                       }))
                     }
-                  className="select_access"
-                >
-                  <option value="">Wybierz organizację</option>
-                {organizationsMock.map(org => (
-                  <option key={org.id} value={org.id}>
-                    {org.name}
-                  </option>
-                ))}
-                </select>
-              ): 
-               col.render ? col.render(row) : row[col.key]}
+                    className="select_access"
+                  >
+                    <option value="">Wybierz organizację</option>
+                    {organizationsMock.map((org) => (
+                      <option key={org.id} value={org.id}>
+                        {org.name}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  row["organizations"].map((orgName: string, index: number) => (
+                    <span key={index} style={{ marginRight: 8 }}>
+                      {orgName}
+                    </span>
+                  ))
+                )
+              ) : col.key === "organizations" ? (
+                editingRowId === row.id ? (
+                  <OrganizationSelect
+                    col={col}
+                    editingRowId={editingRowId as number}
+                    row={row as { id: number; organization: string }}
+                    organizationsMock={organizationsMock}
+                    editedFields={editedFields}
+                    setEditedFields={setEditedFields}
+                  />
+                ) : (
+                  row["organizations"].map((orgName: string, index: number) => (
+                    <span key={index} style={{ marginRight: 8 }}>
+                      {orgName}
+                    </span>
+                  ))
+                )
+              ) : col.render ? (
+                col.render(row)
+              ) : (
+                row[col.key]
+              )}
+
             </td>
           ))}
         {columns.some(col => col.key === "actions") && (
@@ -408,7 +438,11 @@ const visibleColumns = columns.filter(col => {
                 ))}
                 </select>
                   ):(
-                    row["organization"]
+                    row["organizations"].map((orgName: string, index: number) => (
+                      <span key={index} style={{ marginRight: 8 }}>
+                        {orgName}
+                      </span>
+                    ))
                   )}
                   
                 </div>
