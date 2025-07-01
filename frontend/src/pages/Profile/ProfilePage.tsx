@@ -7,6 +7,7 @@ import NewItem from '@/src/components/ui/Profile/NewItem';
 import NewUser from '@/src/components/ui/Profile/NewUser';
 import NewPost from '@/src/components/ui/Profile/NewPost';
 import type {DaySchedule} from '../../types/authTypes';
+import { backend_url } from '@/src/main';
 
 interface Reservation {
   id: number;
@@ -64,7 +65,7 @@ const mockDifficultyDone:string="difficult";
 
   useEffect(() => {
     const fetchData = async () => {
-            const response = await fetch(backend_url + "api/reservations/get_reservation_with_timespans/" + id);
+            const response = await fetch(backend_url + "api/reservations/get_reservation_with_timespans/" );
             const data: Reservation[] = await response.json();
             setReservations(data);
     };

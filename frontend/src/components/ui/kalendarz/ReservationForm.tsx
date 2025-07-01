@@ -178,23 +178,23 @@ const ReservationForm: React.FC<{
     try {
       const reservation: Reservation = {
         title,
-        reservedBy: currentUser.name,
         startHour,
         startMinute,
         endHour,
         endMinute,
         day: selectedSlot.day,
-        userId: currentUser.id,
         userName: currentUser.name,
         status: currentUser.role === 'user' ? 'Brak akceptacji' : undefined
       };
       
       await onSubmit(reservation);
+      onClose(); 
     } catch (err) {
       setError("Failed to create reservation. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
+
   };
 
   if (!selectedSlot) return null;

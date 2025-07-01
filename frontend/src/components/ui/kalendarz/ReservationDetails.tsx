@@ -13,7 +13,7 @@ const ReservationDetails: React.FC<{
 
   if (!reservation) return null;
 
-  const canDelete = reservation.userId === currentUser.id || currentUser.role === 'admin';
+  const canDelete = reservation.userName === currentUser.name || currentUser.role === 'admin';
 
   const handleDelete = async () => {
     setIsDeleting(true);
