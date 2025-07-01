@@ -41,6 +41,7 @@ const HistoriaAdmin = () => {
       { key: "unit", label: "Jednostka" },
       { key: "status", label: "Status rezerwacji" },
       { key: "termin_id", label: "Termin rezerwacji" },
+      { key: "actions", label: "Akcje" },
     ];
   
     const dropdownActions: DropdownAction[] = [
