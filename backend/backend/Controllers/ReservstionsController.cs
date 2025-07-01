@@ -28,7 +28,7 @@ namespace backend.Controllers
             string userId = "", int itemId = 0) {
             var res = from r in _context.Requests.Include(r => r.Item).Include(r => r.Item.Organivzation) where
                       ((userId == "") ? true : r.Renter == userId)&&
-                      ((itemId == 0)? true : r.Item.Id == itemId)
+                      ((itemId == 0)? true : r.Item.Id == itemId) orderby r.RequestSubmitted descending
                       select r;
             //_context.Requests.Add(new Request { Approved = true, Item = null,})
             if (pageSize == 0)
