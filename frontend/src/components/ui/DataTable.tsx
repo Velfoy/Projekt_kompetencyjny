@@ -60,7 +60,7 @@ const DataTable: React.FC<DataTableProps> = ({
   const [editedStatus, setEditedStatus] = useState<Record<number, string>>({});
   const [expandedRow, setExpandedRow] = useState<number | null>(null);
     const [timeWindow,setTimeWindow]=useState(false);
-    const [editedFields, setEditedFields] = useState<Record<number, { status?: string; access?: string }>>({});
+    const [editedFields, setEditedFields] = useState<Record<number, { status?: string; access?: string ;organization:string;}>>({});
   const token = localStorage.getItem('auth_token');
   const [timeDetails, setTimeDetails] = useState<DaySchedule[]>([
     { day: '02.03.2025', from: '10:00', to: '12:00' },
@@ -68,6 +68,12 @@ const DataTable: React.FC<DataTableProps> = ({
     { day: '16.03.2025', from: '10:00', to: '12:00' },
     { day: '30.03.2025', from: '10:00', to: '12:00' },
   ])
+  const organizationsMock = [
+  { id: 'org1', name: 'Organizacja A' },
+  { id: 'org2', name: 'Organizacja B' },
+  { id: 'org3', name: 'Organizacja C' },
+];
+
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -108,6 +114,7 @@ const DataTable: React.FC<DataTableProps> = ({
       [id]: {
         status: row.status,
         access: row.access,
+        organization:row.organization,
       },
     }));
   }
@@ -204,6 +211,7 @@ const visibleColumns = columns.filter(col => {
   if (col.key === "item" && columnKeys.includes("item")) return windowWidth > 650;
   if (col.key === "unit" && columnKeys.includes("unit")) return windowWidth > 750;
   if (col.key === "status" && columnKeys.includes("status")) return windowWidth > 850;
+    if (col.key === "organization" && columnKeys.includes("organization")) return windowWidth > 950;
   if (col.key === "termin_id" && columnKeys.includes("termin_id")) return windowWidth > 1050;
 
   return false;
@@ -302,7 +310,26 @@ const visibleColumns = columns.filter(col => {
                   <option value="user">Użytkownik</option>
                   <option value="admin">Admin</option>
                 </select>
-              ):  col.render ? col.render(row) : row[col.key]}
+              ): col.key==="organization"&& editingRowId === row.id?(
+                <select
+                   value={editedFields[row.id]?.organization ?? row.organization}
+                    onChange={(e) =>
+                      setEditedFields(prev => ({
+                        ...prev,
+                        [row.id]: { ...prev[row.id], organization: e.target.value },
+                      }))
+                    }
+                  className="select_access"
+                >
+                  <option value="">Wybierz organizację</option>
+                {organizationsMock.map(org => (
+                  <option key={org.id} value={org.id}>
+                    {org.name}
+                  </option>
+                ))}
+                </select>
+              ): 
+               col.render ? col.render(row) : row[col.key]}
             </td>
           ))}
         {columns.some(col => col.key === "actions") && (
@@ -355,6 +382,33 @@ const visibleColumns = columns.filter(col => {
                 </select>
                   ):(
                     row["access"]
+                  )}
+                  
+                </div>
+              )}
+              {(windowWidth <= 950 && columnKeys.includes("organization"))&& (
+                <div className="detail_row">
+                  <span className="detail_label">Organizacja:</span>
+                  {editingRowId === row.id ? (
+                    <select
+                  value={editedFields[row.id]?.organization ?? row.organization}
+                    onChange={(e) =>
+                      setEditedFields(prev => ({
+                        ...prev,
+                        [row.id]: { ...prev[row.id], organization: e.target.value },
+                      }))
+                    }
+                  className="select_access"
+                >
+                    <option value="">Wybierz organizację</option>
+                {organizationsMock.map(org => (
+                  <option key={org.id} value={org.id}>
+                    {org.name}
+                  </option>
+                ))}
+                </select>
+                  ):(
+                    row["organization"]
                   )}
                   
                 </div>

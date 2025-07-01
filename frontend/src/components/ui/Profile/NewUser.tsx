@@ -73,6 +73,7 @@ const NewUser = () => {
     { key: "id", label: "Id/Imię" },
     { key: "access", label: "Poziom dostępu" },
     { key: "actions", label: "Akcje" },
+    { key: "organization", label: "Organizacja" },
   ];
 
   const dropdownActions: DropdownAction[] = [
