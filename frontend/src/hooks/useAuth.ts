@@ -42,10 +42,35 @@ export const useAuth = () => {
     window.location.href = 'https://localhost:7019/cas/login';
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+  try {
+    const token = localStorage.getItem('auth_token');
+    if (token) {
+      // Make a request to your logout endpoint if needed
+      await fetch('https://localhost:7065/api/users/logout', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+    }
+    
+    // Clear local storage
+    localStorage.removeItem('auth_token');
+    
+    // Dispatch logout action
     dispatch(logout());
-    navigate('/'); 
-  };
+    
+    // Navigate after state is updated
+    navigate('/');
+  } catch (error) {
+    console.error('Logout failed:', error);
+    // Still proceed with local logout
+    localStorage.removeItem('auth_token');
+    dispatch(logout());
+    navigate('/');
+  }
+};
 
   return {
     isAuth: isAuthenticated,

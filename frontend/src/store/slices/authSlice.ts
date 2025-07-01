@@ -3,12 +3,13 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import type { AuthState, UserRole } from '../../types/authTypes';
 
 const initialState: AuthState = {
-  isAuthenticated: true, 
-  userRole: 'admin',
-  username: 'test',
+  isAuthenticated: true,
+  userRole: null,
+  username: null,
   isLoading: false,
   error: null,
 };
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -18,12 +19,12 @@ const authSlice = createSlice({
       state.error = null;
     },
     loginSuccess(state, action: PayloadAction<{ role: UserRole; username: string }>) {
-        state.isAuthenticated = true;
-        state.userRole = action.payload.role;
-        state.username = action.payload.username;
-        state.isLoading = false;
-        state.error = null;
-      },
+      state.isAuthenticated = true;
+      state.userRole = action.payload.role;
+      state.username = action.payload.username;
+      state.isLoading = false;
+      state.error = null;
+    },
     loginFailure(state, action: PayloadAction<string>) {
       state.isLoading = false;
       state.error = action.payload;
