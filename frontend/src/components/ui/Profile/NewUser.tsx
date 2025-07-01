@@ -11,8 +11,9 @@ interface NewUserData {
   email: string;
   name: string;
   userrole: 'admin' | 'user' | null;
-  organization: string;
+  organization: string[];  // <-- changed to string array
 }
+
 const organizationsMock = [
   { id: 'org1', name: 'Organizacja A' },
   { id: 'org2', name: 'Organizacja B' },
@@ -23,7 +24,7 @@ const NewUser = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [userrole, setUserrole] = useState<'admin' | 'user' | null>(null);
-  const [organization, setOrganization] = useState('');
+  const [organization, setOrganization] = useState<string[]>([]);  // <-- array of strings
   const [submitted, setSubmitted] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -31,7 +32,7 @@ const NewUser = () => {
     e.preventDefault();
     setSubmitted(true);
 
-    if (!email.trim() || !name.trim() || !organization.trim() || !userrole) return;
+    if (!email.trim() || !name.trim() || organization.length === 0 || !userrole) return;
 
     const newUser: NewUserData = { email, name, userrole, organization };
 
@@ -43,7 +44,7 @@ const NewUser = () => {
       setEmail('');
       setName('');
       setUserrole(null);
-      setOrganization('');
+      setOrganization([]);
       setSubmitted(false);
 
       setTimeout(() => setSuccess(false), 2000);
@@ -72,7 +73,7 @@ const NewUser = () => {
   const columns: Column[] = [
     { key: "id", label: "Id/Imię" },
     { key: "access", label: "Poziom dostępu" },
-    { key: "organization", label: "Organizacja" },
+    { key: "organizations", label: "Organizacja" },
     { key: "actions", label: "Akcje" },
   ];
 
@@ -102,54 +103,54 @@ const NewUser = () => {
         <div className="creating_newpost">
           <form onSubmit={handleSubmit} className={submitted ? 'submitted' : ''} noValidate>
             <div className="info_andbutton">
-                <div className='column_div'>
-                <input
-                    type="email"
-                    className="post_title"
-                    placeholder="Email usera"
-                    value={email}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
-                    required
-                />
-                   <select
-                className="post_title"
-                value={organization}
-                onChange={(e: ChangeEvent<HTMLSelectElement>) => setOrganization(e.target.value)}
-                required
-              >
-                <option value="">Wybierz organizację</option>
-                {organizationsMock.map(org => (
-                  <option key={org.id} value={org.id}>
-                    {org.name}
-                  </option>
-                ))}
-              </select>
-                
-                </div>
               <div className='column_div'>
                 <input
-                    className="post_title"
-                    placeholder="Imię usera"
-                    value={name}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
-                    required
+                  type="email"
+                  className="post_title"
+                  placeholder="Email usera"
+                  value={email}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                  required
                 />
-             
-              <select
-                className="post_title"
-                value={userrole ?? ''}
-                onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-                  setUserrole(e.target.value === '' ? null : (e.target.value as 'admin' | 'user'))
-                }
-                required
-              >
-                <option value="">Wybierz rolę użytkownika</option>
-                <option value="user">User</option>
-                <option value="admin">Admin</option>
-              </select>
+                <input
+                  className="post_title"
+                  placeholder="Imię usera"
+                  value={name}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+                  required
+                />
+                <select
+                  className="post_title"
+                  value={userrole ?? ''}
+                  onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                    setUserrole(e.target.value === '' ? null : (e.target.value as 'admin' | 'user'))
+                  }
+                  required
+                >
+                  <option value="">Wybierz rolę użytkownika</option>
+                  <option value="user">User</option>
+                  <option value="admin">Admin</option>
+                </select>
               </div>
-              
-              
+              <div className='column_div'>
+                <select
+                  multiple
+                  style={{ minWidth: 200, width: "100%", height: 100 }}
+                  className="select_multiple"
+                  value={organization}
+                  onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                    const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
+                    setOrganization(selectedOptions);
+                  }}
+                  required
+                >
+                  {organizationsMock.map(org => (
+                    <option key={org.id} value={org.id}>
+                      {org.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <button type="submit" className="post_create">
                 Stwórz
               </button>

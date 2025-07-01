@@ -61,7 +61,10 @@ const DataTable: React.FC<DataTableProps> = ({
   const [editedStatus, setEditedStatus] = useState<Record<number, string>>({});
   const [expandedRow, setExpandedRow] = useState<number | null>(null);
     const [timeWindow,setTimeWindow]=useState(false);
-    const [editedFields, setEditedFields] = useState<Record<number, { status?: string; access?: string ;organization:string;}>>({});
+const [editedFields, setEditedFields] = useState<
+  Record<number, { status?: string; access?: string; organizations?: string[] }>
+>({});
+
   const token = localStorage.getItem('auth_token');
   const [timeDetails, setTimeDetails] = useState<DaySchedule[]>([
     { day: '02.03.2025', from: '10:00', to: '12:00' },
@@ -73,6 +76,7 @@ const DataTable: React.FC<DataTableProps> = ({
   { id: 'org1', name: 'Organizacja A' },
   { id: 'org2', name: 'Organizacja B' },
   { id: 'org3', name: 'Organizacja C' },
+  
 ];
 
 
@@ -106,7 +110,7 @@ const DataTable: React.FC<DataTableProps> = ({
     setSelectedRows(prev => prev.filter(rowId => rowId !== id));
   };
 
-    const handleEditRow = (id: number) => {
+  const handleEditRow = (id: number) => {
   setEditingRowId(id);
   const row = tableData.find(r => r.id === id);
   if (row) {
@@ -115,11 +119,12 @@ const DataTable: React.FC<DataTableProps> = ({
       [id]: {
         status: row.status,
         access: row.access,
-        organization:row.organization,
+        organizations: row.organizations, // tablica, nie pojedynczy string!
       },
     }));
   }
 };
+
 
 const handleSubmitRow = async (id: number) => {
   const edited = editedFields[id];
@@ -132,8 +137,9 @@ const handleSubmitRow = async (id: number) => {
 
   const statusChanged = edited.status && edited.status !== oldRow.status;
   const accessChanged = edited.access && edited.access !== oldRow.access;
+  const organizationsChanged = edited.organizations && JSON.stringify(edited.organizations) !== JSON.stringify(oldRow.organizations);
 
-  if (!statusChanged && !accessChanged) {
+  if (!statusChanged && !accessChanged && !organizationsChanged) {
     setEditingRowId(null);
     return;
   }
@@ -145,6 +151,7 @@ const handleSubmitRow = async (id: number) => {
       body: JSON.stringify({
         ...(statusChanged && { status: edited.status }),
         ...(accessChanged && { access: edited.access }),
+        ...(organizationsChanged && { organizations: edited.organizations }),
       }),
     });
 
@@ -155,6 +162,7 @@ const handleSubmitRow = async (id: number) => {
               ...row,
               ...(statusChanged && { status: edited.status }),
               ...(accessChanged && { access: edited.access }),
+              ...(organizationsChanged && { organizations: edited.organizations }),
             }
           : row
       )
@@ -166,6 +174,7 @@ const handleSubmitRow = async (id: number) => {
     alert("Nie udało się zaktualizować wiersza.");
   }
 };
+
 
   const getActionHandler = (label: string): (() => void) | undefined => {
     const location = useLocation();
@@ -212,7 +221,7 @@ const visibleColumns = columns.filter(col => {
   if (col.key === "item" && columnKeys.includes("item")) return windowWidth > 650;
   if (col.key === "unit" && columnKeys.includes("unit")) return windowWidth > 750;
   if (col.key === "status" && columnKeys.includes("status")) return windowWidth > 850;
-    if (col.key === "organization" && columnKeys.includes("organization")) return windowWidth > 950;
+    if (col.key === "organizations" && columnKeys.includes("organizations")) return windowWidth > 950;
   if (col.key === "termin_id" && columnKeys.includes("termin_id")) return windowWidth > 1050;
 
   return false;
@@ -311,55 +320,28 @@ const visibleColumns = columns.filter(col => {
                   <option value="user">Użytkownik</option>
                   <option value="admin">Admin</option>
                 </select>
-              ): col.key === "organization" ? (
-                editingRowId === row.id ? (
-                  <select
-                    value={editedFields[row.id]?.organization ?? row.organization}
-                    onChange={(e) =>
-                      setEditedFields((prev) => ({
-                        ...prev,
-                        [row.id]: { ...prev[row.id], organization: e.target.value },
-                      }))
-                    }
-                    className="select_access"
-                  >
-                    <option value="">Wybierz organizację</option>
-                    {organizationsMock.map((org) => (
-                      <option key={org.id} value={org.id}>
-                        {org.name}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  row["organizations"].map((orgName: string, index: number) => (
-                    <span key={index} style={{ marginRight: 8 }}>
-                      {orgName}
-                    </span>
-                  ))
-                )
-              ) : col.key === "organizations" ? (
-                editingRowId === row.id ? (
-                  <OrganizationSelect
+              ): col.key === "organizations"&& editingRowId === row.id ? (
+               
+                  <OrganizationSelect 
                     col={col}
                     editingRowId={editingRowId as number}
-                    row={row as { id: number; organization: string }}
+                    row={row as { id: number; organizations: string[] }}
                     organizationsMock={organizationsMock}
                     editedFields={editedFields}
                     setEditedFields={setEditedFields}
                   />
-                ) : (
-                  row["organizations"].map((orgName: string, index: number) => (
-                    <span key={index} style={{ marginRight: 8 }}>
-                      {orgName}
-                    </span>
-                  ))
-                )
-              ) : col.render ? (
-                col.render(row)
-              ) : (
-                row[col.key]
-              )}
-
+                  
+                
+              ): col.key === "organizations"&& editingRowId !== row.id ? (
+               
+                row["organizations"].map((orgName: string, index: number) => (
+                  <span key={index} style={{ marginRight: 8 }}>
+                    {orgName}
+                  </span>
+                ))
+                
+              )
+              : col.render ? col.render(row) : row[col.key]}
             </td>
           ))}
         {columns.some(col => col.key === "actions") && (
@@ -416,35 +398,26 @@ const visibleColumns = columns.filter(col => {
                   
                 </div>
               )}
-              {(windowWidth <= 950 && columnKeys.includes("organization"))&& (
+              {(windowWidth <= 950 && columnKeys.includes("organizations"))&& (
                 <div className="detail_row">
                   <span className="detail_label">Organizacja:</span>
-                  {editingRowId === row.id ? (
-                    <select
-                  value={editedFields[row.id]?.organization ?? row.organization}
-                    onChange={(e) =>
-                      setEditedFields(prev => ({
-                        ...prev,
-                        [row.id]: { ...prev[row.id], organization: e.target.value },
-                      }))
-                    }
-                  className="select_access"
-                >
-                    <option value="">Wybierz organizację</option>
-                {organizationsMock.map(org => (
-                  <option key={org.id} value={org.id}>
-                    {org.name}
-                  </option>
-                ))}
-                </select>
-                  ):(
-                    row["organizations"].map((orgName: string, index: number) => (
-                      <span key={index} style={{ marginRight: 8 }}>
-                        {orgName}
-                      </span>
-                    ))
-                  )}
-                  
+                {editingRowId === row.id?(
+                   <OrganizationSelect 
+                    col={{ key: "organizations" }}
+                    editingRowId={editingRowId as number}
+                    row={row as { id: number; organizations: string[] }}
+                    organizationsMock={organizationsMock}
+                    editedFields={editedFields}
+                    setEditedFields={setEditedFields}
+                  />
+                ):(
+                  row["organizations"].map((orgName: string, index: number) => (
+                  <span key={index} style={{ marginRight: 8 }}>
+                    {orgName}
+                  </span>
+                ))
+                ) }
+                 
                 </div>
               )}
               {(windowWidth <= 650&&columnKeys.includes("item")) && (
