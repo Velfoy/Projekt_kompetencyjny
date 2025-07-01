@@ -188,7 +188,7 @@ const ReservationForm: React.FC<{
       };
       
       await onSubmit(reservation);
-      onClose(); 
+  onClose(); 
     } catch (err) {
       setError("Failed to create reservation. Please try again.");
     } finally {
