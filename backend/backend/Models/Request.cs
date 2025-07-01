@@ -34,7 +34,7 @@ namespace backend.Models
 		public Object ToJSON()
 		{
 			var approval_status = ApprovalStatus;
-			return new { id = Id, type = Item.Type, item = Item.Description, item_id = Item.Id, unit = Item.Organivzation.Name, status = approval_status, termin_id = Id };
+			return new { id = Id, type = Item.Type, item = Item.Name, item_id = Item.Id, unit = Item.Organivzation.Name, status = approval_status, termin_id = Id };
 		}
 	}
 }
