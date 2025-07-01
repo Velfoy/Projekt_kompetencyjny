@@ -25,15 +25,7 @@ namespace backend.Models
 				}
 				else
 				{
-					foreach (var t in RequestPeriod)
-					{
-						if (t.Start < DateTime.Now && t.End < DateTime.Now)
-						{
-							approval_status = "W trakcie";
-							break;
-						}
-					}
-					approval_status ??= (bool)(Approved) ? "Zakończona" : "Odrzucona";//This is the worst code I've written in a while
+					approval_status ??= (bool)(Approved) ? "W trakcie" : "Odrzucona";//This is the worst code I've written in a while
 				}
 				return approval_status;
 			} 

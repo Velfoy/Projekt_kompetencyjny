@@ -480,8 +480,23 @@ const ItemCalendar: React.FC = () => {
           status: isApproved ? 'W trakcie' : 'Brak akceptacji'
         }));
       }
-      
-      setReservations([...reservations, ...newReservations]);
+      console.log(newReservations);
+      newReservations.forEach(async reservation => {
+        await fetch(backend_url + "api/reservations/make_reservation/" + id, {
+          method: 'POST',
+          headers: {
+          'Content-Type': 'application/json',
+          "Authorization": "Bearer " + token,
+        },
+          body: JSON.stringify(reservation),
+        });
+      });
+      const fetchData = async () => {
+        const response = await fetch(backend_url + "api/reservations/get_reservation_with_timespans/" + id);
+        const data: Reservation[] = await response.json();
+        setReservations(data);
+      };
+      fetchData();
     } catch (err) {
       console.error("Failed to add complex reservation:", err);
       throw err;
@@ -525,8 +540,22 @@ const ItemCalendar: React.FC = () => {
           status: isApproved ? 'W trakcie' : 'Brak akceptacji'
         }));
       }
-      
-      setReservations([...reservations, ...newReservations]);
+      newReservations.forEach(async reservation => {
+        await fetch(backend_url + "api/reservations/make_reservation/" + id, {
+          method: 'POST',
+          headers: {
+          'Content-Type': 'application/json',
+          "Authorization": "Bearer " + token,
+        },
+          body: JSON.stringify(reservation),
+        });
+      });
+      const fetchData = async () => {
+        const response = await fetch(backend_url + "api/reservations/get_reservation_with_timespans/" + id);
+        const data: Reservation[] = await response.json();
+        setReservations(data);
+      };
+      fetchData();
     } catch (err) {
       console.error("Failed to add recurring reservation:", err);
       throw err;

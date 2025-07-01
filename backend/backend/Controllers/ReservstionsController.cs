@@ -44,16 +44,16 @@ namespace backend.Controllers
         [HttpGet("get_reservation_with_timespans/{*id}")]
 		public async Task<ActionResult<IEnumerable<Object>>> GetReservationTimespans(int id)
 		{
-                
-                var timespans = from ts in _context.Timespans.Include(t => t.Request).ThenInclude(r => r.Item) where ts.Request.Item.Id == id select new {
-                    day = $"{ts.Start.ToLocalTime().Day:D2}.{ts.Start.ToLocalTime().Month:D2}.{ts.Start.ToLocalTime().Year:D4}",
-                    startHour = (ts.Start.AddHours(2).Hour > 8) ? ts.Start.AddHours(2).Hour : 8,
-                    startMinute = (ts.Start.ToLocalTime().Minute / 15) * 15,
-                    endHour = (ts.End.AddHours(2).Hour > 8) ? ts.End.AddHours(2).Hour : 16,
-                    endMinute = (ts.End.ToLocalTime().Minute / 15) * 15,
-                    title = ts.Request.Title,
-                    userName = ts.Request.Renter,
-                    status = ts.Request.ApprovalStatus
+
+            var timespans = from ts in _context.Timespans.Include(t => t.Request).ThenInclude(r => r.Item) where ts.Request.Item.Id == id select new {
+                day = $"{ts.Start.ToLocalTime().Day:D2}.{ts.Start.ToLocalTime().Month:D2}.{ts.Start.ToLocalTime().Year:D4}",
+                startHour = (ts.Start.AddHours(2).Hour > 8) ? ts.Start.AddHours(2).Hour : 8,
+                startMinute = (ts.Start.ToLocalTime().Minute / 15) * 15,
+                endHour = (ts.End.AddHours(2).Hour > 8) ? ts.End.AddHours(2).Hour : 16,
+                endMinute = (ts.End.ToLocalTime().Minute / 15) * 15,
+                title = ts.Request.Title,
+                userName = ts.Request.Renter,
+                status = (ts.End > DateTime.UtcNow) ? ts.Request.ApprovalStatus : "Zakończona"
                 };
             return timespans.ToList();
         }
