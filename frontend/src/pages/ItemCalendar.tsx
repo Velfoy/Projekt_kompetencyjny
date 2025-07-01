@@ -71,6 +71,7 @@ const ItemCalendar: React.FC = () => {
   const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
   const [addingForm, setAddingForm] = useState(false);
   const {  role, username } = useAuth();
+  const token = localStorage.getItem('auth_token');
 
    const [data, setData] = useState({
     name: "Unknown Item",
@@ -411,24 +412,24 @@ const ItemCalendar: React.FC = () => {
   };
 
   const handleAddReservation = async (reservation: Reservation) => {
-    try {
-      if (currentUser.role === 'user') {
-        const isApproved = await submitReservationForApproval(reservation);
-        
-        const newReservation: Reservation = {
-          ...reservation,
-          status: isApproved ? 'W trakcie' : 'Brak akceptacji'
-        };
-        
-        setReservations([...reservations, newReservation]);
-        setSelectedSlot(null);
-      } else {
-        setReservations([...reservations, {...reservation, status: 'W trakcie'}]);
-        setSelectedSlot(null);
-      }
-    } catch (err) {
-      console.error("Failed to add reservation:", err);
-    }
+    const postReservation = async () => {
+      console.log(reservation);
+      await fetch(backend_url + "api/reservations/make_reservation/" + id, {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json',
+        "Authorization": "Bearer " + token,
+      },
+        body: JSON.stringify(reservation),
+      });
+    };
+    postReservation();
+    const fetchData = async () => {
+      const response = await fetch(backend_url + "api/reservations/get_reservation_with_timespans/" + id);
+      const data: Reservation[] = await response.json();
+      setReservations(data);
+    };
+    fetchData();
   };
 
   const handleDeleteReservation = async () => {
@@ -540,7 +541,7 @@ const ItemCalendar: React.FC = () => {
       ) || daysOfWeek[0]);
     }
   };
-
+  console.log(reservations)
   return (
     <div className="calendarWrapper">
        <div className="calendarName">

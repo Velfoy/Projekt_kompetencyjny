@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace backend.Controllers
 {
@@ -46,10 +47,10 @@ namespace backend.Controllers
                 
                 var timespans = from ts in _context.Timespans.Include(t => t.Request).ThenInclude(r => r.Item) where ts.Request.Item.Id == id select new {
                     day = $"{ts.Start.Day:D2}.{ts.Start.Month:D2}.{ts.Start.Year:D4}",
-                    startHour = ts.Start.Hour,
-                    startMinute = ts.Start.Minute,
-                    endHour = ts.End.Hour,
-                    endMinute = ts.End.Minute,
+                    startHour = (ts.Start.Hour > 8) ? ts.Start.Hour : 8,
+                    startMinute = (ts.Start.Minute / 15) * 15,
+                    endHour = (ts.End.Hour > 8) ? ts.End.Hour : 16,
+                    endMinute = (ts.End.Minute / 15) * 15,
                     title = ts.Request.Title,
                     userName = ts.Request.Renter,
                     status = ts.Request.ApprovalStatus
@@ -66,14 +67,37 @@ namespace backend.Controllers
         }//There is an extremely goofy feature in C# that lets you call async on db query and also apparently to return the result as an ActionResult.
          //You can't do that with regular LINQ, as I had pleasure to just discover.
          //xd.
-        [HttpPost("make_reservation")]
-        public async Task<ActionResult<string>> MakeReservation(Request r)
+        [HttpPost("make_reservation/{*id}")]
+        [Authorize]
+        public async Task<ActionResult<string>> MakeReservation(int id, [FromBody]SimpleReservation r)
         {
             //Placeholder for now, will be changed on demand of frontend team
             //{}
-            await _context.AddAsync(r);
+            if (r.userName != User.Claims.First(claim => claim.Type == ClaimTypes.Email).Value)
+            {
+                return Unauthorized();
+            }
+            var item = _context.Items.Include(i => i.Organivzation).ThenInclude(o => o.Admins).FirstOrDefault(i => i.Id == id);
+            if (item == null)
+            {
+                return NotFound();
+            }
+            var date = new Timespan { Start = new DateTime(new DateOnly(Convert.ToInt32(r.day.Split(".")[0]), Convert.ToInt32(r.day.Split(".")[1]), Convert.ToInt32(r.day.Split(".")[2])), new TimeOnly(r.startHour, r.startMinute)), End = new DateTime(new DateOnly(Convert.ToInt32(r.day.Split(".")[0]), Convert.ToInt32(r.day.Split(".")[1]), Convert.ToInt32(r.day.Split(".")[2])), new TimeOnly(r.endHour, r.endMinute)) };
+			var res = new Request { Approved = (_context.Items.Include(i => i.Organivzation).ThenInclude(o => o.Admins).First(i => i.Id == id).Organivzation.Admins.Any(a => a.Username == r.userName)) ? true : null, Item =  item, LastModified = DateTime.UtcNow, Renter = r.userName, Title = r.title, RequestPeriod = new List<Timespan>([date]), RequestSubmitted = DateTime.UtcNow};
+
+            await _context.AddAsync(res);
             return "Made";
         }
 		//get_timespans_for_item
 	}
+    public class SimpleReservation
+    {
+		public string day;
+        public int startHour;
+        public int startMinute;
+        public int endHour;
+        public int endMinute;
+        public string title;
+        public string userName;
+    }
 }
