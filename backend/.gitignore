@@ -1,5 +1,6 @@
 backend/obj/
 backend/bin/
+backend/storage
 backend/appsettings.json
 backend/appsettings.Development.json
 CAS/obj/

@@ -40,7 +40,7 @@ namespace backend.Data
 			var raptors = new Organization
 			{
 				Name = "Raptors",
-				Admins = new List<Manager> { managers[2], managers[3], managers[4] }
+				Admins = new List<Manager> { managers[0], managers[2], managers[3], managers[4] }
 			};
 
 			_context.Organizations.AddRange(voxel, raptors);

@@ -64,7 +64,8 @@ namespace backend.Controllers
 			{
 				content_type = "application/octet-stream";
 			}
-			return PhysicalFile(Path.GetFullPath(image_path), content_type);
+			string fullpath = Path.GetFullPath(image_path);
+            return PhysicalFile(fullpath, content_type);
 		}
 		[HttpGet("files/{*filename}")]
 		public async Task<FileResult> RetrieveFile(string filename)
