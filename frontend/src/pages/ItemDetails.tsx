@@ -259,15 +259,7 @@ const ItemDetails = () => {
 
       <div className="tab-content">
         {activeTab === "specs" ? (
-          booking.specs?.length > 0 ? (
-            <ul>
-              {booking.specs.map((spec, index) => (
-                <li key={index}>{spec}</li>
-              ))}
-            </ul>
-          ) : (
-            <p>Brak danych technicznych.</p>
-          )
+          <a>{booking.specs}</a>
         ) : (
           <div className="notes-section">
             <textarea

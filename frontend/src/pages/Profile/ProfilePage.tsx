@@ -1,5 +1,5 @@
 import { useAuth } from '@hooks/useAuth';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from '@styles/pages/profile.module.css';
 import ReservatioNow from '@/src/components/ui/Profile/ReservatioNow';
 import ReservationDone from '@/src/components/ui/Profile/ReservationDone';
@@ -62,6 +62,14 @@ const mockDifficultyDone:string="difficult";
   const [reservations, setReservations] = useState<Reservation[]>(initialReservations);
   const [doneReservations, setDoneReservations] = useState<DoneReservation[]>(initialDoneReservations);
 
+  useEffect(() => {
+    const fetchData = async () => {
+            const response = await fetch(backend_url + "api/reservations/get_reservation_with_timespans/" + id);
+            const data: Reservation[] = await response.json();
+            setReservations(data);
+    };
+  fetchData();
+  })
   const changePanel = () => {
     setPanelState(prev => (prev === 0 ? 1 : 0));
   };

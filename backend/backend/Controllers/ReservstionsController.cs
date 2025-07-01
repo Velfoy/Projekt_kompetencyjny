@@ -41,7 +41,7 @@ namespace backend.Controllers
             return await (from reservation in (res.Skip(pageSize*(page - 1)).Take(pageSize)) select reservation.ToJSON()).ToListAsync();//This is one of my favorite lines in this project ngl
         }
 
-        [HttpGet("get_reservation_with_timespans/{*id}")]
+		[HttpGet("get_reservation_with_timespans/{*id}")]
 		public async Task<ActionResult<IEnumerable<Object>>> GetReservationTimespans(int id)
 		{
 

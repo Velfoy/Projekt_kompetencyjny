@@ -27,7 +27,7 @@ namespace backend.Models
 				{
 					id = Id, name = Name, description = Description, unit = Organivzation.Name, category = Type,
 					address = Location, guardian_email = Manager.Username, exploration_rules = TermsOfUse,
-					specs = new List<string>(), notes = Notes,
+					specs = Specs, notes = Notes,
 					documentation = AttachedDocuments, image = ImagePath
 				};
 			}
