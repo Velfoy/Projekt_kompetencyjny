@@ -72,8 +72,8 @@ const NewUser = () => {
   const columns: Column[] = [
     { key: "id", label: "Id/Imię" },
     { key: "access", label: "Poziom dostępu" },
-    { key: "actions", label: "Akcje" },
     { key: "organization", label: "Organizacja" },
+    { key: "actions", label: "Akcje" },
   ];
 
   const dropdownActions: DropdownAction[] = [
