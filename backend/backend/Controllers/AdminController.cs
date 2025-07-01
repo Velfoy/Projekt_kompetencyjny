@@ -103,6 +103,13 @@ namespace backend.Controllers
 			var categories = new List<string>(["Hai Shield Beetle"]);
 			return new { admins, units, types, categories };
 		}
+		[HttpGet("get_organizations")]
+		[Authorize]
+		public async Task<ActionResult<IEnumerable<Object>>> GetOrgs()
+		{
+			var orgy = from o in _context.Organizations select new { id=o.Id, name=o.Name };
+			return await orgy.ToListAsync();
+		}
 		[HttpPost("create_item")]
 		[Authorize]
 		[Consumes("multipart/form-data")]
@@ -126,12 +133,43 @@ namespace backend.Controllers
 			await _context.SaveChangesAsync();
 			return Created();
 		}
+		
+
+
 		[HttpGet("get_admins")]
 		[Authorize]
 		public async Task<ActionResult<List<Object>>> GetAdmins()
 		{
 			var admins = from a in _context.Managers.Include(a => a.Organizations) select a.ToJSON();
 			return await admins.ToListAsync();
+		}
+
+		[HttpPost("modify_organizations/")]
+		[Authorize]
+		public async Task<ActionResult> ChangeAdminOrgs([FromBody] JovialMerryment kon) {
+			string name = User.Claims.First(claim => claim.Type == ClaimTypes.Email).Value;
+			var m = await _context.Managers.FirstOrDefaultAsync(d => d.Username == name);
+			if (m == null)
+			{
+				return Unauthorized();
+			}
+			foreach (var o in kon.organizations)
+			{
+				if (!_context.Organizations.Include(o => o.Admins).First(a => a.Name == o).Admins.Any(a => a.Username == name)&&!m.GlobalAdmin)
+				{
+					return Unauthorized();
+				}
+			}
+			var dudu = await _context.Managers.FirstOrDefaultAsync(d => d.Username == name);
+			if (dudu == null)
+			{
+				return BadRequest();
+			}
+			var orgy_dobavit = await (from o in _context.Organizations.Include(o => o.Admins) where (!o.Admins.Contains(dudu)&&kon.organizations.Contains(o.Name)) select o).ToListAsync();
+			dudu.Organizations.AddRange(orgy_dobavit);
+			_context.Managers.Update(dudu);
+			await _context.SaveChangesAsync();
+			return Ok();
 		}
 
 		[HttpGet("/seed")]
@@ -162,5 +200,11 @@ namespace backend.Controllers
 		public string exploration { get; set; }
 
 		public string technical { get; set; }
+	}
+
+	public class JovialMerryment
+	{
+		public List<string> organizations { get; set; }
+		public string id { get; set; }
 	}
 }

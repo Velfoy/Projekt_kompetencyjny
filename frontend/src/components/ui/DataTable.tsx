@@ -6,6 +6,7 @@ import type {DaySchedule} from '../../types/authTypes';
 import ReservationTime from "@/src/components/ui/timeLogic/ReservationTime";
 import { backend_url } from "@/src/main";
 import OrganizationSelect from "./OrganizationSelect";
+import { Row } from "react-bootstrap";
 
 export interface Column {
   key: string;
@@ -78,6 +79,16 @@ const [editedFields, setEditedFields] = useState<
   { id: 'org3', name: 'Organizacja C' },
   
 ];
+  const [organizations, setOrganizations] = useState(organizationsMock);
+  useEffect(() => {
+          const fetchData = async () => {
+            const response = await fetch(backend_url + "api/admin/get_organizations", {method: 'GET', 
+                          headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}});
+            const data = await response.json();
+            setOrganizations(data);
+          }
+          fetchData();
+      }, [])
 
 
   useEffect(() => {
@@ -134,25 +145,36 @@ const handleSubmitRow = async (id: number) => {
     setEditingRowId(null);
     return;
   }
+  console.log("ZWOlinski");
 
+  const row = tableData.find(r => r.id === id);
   const statusChanged = edited.status && edited.status !== oldRow.status;
   const accessChanged = edited.access && edited.access !== oldRow.access;
   const organizationsChanged = edited.organizations && JSON.stringify(edited.organizations) !== JSON.stringify(oldRow.organizations);
 
   if (!statusChanged && !accessChanged && !organizationsChanged) {
     setEditingRowId(null);
+    
+    console.log("я з бази написала про якісь енції і преплив даних хд");
     return;
   }
 
+  console.log("мені для джіри і презентації треба");
   try {
-    await fetch(`/api/update-row/${id}`, {
+    const payload: Record<string, any> = {
+      id: oldRow["id"],
+    };
+
+    if (organizationsChanged) {
+      payload.organizations = edited.organizations;
+    }
+
+    await fetch(backend_url + "modify_organizations/", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...(statusChanged && { status: edited.status }),
-        ...(accessChanged && { access: edited.access }),
-        ...(organizationsChanged && { organizations: edited.organizations }),
-      }),
+      headers: {
+        "Content-Type": "application/json", 'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify(payload),
     });
 
     setTableData(prev =>
@@ -326,7 +348,7 @@ const visibleColumns = columns.filter(col => {
                     col={col}
                     editingRowId={editingRowId as number}
                     row={row as { id: number; organizations: string[] }}
-                    organizationsMock={organizationsMock}
+                    organizationsMock={organizations}
                     editedFields={editedFields}
                     setEditedFields={setEditedFields}
                   />
@@ -406,7 +428,7 @@ const visibleColumns = columns.filter(col => {
                     col={{ key: "organizations" }}
                     editingRowId={editingRowId as number}
                     row={row as { id: number; organizations: string[] }}
-                    organizationsMock={organizationsMock}
+                    organizationsMock={organizations}
                     editedFields={editedFields}
                     setEditedFields={setEditedFields}
                   />
