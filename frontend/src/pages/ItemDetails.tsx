@@ -196,6 +196,7 @@ const ItemDetails = () => {
       setImgSrc(backend_url + "api/item/photos/" + booking.image);
     }
   }, [booking]);
+  console.log(booking);
   if (loading) return <LoadingOverlay />;
   return (
     <div className="itemDetails_container">
@@ -228,9 +229,9 @@ const ItemDetails = () => {
             <strong>Dokumentacja techniczna:</strong>
             <ul>
               {booking.documentation.length > 0 ? (
-                booking.documentation.map((doc, i) => (
-                  <li key={i}>
-                    <a href={doc.url}>{doc.name}</a>
+                booking.documentation.map(link => (
+                  <li>
+                    <a href={backend_url + "api/item/files/" + link}>{link}</a>
                   </li>
                 ))
               ) : (

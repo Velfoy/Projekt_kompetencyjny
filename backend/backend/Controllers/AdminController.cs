@@ -124,8 +124,8 @@ namespace backend.Controllers
 				var file_stream = new FileStream(files_path + file.FileName, FileMode.Create);
 			}
 			var e = (from f in files select (files_path + f.FileName)).ToList();
-			var i = new Item { DateAdded = DateTime.UtcNow, Description = item.description, ImagePath = image_path + image.FileName,
-				AttachedDocuments = (from f in files select (files_path + f.FileName)).ToList(), 
+			var i = new Item { DateAdded = DateTime.UtcNow, Description = item.description, ImagePath = image.FileName,
+				AttachedDocuments = (from f in files select (f.FileName)).ToList(), 
 				Location = item.location, Manager = (from m in _context.Managers where m.Username == item.guardian select m).FirstOrDefault(), 
 				Name = item.name, Specs = item.technical, 
 				Organivzation = (from o in _context.Organizations where o.Name == item.unit select o).FirstOrDefault(), TermsOfUse = item.exploration, Type = item.itemType};
