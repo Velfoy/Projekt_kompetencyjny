@@ -13,9 +13,10 @@ export const useAuth = () => {
   );
 
  useEffect(() => {
+    const token = localStorage.getItem('auth_token');
+  if (!token) return; 
 
   const fetchUserData = async () => {
-      const token = localStorage.getItem('auth_token');
       console.log(token ?? localStorage.length)
       const response = await fetch(`https://localhost:7065/api/users/whoami`, {
         method: 'GET',
@@ -43,9 +44,10 @@ export const useAuth = () => {
   };
 
   const handleLogout = () => {
-    dispatch(logout());
-    navigate('/'); 
-  };
+  localStorage.removeItem('auth_token'); // Clear the token
+  dispatch(logout());
+  navigate('/');
+};
 
   return {
     isAuth: isAuthenticated,
