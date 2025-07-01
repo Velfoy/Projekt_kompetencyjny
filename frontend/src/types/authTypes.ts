@@ -28,6 +28,7 @@ export interface DaySchedule {
 
 
 export interface Reservation {
+  id: number,
   day: string;
   startHour: number;
   startMinute: number;

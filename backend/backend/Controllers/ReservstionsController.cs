@@ -46,6 +46,7 @@ namespace backend.Controllers
 		{
 
             var timespans = from ts in _context.Timespans.Include(t => t.Request).ThenInclude(r => r.Item) where ts.Request.Item.Id == id select new {
+                id = ts.Request.Id,
                 day = $"{ts.Start.ToLocalTime().Day:D2}.{ts.Start.ToLocalTime().Month:D2}.{ts.Start.ToLocalTime().Year:D4}",
                 startHour = (ts.Start.AddHours(2).Hour > 8) ? ts.Start.AddHours(2).Hour : 8,
                 startMinute = (ts.Start.ToLocalTime().Minute / 15) * 15,

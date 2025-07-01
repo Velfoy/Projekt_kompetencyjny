@@ -436,8 +436,15 @@ const ItemCalendar: React.FC = () => {
     if (!selectedReservation) return;
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      setReservations(reservations.filter(r => r !== selectedReservation));
+      const delresp = await fetch(backend_url + "api/admin/delete_reservation/" + selectedReservation.id, {method: 'DELETE',  
+            headers: {'Authorization': 'Bearer ' + token}});
+        if (!delresp.ok) {
+          throw Error("Unauthorized");
+          
+        }
+        const response = await fetch(backend_url + "api/reservations/get_reservation_with_timespans/" + id);
+        const data: Reservation[] = await response.json();
+        setReservations(data);
       setSelectedReservation(null);
     } catch (err) {
       console.error("Failed to delete reservation:", err);

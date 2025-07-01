@@ -65,6 +65,20 @@ namespace backend.Controllers
 			await _context.SaveChangesAsync();
 			return CreatedAtAction("AddComment", new { id = commentToAdd.Id }, comment);
 		}
+		[HttpDelete("delete_comment/{*id}")]
+		[Authorize]
+		public async Task<ActionResult> DeleteComment(int id)
+		{
+			var username = User.Claims.First(claim => claim.Type == ClaimTypes.Email).Value;
+			var comment = await _context.Comments.FirstOrDefaultAsync(c => c.Id == id);
+			if (comment.Author != username&& !_context.Managers.Any(m => m.Username == username))
+			{
+				return Unauthorized();
+			}
+			_context.Remove(comment);
+			await _context.SaveChangesAsync();
+			return Ok();
+		}
 		[HttpGet("photos/{*filename}")]
 		public async Task<FileResult> RetrievePhoto(string filename)
 		{

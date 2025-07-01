@@ -133,8 +133,21 @@ namespace backend.Controllers
 			await _context.SaveChangesAsync();
 			return Created();
 		}
+		[HttpDelete("delete_reservation/{*id}")]
+		[Authorize]
+		[AdminAccess("id")]
+		public async Task<ActionResult> DeleteReservation(int id)
+		{
+			var res = await _context.Requests.FirstOrDefaultAsync(r => r.Id == id);
+			if (res == null)
+			{
+				return NotFound();
+			}
+			_context.Remove(res);
+			await _context.SaveChangesAsync();
+			return Ok();
+		}
 		
-
 
 		[HttpGet("get_admins")]
 		[Authorize]

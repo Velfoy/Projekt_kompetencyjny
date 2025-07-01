@@ -186,7 +186,13 @@ const ItemDetails = () => {
     setNewComment("");
   };
 
-  const handleDeleteComment = (id: number) => {
+  const handleDeleteComment = async (id: number) => {
+    const delresp = await fetch(backend_url + "api/item/delete_comment/" + id, {method: 'DELETE',  
+                headers: {'Authorization': 'Bearer ' + token}});
+            if (!delresp.ok) {
+              throw Error("Unauthorized");
+              
+            }
     setComments((prev) => prev.filter((comment) => comment.id !== id));
   };//fix!!!
   const [imgSrc, setImgSrc] = useState(productImage);
