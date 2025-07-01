@@ -21,6 +21,11 @@ const organizationsMock = [
 ];
 
 const NewUser = () => {
+  const [organizations, setOrganizations] = useState([
+  { id: 'org1', name: 'Organizacja A' },
+  { id: 'org2', name: 'Organizacja B' },
+  { id: 'org3', name: 'Organizacja C' },
+]);
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [userrole, setUserrole] = useState<'admin' | 'user' | null>(null);
@@ -70,6 +75,16 @@ const NewUser = () => {
       };
       fetchData();
     }, []);
+
+    useEffect(() => {
+        const fetchData = async () => {
+          const response = await fetch(backend_url + "api/admin/get_organizations", {method: 'GET', 
+                        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}});
+          const data = await response.json();
+          setOrganizations(data);
+        }
+        fetchData();
+    }, [])
   const columns: Column[] = [
     { key: "id", label: "Id/Imię" },
     { key: "access", label: "Poziom dostępu" },
@@ -81,7 +96,7 @@ const NewUser = () => {
     { label: "Usuń zaznaczone" },
     { label: "Usuń wszystkie" },
   ];
-
+  console.log(organizations);
   return (
     <>
       <div className="new_post">
@@ -144,7 +159,7 @@ const NewUser = () => {
                   }}
                   required
                 >
-                  {organizationsMock.map(org => (
+                  {organizations.map(org => (
                     <option key={org.id} value={org.id}>
                       {org.name}
                     </option>
