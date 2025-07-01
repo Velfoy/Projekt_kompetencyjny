@@ -46,11 +46,11 @@ namespace backend.Controllers
 		{
                 
                 var timespans = from ts in _context.Timespans.Include(t => t.Request).ThenInclude(r => r.Item) where ts.Request.Item.Id == id select new {
-                    day = $"{ts.Start.Day:D2}.{ts.Start.Month:D2}.{ts.Start.Year:D4}",
-                    startHour = (ts.Start.Hour > 8) ? ts.Start.Hour : 8,
-                    startMinute = (ts.Start.Minute / 15) * 15,
-                    endHour = (ts.End.Hour > 8) ? ts.End.Hour : 16,
-                    endMinute = (ts.End.Minute / 15) * 15,
+                    day = $"{ts.Start.ToLocalTime().Day:D2}.{ts.Start.ToLocalTime().Month:D2}.{ts.Start.ToLocalTime().Year:D4}",
+                    startHour = (ts.Start.AddHours(2).Hour > 8) ? ts.Start.AddHours(2).Hour : 8,
+                    startMinute = (ts.Start.ToLocalTime().Minute / 15) * 15,
+                    endHour = (ts.End.AddHours(2).Hour > 8) ? ts.End.AddHours(2).Hour : 16,
+                    endMinute = (ts.End.ToLocalTime().Minute / 15) * 15,
                     title = ts.Request.Title,
                     userName = ts.Request.Renter,
                     status = ts.Request.ApprovalStatus
@@ -73,19 +73,25 @@ namespace backend.Controllers
         {
             //Placeholder for now, will be changed on demand of frontend team
             //{}
-            if (r.userName != User.Claims.First(claim => claim.Type == ClaimTypes.Email).Value)
+            if (r.UserName != User.Claims.First(claim => claim.Type == ClaimTypes.Email).Value)
             {
-                return Unauthorized();
+                //return Unauthorized();
             }
             var item = _context.Items.Include(i => i.Organivzation).ThenInclude(o => o.Admins).FirstOrDefault(i => i.Id == id);
             if (item == null)
             {
                 return NotFound();
             }
-            var date = new Timespan { Start = new DateTime(new DateOnly(Convert.ToInt32(r.day.Split(".")[0]), Convert.ToInt32(r.day.Split(".")[1]), Convert.ToInt32(r.day.Split(".")[2])), new TimeOnly(r.startHour, r.startMinute)), End = new DateTime(new DateOnly(Convert.ToInt32(r.day.Split(".")[0]), Convert.ToInt32(r.day.Split(".")[1]), Convert.ToInt32(r.day.Split(".")[2])), new TimeOnly(r.endHour, r.endMinute)) };
-			var res = new Request { Approved = (_context.Items.Include(i => i.Organivzation).ThenInclude(o => o.Admins).First(i => i.Id == id).Organivzation.Admins.Any(a => a.Username == r.userName)) ? true : null, Item =  item, LastModified = DateTime.UtcNow, Renter = r.userName, Title = r.title, RequestPeriod = new List<Timespan>([date]), RequestSubmitted = DateTime.UtcNow};
+            r.UserName = User.Claims.First(claim => claim.Type == ClaimTypes.Email).Value;//Debug line
+			var u = r.Day.Split(".");
+            int year = Convert.ToInt32(r.Day.Split(".")[2]);
+            int month = Convert.ToInt32(r.Day.Split(".")[1]);
+            int day = Convert.ToInt32(r.Day.Split(".")[0]);
+			var date = new Timespan { Start = new DateTime(new DateOnly(year, month, day), new TimeOnly(r.StartHour, r.StartMinute)).ToUniversalTime(), End = new DateTime(new DateOnly(year, month, day), new TimeOnly(r.EndHour, r.EndMinute)).ToUniversalTime() };
+			var res = new Request { Approved = (_context.Items.Include(i => i.Organivzation).ThenInclude(o => o.Admins).First(i => i.Id == id).Organivzation.Admins.Any(a => a.Username == r.UserName)) ? true : null, Item =  item, LastModified = DateTime.UtcNow, Renter = r.UserName, Title = r.Title, RequestPeriod = new List<Timespan>([date]), RequestSubmitted = DateTime.UtcNow};
 
             await _context.AddAsync(res);
+            await _context.SaveChangesAsync();
             return "Made";
         }
 		//get_timespans_for_item
