@@ -35,6 +35,16 @@ namespace backend.Controllers
 				Include(i => i.Organivzation) where (i.Id == id) select i.GetItemJSON(true);
 			return await item.FirstOrDefaultAsync();
 		}
+		[HttpGet("get_breadcrumbs/{*id}")]
+		public async Task<ActionResult<Object>> GetBS(int id)
+		{
+			var item = from i in _context.Items.Include(i => i.Manager).
+				Include(i => i.Organivzation)
+					   where (i.Id == id)
+					   select new { id = i.Id, name = i.Name, description = i.Organivzation.Name + " * " + i.Type }
+			;
+			return await item.FirstOrDefaultAsync();
+		}
 		//Get_documentation will be added later after discussions with our frontend team
 		[HttpGet("get_comments/{*id}")]
 		public async Task<ActionResult<IEnumerable<Object>>> GetComments(int id)
