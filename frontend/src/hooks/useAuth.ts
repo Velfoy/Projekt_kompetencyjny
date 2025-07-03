@@ -18,7 +18,7 @@ export const useAuth = () => {
 
   const fetchUserData = async () => {
       console.log(token ?? localStorage.length)
-      const response = await fetch(`https://localhost:7065/api/users/whoami`, {
+      const response = await fetch("backend_url" + "api/users/whoami", {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -40,7 +40,7 @@ export const useAuth = () => {
 }, [dispatch]);
 
   const handleLogin = () => {
-    window.location.href = 'https://localhost:7019/cas/login';
+    window.location.href = 'https://design4all.p.lodz.pl/booking/';
   };
 
   const handleLogout = () => {
