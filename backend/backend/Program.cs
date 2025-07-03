@@ -55,9 +55,9 @@ namespace backend
 				    ValidateIssuer = false,
 				    ValidateAudience = false,
 				    ValidateIssuerSigningKey = false,
-				    ValidIssuer = "Politechnika Lodzka",
-				    ValidAudience = "IMSI",
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Testing").GetValue<string>("Key")))
+					ValidIssuer = builder.Configuration.GetSection("Politechnika").GetValue<string>("Issuer"),
+					ValidAudience = builder.Configuration.GetSection("Politechnika").GetValue<string>("Audience"),
+					IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Politechnika").GetValue<string>("Key")))
 			    });//We have turned off the token verification for testing purposes.
             } else
             {
