@@ -80,8 +80,16 @@ namespace backend
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            else
+            {
+                using (var scope = app.Services.CreateScope())
+                {
+                    var db = scope.ServiceProvider.GetRequiredService<Context>();
+                    db.Database.Migrate();
+                }
+            }
 
-            app.UseHttpsRedirection();
+			app.UseHttpsRedirection();
             app.UseCors("_allowReactJS");
             app.UseAuthorization();
             app.UseMiddleware<AdminAccessMiddleware>();
