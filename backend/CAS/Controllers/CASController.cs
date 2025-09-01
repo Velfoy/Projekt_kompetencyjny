@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CAS.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -9,6 +10,11 @@ namespace CAS.Controllers
 {
     public class CASController : Controller
     {
+		DefaultsService _defaults;
+		public CASController(DefaultsService defaults)
+		{
+			_defaults = defaults;
+		}
         public IActionResult Login()
         {
             return View();
@@ -44,13 +50,14 @@ namespace CAS.Controllers
 		}
 
 		[HttpPost("/login")]
-        public IActionResult LoginPost(string username, string password)
+        public async Task<IActionResult> LoginPost(string username, string password)
         {
 			var claims = new[]
 		   {
 				new Claim("user", username)
 			};
-			var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("imsiimsiimsiimsiimsiimsiimsiimsi"));
+			var secretKey = await _defaults.GetKeyAsync();
+			var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
 			var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 			var token = new JwtSecurityToken(
 				issuer: "Politechnika Lodzka",

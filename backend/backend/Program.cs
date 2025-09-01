@@ -6,15 +6,17 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using backend.Middleware;
+using backend.Services;
 
 namespace backend
 {
     public class Program
 	{
-		static bool debug = true;
+		static bool debug = false;
 		public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.AddServiceDefaults();
 
             // Add services to the container.
 
@@ -49,29 +51,16 @@ namespace backend
                                       policy.AllowAnyOrigin();
                                   });
             });
-            if (debug) {
-                builder.Services.AddSingleton<TokenValidationParameters>(new TokenValidationParameters
-			    {
-				    ValidateIssuer = false,
-				    ValidateAudience = false,
-				    ValidateIssuerSigningKey = false,
-				    ValidIssuer = "Politechnika Lodzka",
-				    ValidAudience = "IMSI",
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Testing").GetValue<string>("Key")))
-			    });//We have turned off the token verification for testing purposes.
-            } else
+
+            builder.Services.AddSingleton<VerificationService>();
+            builder.Services.AddHttpClient<VerificationService>(c =>
             {
-				builder.Services.AddSingleton<TokenValidationParameters>(new TokenValidationParameters
-				{
-					ValidateIssuer = true,
-					ValidateAudience = true,
-					ValidateIssuerSigningKey = true,
-					ValidIssuer = builder.Configuration.GetSection("Politechnika").GetValue<string>("Issuer"),
-					ValidAudience = builder.Configuration.GetSection("Politechnika").GetValue<string>("Audience"),
-					IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Politechnika").GetValue<string>("Key")))
-				});
+                var url = builder.Configuration.GetSection("Services").GetValue<string>("TokenVerifier");
+				c.BaseAddress = new(url);
 			}
+            );
                 var app = builder.Build();
+                app.MapDefaultEndpoints();
             
 
             // Configure the HTTP request pipeline.
