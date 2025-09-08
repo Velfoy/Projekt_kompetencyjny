@@ -65,8 +65,10 @@ Developed as part of the **Competency Project 2025 (Computer Science)** to strea
 ## 👨‍💻 Team
 
 Developed by Computer Science students at **Lodz University of Technology**  
+
 Frontend : **Valeriia Zlydar**
 Backend: **Tymur Hyselnikov**
+
 under the supervision of **Dr. Dorota Kamińska** and **Dr. Grzegorz Zwoliński**.
 
 ---
