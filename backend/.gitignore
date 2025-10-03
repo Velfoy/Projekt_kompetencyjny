@@ -9,3 +9,4 @@ CAS/appsettings.json
 CAS/appsettings.Development.json
 .vs/
 .idea/
+build/

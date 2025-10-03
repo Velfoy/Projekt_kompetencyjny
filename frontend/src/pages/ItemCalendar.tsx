@@ -467,6 +467,7 @@ const ItemCalendar: React.FC = () => {
           const dateStr = formatDateToKey(d);
           
           newReservations.push({
+            id: 0,
             day: dateStr,
             startHour: slot.fromHour,
             startMinute: slot.fromMinute,
@@ -527,6 +528,7 @@ const ItemCalendar: React.FC = () => {
           const dateStr = formatDateToKey(reservationDate);
           
           newReservations.push({
+            id: 0,
             day: dateStr,
             startHour: reservation.startHour,
             startMinute: reservation.startMinute,

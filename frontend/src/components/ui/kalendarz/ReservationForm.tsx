@@ -176,7 +176,9 @@ const ReservationForm: React.FC<{
     setError(null);
     
     try {
+      const id = 0;
       const reservation: Reservation = {
+        id,
         title,
         startHour,
         startMinute,

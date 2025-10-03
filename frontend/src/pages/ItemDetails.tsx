@@ -93,10 +93,30 @@ const mockComments = [
 const ItemDetails = () => {
   const { id } = useParams<{ id: string }>();
   const [activeTab, setActiveTab] = useState("specs");
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState([{
+    id: 3,
+    author: "Ewa Korzyniewska",
+    text: "Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum...",
+    date: "24 marca 2025",
+  }]);
   const [newComment, setNewComment] = useState("");
   const [userName, setUserName] = useState("")
-  const [booking, setBooking] = useState();
+  const [booking, setBooking] = useState({
+    id: "2",
+    name: "Rezerwacja 2",
+    description: "Opis produktu rezerwacji 2.",
+    unit: "Voxel",
+    category: "Urządzenia",
+    type: "Mikrokontrolery",
+    address: "Raptors, pokój nr. 3, szafa po lewej stronie, piąta półka od dołu.",
+    guardian_email: "g.zwolinski@edu.p.lodz.pl",
+    exploration_rules:
+      "Nie wolno rzucać płytki, jeść z płytki, maczać płytkę w musztardzie, dotykać brudnymi palcami.",
+    specs: ["Specyfikacja 2A", "Specyfikacja 2B"],
+    notes: "Uwagi do rezerwacji 2.",
+    documentation: [],
+    image: "/placeholder.png",
+  });
   const token = localStorage.getItem('auth_token')
   const [loading,setLoading]=useState(true);
   useEffect(() => {

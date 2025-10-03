@@ -100,7 +100,7 @@ namespace backend.Controllers
 			var admins = await (from m in _context.Managers select m.Username).ToListAsync();
 			var units = await (from u in _context.Organizations select u.Name).ToListAsync();
 			var types = new List<string>(["Item", "Room"]);
-			var categories = new List<string>(["Hai Shield Beetle"]);
+			var categories = new List<string>(["A7"]);
 			return new { admins, units, types, categories };
 		}
 		[HttpGet("get_organizations")]
@@ -115,6 +115,12 @@ namespace backend.Controllers
 		[Consumes("multipart/form-data")]
 		public async Task<ActionResult> CreateItem([FromForm] ItemForm item, IFormFile image, List<IFormFile> files)
 		{
+			var username = User.Claims.First(claim => claim.Type == ClaimTypes.Email).Value;
+			var manager = await _context.Managers.Include(m => m.Organizations).FirstOrDefaultAsync(u => u.Username == username);
+			if (manager == null||manager.Organizations.Any(o => o.Name == item.unit))
+			{
+				return Unauthorized();
+			}
 			var image_path = _configuration.GetSection("Storage").GetValue<string>("Images") ?? "";
 			var image_stream = new FileStream(image_path + image.FileName, FileMode.Create);//Possible vulnerability
 			image.CopyToAsync(image_stream);
@@ -197,7 +203,7 @@ namespace backend.Controllers
 		}
 
 		[HttpGet("/seed")]
-		//[AdminAccess("global")]
+		[AdminAccess("global")]
 		public async Task<ActionResult<string>> Seed()
 		{
 			Seed_database.CreateItems(_context);
