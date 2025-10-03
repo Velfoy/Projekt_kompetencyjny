@@ -1,3 +1,4 @@
+using CAS.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -12,6 +13,13 @@ namespace CAS
 			var builder = WebApplication.CreateBuilder(args);
 
 			// Add services to the container.
+			builder.Services.AddSingleton<DefaultsService>();
+			builder.Services.AddHttpClient<DefaultsService>(c =>
+			{
+				var url = builder.Configuration.GetSection("Services").GetValue<string>("ConfigDefaults");
+				c.BaseAddress = new(url);
+			}
+			);
 			builder.Services.AddControllersWithViews();
 
 			var app = builder.Build();

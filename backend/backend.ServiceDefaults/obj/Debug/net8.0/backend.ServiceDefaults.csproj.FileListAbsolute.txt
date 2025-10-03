@@ -1,0 +1,13 @@
+D:\pk\Projekt_kompetencyjny\backend\backend.ServiceDefaults\bin\Debug\net8.0\backend.ServiceDefaults.deps.json
+D:\pk\Projekt_kompetencyjny\backend\backend.ServiceDefaults\bin\Debug\net8.0\backend.ServiceDefaults.dll
+D:\pk\Projekt_kompetencyjny\backend\backend.ServiceDefaults\bin\Debug\net8.0\backend.ServiceDefaults.pdb
+D:\pk\Projekt_kompetencyjny\backend\backend.ServiceDefaults\obj\Debug\net8.0\backend.ServiceDefaults.csproj.AssemblyReference.cache
+D:\pk\Projekt_kompetencyjny\backend\backend.ServiceDefaults\obj\Debug\net8.0\backend.ServiceDefaults.GeneratedMSBuildEditorConfig.editorconfig
+D:\pk\Projekt_kompetencyjny\backend\backend.ServiceDefaults\obj\Debug\net8.0\backend.ServiceDefaults.AssemblyInfoInputs.cache
+D:\pk\Projekt_kompetencyjny\backend\backend.ServiceDefaults\obj\Debug\net8.0\backend.ServiceDefaults.AssemblyInfo.cs
+D:\pk\Projekt_kompetencyjny\backend\backend.ServiceDefaults\obj\Debug\net8.0\backend.ServiceDefaults.csproj.CoreCompileInputs.cache
+D:\pk\Projekt_kompetencyjny\backend\backend.ServiceDefaults\obj\Debug\net8.0\backend.ServiceDefaults.sourcelink.json
+D:\pk\Projekt_kompetencyjny\backend\backend.ServiceDefaults\obj\Debug\net8.0\backend.ServiceDefaults.dll
+D:\pk\Projekt_kompetencyjny\backend\backend.ServiceDefaults\obj\Debug\net8.0\refint\backend.ServiceDefaults.dll
+D:\pk\Projekt_kompetencyjny\backend\backend.ServiceDefaults\obj\Debug\net8.0\backend.ServiceDefaults.pdb
+D:\pk\Projekt_kompetencyjny\backend\backend.ServiceDefaults\obj\Debug\net8.0\ref\backend.ServiceDefaults.dll
