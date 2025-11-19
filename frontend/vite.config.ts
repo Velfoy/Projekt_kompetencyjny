@@ -59,5 +59,9 @@ r7hnzpLmVbyl4mA4769EhJDREJ639nyO6ymOpuvbriL78CwaWZhWet+pREku0SN8
 O4qQZpG04BxeCYdmFPkFEIrNJbDkjdWOq1Oj8r/B8EOSIhIfhFTTe9S2Gw==
 -----END CERTIFICATE-----`,
     }
+  build: {
+    outDir: '../backend/backend/wwwroot',  // <-- key change
+    emptyOutDir: true                      // cleans old files
+  }
   }
 })
