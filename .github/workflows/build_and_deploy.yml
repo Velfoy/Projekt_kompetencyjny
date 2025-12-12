@@ -1,0 +1,104 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build_deploy:
+    runs-on: ubuntu-22.04
+
+    env:
+      DOTNET_VERSION: "8.0.x"
+      NODE_VERSION: "20.x"
+      GO_VERSION: "1.22"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ---------- Frontend ----------
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Build frontend
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run build
+
+      # ---------- .NET Backend ----------
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Publish backend
+        run: |
+          dotnet restore backend/backend/backend.csproj
+          dotnet publish backend/backend/backend.csproj -c Release -o build/backend
+
+      # ---------- Go token service ----------
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Build Go token service
+        working-directory: backend/validate_token
+        run: |
+          go mod download
+          mkdir -p ../../build/token
+          go build -o ../../build/token/validate_token
+
+      # ---------- Prepare SSH ----------
+      - name: Install rsync + ssh client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rsync openssh-client
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p "${{ secrets.SSH_PORT }}" "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
+
+      # ---------- Deploy ----------
+      - name: Deploy build/ to server (rsync)
+        run: |
+          RSYNC_SSH="ssh -i ~/.ssh/id_ed25519 -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=yes"
+
+          # Ensure target dirs exist
+          $RSYNC_SSH "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
+            "mkdir -p '${{ secrets.DEPLOY_PATH }}/build/backend' '${{ secrets.DEPLOY_PATH }}/build/token'"
+
+          # Sync backend publish output
+          rsync -az --delete -e "$RSYNC_SSH" \
+            build/backend/ \
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}/build/backend/"
+
+          # Sync token service binary
+          rsync -az -e "$RSYNC_SSH" \
+            build/token/validate_token \
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}/build/token/validate_token"
+
+          # Ensure executable bit on server
+          $RSYNC_SSH "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
+            "chmod +x '${{ secrets.DEPLOY_PATH }}/build/token/validate_token'"
+
+      # ---------- Restart services ----------
+      - name: Restart services
+        run: |
+          SSH="ssh -i ~/.ssh/id_ed25519 -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=yes"
+
+          $SSH "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
+            "sudo systemctl restart token.service && sudo systemctl restart backend.service"
+
+          $SSH "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
+            "sudo systemctl --no-pager --full status token.service backend.service | sed -n '1,120p'"
