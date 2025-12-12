@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/golang-jwt/jwt"
-	"io"
 	"net/http"
 )
 
@@ -65,17 +64,8 @@ func main() {
 		w.Write([]byte("OK"))
 	})
 	http.HandleFunc("/validate_token", validator_handler)
-	resp, err := http.Get("http://localhost:5167/politechnika/external_key")
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-	key, err = io.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-	err = http.ListenAndServe(":8080", nil)
+	key = []byte("tajny_klucz_voxellab:)")
+	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		print(err.Error())
 		return

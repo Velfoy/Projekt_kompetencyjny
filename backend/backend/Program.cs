@@ -16,6 +16,13 @@ namespace backend
 		public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+	    builder.Services.Configure<ForwardedHeadersOptions>(o =>
+	    {
+    		o.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    		// If you're on a VPS/docker and don't want to maintain proxy IP allowlists:
+    		o.KnownNetworks.Clear();
+    		o.KnownProxies.Clear();
+	    });
             builder.AddServiceDefaults();
 
             // Add services to the container.
@@ -77,15 +84,16 @@ namespace backend
                     db.Database.Migrate();
                 }
             }
-
-			app.UseHttpsRedirection();
+	    app.UseDefaultFiles();
+	    app.UseStaticFiles();
+	    app.UseHttpsRedirection();
             app.UseCors("_allowReactJS");
             app.UseAuthorization();
             app.UseMiddleware<AdminAccessMiddleware>();
 
 
             app.MapControllers();
-
+	    app.MapFallbackToFile("index.html");
             app.Run();
         }
     }

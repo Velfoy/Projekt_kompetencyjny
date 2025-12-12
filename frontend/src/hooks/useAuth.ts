@@ -18,7 +18,7 @@ export const useAuth = () => {
 
   const fetchUserData = async () => {
       console.log(token ?? localStorage.length)
-      const response = await fetch("backend_url" + "api/users/whoami", {
+      const response = await fetch("api/users/whoami", {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

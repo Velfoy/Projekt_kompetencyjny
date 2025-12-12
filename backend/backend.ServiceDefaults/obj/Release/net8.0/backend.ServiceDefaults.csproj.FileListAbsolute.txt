@@ -1,0 +1,13 @@
+/home/voxel/cas-reservation/Projekt_kompetencyjny/backend/backend.ServiceDefaults/bin/Release/net8.0/backend.ServiceDefaults.deps.json
+/home/voxel/cas-reservation/Projekt_kompetencyjny/backend/backend.ServiceDefaults/bin/Release/net8.0/backend.ServiceDefaults.dll
+/home/voxel/cas-reservation/Projekt_kompetencyjny/backend/backend.ServiceDefaults/bin/Release/net8.0/backend.ServiceDefaults.pdb
+/home/voxel/cas-reservation/Projekt_kompetencyjny/backend/backend.ServiceDefaults/obj/Release/net8.0/backend.ServiceDefaults.csproj.AssemblyReference.cache
+/home/voxel/cas-reservation/Projekt_kompetencyjny/backend/backend.ServiceDefaults/obj/Release/net8.0/backend.ServiceDefaults.GeneratedMSBuildEditorConfig.editorconfig
+/home/voxel/cas-reservation/Projekt_kompetencyjny/backend/backend.ServiceDefaults/obj/Release/net8.0/backend.ServiceDefaults.AssemblyInfoInputs.cache
+/home/voxel/cas-reservation/Projekt_kompetencyjny/backend/backend.ServiceDefaults/obj/Release/net8.0/backend.ServiceDefaults.AssemblyInfo.cs
+/home/voxel/cas-reservation/Projekt_kompetencyjny/backend/backend.ServiceDefaults/obj/Release/net8.0/backend.ServiceDefaults.csproj.CoreCompileInputs.cache
+/home/voxel/cas-reservation/Projekt_kompetencyjny/backend/backend.ServiceDefaults/obj/Release/net8.0/backend.ServiceDefaults.sourcelink.json
+/home/voxel/cas-reservation/Projekt_kompetencyjny/backend/backend.ServiceDefaults/obj/Release/net8.0/backend.ServiceDefaults.dll
+/home/voxel/cas-reservation/Projekt_kompetencyjny/backend/backend.ServiceDefaults/obj/Release/net8.0/refint/backend.ServiceDefaults.dll
+/home/voxel/cas-reservation/Projekt_kompetencyjny/backend/backend.ServiceDefaults/obj/Release/net8.0/backend.ServiceDefaults.pdb
+/home/voxel/cas-reservation/Projekt_kompetencyjny/backend/backend.ServiceDefaults/obj/Release/net8.0/ref/backend.ServiceDefaults.dll

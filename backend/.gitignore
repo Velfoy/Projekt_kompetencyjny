@@ -1,12 +1,15 @@
 backend/obj/
 backend/bin/
-backend/storage
+backend/wwwroot/
+backend/storage/
+backend/out/
 backend/appsettings.json
 backend/appsettings.Development.json
 CAS/obj/
 CAS/bin/
 CAS/appsettings.json
 CAS/appsettings.Development.json
+validate_token/build
 .vs/
 .idea/
 build/
